@@ -21,6 +21,9 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 作者：羽山秋人 (https://3wa.tw)
 <br>
 <br>
+<h2>最初更新時間：</h2>
+2021-10-03
+<br><br>
 <h2>相依套件：</h2>
 jquery 1.7.1
 <br><br>
