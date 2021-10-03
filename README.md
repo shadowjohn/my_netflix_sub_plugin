@@ -35,12 +35,14 @@ jquery 1.7.1
 <br>
 <img src="screenshot/1.png">
 <p align="center">這張圖是 brave 瀏覽器的設定方式</p>
-
 4、開發擴充功能，開發人員模式打開，選擇「載入未封裝項目」
 <br>
 <img src="screenshot/2.png">
 5、選擇資料夾到剛才解壓縮檔案後的「3wa_netflix」目錄，按下「選擇資料夾」
 <img src="screenshot/3.png">
+<p align="center">要選到裡面目錄的「3wa_netflix」才是正確哦</p>
+<img src="screenshot/5.png">
+<p align="center">要看到套件有匯入成功，且有啟動</p>
 6、在網址列右邊，按下擴充程式(1)，找到 3waNetflix (2)，把標簽點開(3)，就會出現方框的「3」在標籤列上。<br>
 7、開啟 netflix ，隨意播一個影片，然後按一下「3」，等大概3秒後，字幕就會變大了<br>
 <img src="screenshot/4.png"><br>
