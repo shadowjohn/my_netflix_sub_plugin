@@ -40,4 +40,5 @@ jquery 1.7.1
 <img src="screenshot/3.png">
 6、在網址列右邊，按下擴充程式(1)，找到 3waNetflix (2)，把標簽點開(3)，就會出現方框的「3」在標籤列上。<br>
 7、開啟 netflix ，隨意播一個影片，然後按一下「3」，等大概3秒後，字幕就會變大了<br>
+<img src="screenshot/4.png">
 8、範例影片：https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/1.mp4
