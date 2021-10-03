@@ -8,7 +8,7 @@ netflix 字幕放大 extension
 <br>
 <h2>程式開發：</h2>
 此程式是 chrome、brave、edge extension 擴充程式，使用 javascript 開發。<br>
-netflix 的字幕通常藏在 html tag SVG image ，新的字幕就自變一個新的 image<br>
+netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等同載一個新的 image tag<br>
 字幕 image 是圖片，所以要調整字幕大學最簡單的方法就是加載 css<br>
 讓字幕有新的影像高度，如 120px、130px(依單、雙行字調整)<br>
 並修正字幕的 x 軸起始位置，對程式寫法有興趣的朋友，可以詳見 3wa_netflix/background.js<br>
