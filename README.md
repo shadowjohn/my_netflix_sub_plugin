@@ -45,7 +45,7 @@ jquery 1.7.1
 <br>
 <img src="screenshot/1.png">
 <p align="center">這張圖是 brave 瀏覽器的設定方式</p>
-4、開發擴充功能，開發人員模式打開，選擇「載入未封裝項目」
+4、開啟擴充功能，開發人員模式打開，選擇「載入未封裝項目」
 <br>
 <img src="screenshot/2.png">
 5、選擇資料夾到剛才解壓縮檔案後的「3wa_netflix」目錄，按下「選擇資料夾」
