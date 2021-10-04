@@ -61,3 +61,7 @@ jquery 1.7.1 (MIT https://jquery.org/license/)
 7、開啟 netflix ，隨意播一個影片，然後按一下「3」，等大概3秒後，字幕就會變大了<br>
 <img src="screenshot/4.png"><br>
 8、範例影片：https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/1.mp4
+
+<br>
+<h2>開發方法說明：</h2>
+Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
