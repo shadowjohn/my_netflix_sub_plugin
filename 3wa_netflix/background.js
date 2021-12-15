@@ -1,3 +1,4 @@
+
 function run_3wa_netflix() 
 {    
  //var script = document.createElement('script');
@@ -18,6 +19,27 @@ jQuery.fn.centerX = function () {
     this.css("left", ( jQuery(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
     return this;
 }
+function setMemory(wtfkey, value) {
+	localStorage.setItem(wtfkey, value);
+}
+function getMemory(wtfkey) {
+	return localStorage.getItem(wtfkey);
+}
+function registerFontSize() {
+  $("style[reqc='style_fontsize']").remove();
+  /*jQuery("body").append(`
+<style reqc='style_fontsize'>  
+  image{width:100%;height:70px;} 
+  image[height='90']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;} 
+  image[height='95']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
+  image[height='106']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
+  image[height='105']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
+  image[height='108']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
+  image[height='107']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
+  image[height='110']{width:100%;height:`+(130+window['my_netflix_fontsize'])+`px;}
+</style>`);
+  */ 
+}
 //主程式開始
 //3秒後執行
 setTimeout(function(){
@@ -28,41 +50,46 @@ setTimeout(function(){
     return; //只有在 netflix 才有效
   }
   window['my_netflix_x_position'] = -40; //預設的位置
+  if(getMemory('my_netflix_x_position')!=null)
+  {
+    //get Last setting
+    window['my_netflix_x_position'] = parseInt(getMemory('my_netflix_x_position'));
+  }
+  window['my_netflix_fontsize'] = 0; //Default font size
+  if(getMemory('my_netflix_fontsize')!=null)
+  {
+    //get Last setting
+    window['my_netflix_fontsize'] = parseInt(getMemory('my_netflix_fontsize'));
+  }
   //註冊style到 head
+  registerFontSize();
   jQuery("head").append(`
-<style reqc='s'> 
-  image{width:100%;height:70px;} 
-  image[height='90']{width:100%;height:120px;} 
-  image[height='95']{width:100%;height:120px;} 
-  image[height='106']{width:100%;height:120px;} 
-  image[height='105']{width:100%;height:120px;} 
-  image[height='108']{width:100%;height:120px;} 
-  image[height='107']{width:100%;height:120px;} 
-  image[height='110']{width:100%;height:130px;} 
+<style reqc='s'>   
   .my_netflix_controller_class{ 
-    width: 220px; 
-    padding:15px; 
+    width: 250px; 
+    padding:10px; 
     text-align:center; 
     position:fixed; 
     color:#000; 
-    z-index: 9999999; 
+    z-index: 9999999999; 
     background-color: rgba(255,255,255,0.8); 
     font-size:24px; 
     top:0px; 
     left:45%; 
     border:2px solid #00f; 
-    border-radius: 5px; 
+    border-radius: 5px;
+    opacity:0.01; 
   } 
     
-  .my_netflix_x_position_input_range_class{
+  .my_netflix_controller_class input[type='range']{
     -webkit-appearance: none;
     margin: 18px 0;
     width: 100%;
   }
-  .my_netflix_x_position_input_range_class:focus {
+  .my_netflix_controller_class input[type='range']:focus {
     outline: none;
   }
-  .my_netflix_x_position_input_range_class::-webkit-slider-runnable-track {
+  .my_netflix_controller_class input[type='range']::-webkit-slider-runnable-track {
     width: 100%;
     height: 8.4px;
     cursor: pointer;
@@ -71,7 +98,7 @@ setTimeout(function(){
     border-radius: 1.3px;
     border: 0.2px solid #010101;
   }
-  .my_netflix_x_position_input_range_class::-webkit-slider-thumb {
+  .my_netflix_controller_class input[type='range']::-webkit-slider-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 1px solid #000000;
     height: 36px;
@@ -82,10 +109,10 @@ setTimeout(function(){
     -webkit-appearance: none;
     margin-top: -14px;
   }
-  .my_netflix_x_position_input_range_class:focus::-webkit-slider-runnable-track {
+  .my_netflix_controller_class input[type='range']:focus::-webkit-slider-runnable-track {
     background: #367ebd;
   }
-  .my_netflix_x_position_input_range_class::-moz-range-track {
+  .my_netflix_controller_class input[type='range']::-moz-range-track {
     width: 100%;
     height: 8.4px;
     cursor: pointer;
@@ -94,7 +121,7 @@ setTimeout(function(){
     border-radius: 1.3px;
     border: 0.2px solid #010101;
   }
-  .my_netflix_x_position_input_range_class::-moz-range-thumb {
+  .my_netflix_controller_class input[type='range']::-moz-range-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 1px solid #000000;
     height: 36px;
@@ -103,7 +130,7 @@ setTimeout(function(){
     background: #ffffff;
     cursor: pointer;
   }
-  .my_netflix_x_position_input_range_class::-ms-track {
+  .my_netflix_controller_class input[type='range']::-ms-track {
     width: 100%;
     height: 8.4px;
     cursor: pointer;
@@ -112,19 +139,19 @@ setTimeout(function(){
     border-width: 16px 0;
     color: transparent;
   }
-  .my_netflix_x_position_input_range_class::-ms-fill-lower {
+  .my_netflix_controller_class input[type='range']::-ms-fill-lower {
     background: #2a6495;
     border: 0.2px solid #010101;
     border-radius: 2.6px;
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   }
-  .my_netflix_x_position_input_range_class::-ms-fill-upper {
+  .my_netflix_controller_class input[type='range']::-ms-fill-upper {
     background: #3071a9;
     border: 0.2px solid #010101;
     border-radius: 2.6px;
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   }
-  .my_netflix_x_position_input_range_class::-ms-thumb {
+  .my_netflix_controller_class input[type='range']::-ms-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 1px solid #000000;
     height: 36px;
@@ -133,10 +160,10 @@ setTimeout(function(){
     background: #ffffff;
     cursor: pointer;
   }
-  .my_netflix_x_position_input_range_class:focus::-ms-fill-lower {
+  .my_netflix_controller_class input[type='range']:focus::-ms-fill-lower {
     background: #3071a9;
   }
-  .my_netflix_x_position_input_range_class:focus::-ms-fill-upper {
+  .my_netflix_controller_class input[type='range']:focus::-ms-fill-upper {
     background: #367ebd;
   }
 </style>`);
@@ -147,8 +174,11 @@ setTimeout(function(){
       By 3WA Studio<br> \
       <img src='https://3wa.tw/pic/3wa_logo.png' width='35' onerror=\"this.style.display='none';\"> \
       <br> \
+      SUB (Font Size)   <span reqc='my_netflix_fontsize_span'>"+window['my_netflix_fontsize']+"</span><br> \
+      <input class='my_netflix_fontsize_input_range_class' reqc='my_netflix_fontsize_input' type='range' min='-100' max='50' value='"+window['my_netflix_fontsize']+"'> \
+      <br> \
       SUB (X Axis)   <span reqc='my_netflix_x_position_span'>"+window['my_netflix_x_position']+"</span><br> \
-      <input class='my_netflix_x_position_input_range_class' reqc='my_netflix_x_position_input' type='range' min='-100' max='100' value='"+window['my_netflix_x_position']+"'> \
+      <input class='my_netflix_x_position_input_range_class' reqc='my_netflix_x_position_input' type='range' min='-300' max='300' value='"+window['my_netflix_x_position']+"'> \
     </div> \
     ");
     jQuery(".my_netflix_controller_class").unbind("mousemove").bind("mousemove",function(){
@@ -159,9 +189,20 @@ setTimeout(function(){
       window['wtf_clear'] = setTimeout(function(){
         jQuery(".my_netflix_controller_class").animate({'opacity':0.001},300);
       },300);
-    });  
-    jQuery("input[reqc='my_netflix_x_position_input']").unbind("input").bind("input",function(){
+    }); 
+    
+    jQuery("input[reqc='my_netflix_fontsize_input']").unbind("input").bind("input",function(){      
+      window['my_netflix_fontsize'] = parseInt(jQuery(this).val());
+      setMemory('my_netflix_fontsize',window['my_netflix_fontsize']);
+      $("span[reqc='my_netflix_fontsize_span']").text(window['my_netflix_fontsize']);
+      
+      //重新註冊字大小
+      registerFontSize();
+    });
+     
+    jQuery("input[reqc='my_netflix_x_position_input']").unbind("input").bind("input",function(){      
       window['my_netflix_x_position'] = parseInt(jQuery(this).val());
+      setMemory('my_netflix_x_position',window['my_netflix_x_position']);
       $("span[reqc='my_netflix_x_position_span']").text(window['my_netflix_x_position']);
     });
   
@@ -169,7 +210,24 @@ setTimeout(function(){
     window['wtf']=setInterval(function(){
       //每 50ms 更新字幕的位置
       $("image").attr('x',window['my_netflix_x_position']);
-      jQuery("image").centerX();    
+      //jQuery("image").centerX();
+      if(jQuery("svg image").length<=0) return;
+      var orin_height = parseInt(jQuery("svg image").height());
+      if(orin_height>=110)
+      {      
+          //雙行字    
+          jQuery("svg image").css({
+            'width':'100%',
+            'height': (170+window['my_netflix_fontsize'])+'px'
+          });  
+      }
+      else
+      {
+          jQuery("svg image").css({
+            'width':'100%',
+            'height': (120+window['my_netflix_fontsize'])+'px'
+          });       
+      }
     },50);
   },3000); //setTimeout    
 }

@@ -12,7 +12,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 字幕 image 是圖片，所以要調整字幕變大，最簡單的方法就是加載 css<br>
 讓字幕有新的影像寬度100%，新高度，如 120px、130px(依單、雙行字調整)<br>
 並修正字幕的 x 軸起始位置，對程式寫法有興趣的朋友，可以詳見 3wa_netflix/background.js<br>
-我將整包 jquery1.7.1 載進來比較方便開發，pure js已很久沒寫沒那麼熟練...<br>
+我將整包 jquery3.6.0 載進來比較方便開發，pure js已很久沒寫沒那麼熟練...<br>
 然後就在head註冊新的css，並利用 setInterval 不斷的修正 image 起始位置<br>
 邏輯很簡單，就這樣而已^^ 
 <br>
@@ -34,13 +34,14 @@ V0.2 (2021-12-15)
 <h2>相依套件：</h2>
 jquery 3.6.0 (MIT https://jquery.org/license/)
 <br><br>
-<img src="screenshot/orin.jpg">
+<img src="screenshot/V02_1.jpg">
 <p align="center">執行前</p>
 <br>
-<img src="screenshot/after.jpg">
+<img src="screenshot/V02_2.jpg">
 <p align="center">執行後</p>
 <br>
 <br>
+<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
 <h2>使用方法：</h2>
 
@@ -63,7 +64,10 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 6、在網址列右邊，按下擴充程式(1)，找到 3waNetflix (2)，把標簽點開(3)，就會出現方框的「3」在標籤列上。<br>
 7、開啟 netflix ，隨意播一個影片，然後按一下「3」，等大概3秒後，字幕就會變大了<br>
 <img src="screenshot/4.png"><br>
-8、範例影片：https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/1.mp4
+8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
+<img src="screenshot/V02_2.jpg"><br>
+9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4"></a>
+<br>
 
 <br>
 <h2>開發方法說明：</h2>
@@ -71,6 +75,6 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>Todo：</h2>
 <ul>
-  <li>1、放大後字幕置中問題修正</li>
-  <li>2、字幕大小可再手動調整</li>
+  <li>(Done 2021-12-15)1、放大後字幕置中問題修正</li>
+  <li>(Done 2021-12-15)2、字幕大小可再手動調整</li>
 </ul>
