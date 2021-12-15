@@ -27,9 +27,12 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 <br>
 <h2>最初更新時間：</h2>
 2021-10-03
+<br>
+<h2>版本：</h2>
+V0.02 (2021-12-15)
 <br><br>
 <h2>相依套件：</h2>
-jquery 1.7.1 (MIT https://jquery.org/license/)
+jquery 3.6.0 (MIT https://jquery.org/license/)
 <br><br>
 <img src="screenshot/orin.jpg">
 <p align="center">執行前</p>
@@ -65,3 +68,9 @@ jquery 1.7.1 (MIT https://jquery.org/license/)
 <br>
 <h2>開發方法說明：</h2>
 Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
+<br>
+<h2>Todo：</h2>
+<ul>
+  <li>1、放大後字幕置中問題修正</li>
+  <li>2、字幕大小可再手動調整</li>
+</ul>
