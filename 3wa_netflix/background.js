@@ -63,6 +63,7 @@ setTimeout(function(){
   }
   //註冊style到 head
   registerFontSize();
+  jQuery("head style[reqc='s']").remove();
   jQuery("head").append(`
 <style reqc='s'>   
   .my_netflix_controller_class{ 
@@ -168,6 +169,7 @@ setTimeout(function(){
   }
 </style>`);
   //註冊一個調整字幕位置的功能
+  jQuery("div[reqc='my_netflix_controller_div']").remove();
   jQuery("body").prepend(" \
     <div reqc='my_netflix_controller_div' class='my_netflix_controller_class'> \
       3waNetflix V0.2<br> \
