@@ -74,7 +74,7 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
-<kbd>
+<pre>
 V0.2 - 2021-12-15
   1、放大後字幕置中問題修正
   2、字幕大小可再手動調整
@@ -82,7 +82,7 @@ V0.2 - 2021-12-15
 
 V0.1 - 2021-10-03
   初版
-</kbd>
+</pre>
 <br>  
 <h2>Todo：</h2>
 <ul>
