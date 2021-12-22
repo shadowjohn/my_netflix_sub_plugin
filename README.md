@@ -68,7 +68,11 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 <img src="screenshot/V02_2.jpg"><br>
 9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4</a>
 <br>
-
+<img src="screenshot/7.png"><br>
+10、如果只是要更新的版本，可以把 manifest.json、background.js 覆蓋<br>
+<img src="screenshot/6.png"><br>
+11、然後按一下「紅圈圈起」的地方，就可以重新載入模組<br>
+<br>
 <br>
 <h2>開發方法說明：</h2>
 Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
