@@ -61,16 +61,19 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 <p align="center">要選到裡面目錄的「3wa_netflix」才是正確哦</p>
 <img src="screenshot/5.png">
 <p align="center">要看到套件有匯入成功，且有啟動</p>
+<img src="screenshot/4.png"><br>
 6、在網址列右邊，按下擴充程式(1)，找到 3waNetflix (2)，把標簽點開(3)，就會出現方框的「3」在標籤列上。<br>
 7、開啟 netflix ，隨意播一個影片，然後按一下「3」，等大概3秒後，字幕就會變大了<br>
-<img src="screenshot/4.png"><br>
+
+<img src="screenshot/V02_2.jpg">
 8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
-<img src="screenshot/V02_2.jpg"><br>
+
 9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4</a>
 <br>
-<img src="screenshot/7.png"><br>
+<img src="screenshot/7.png">
 10、如果只是要更新的版本，可以把 manifest.json、background.js 覆蓋<br>
-<img src="screenshot/6.png"><br>
+<br>
+<img src="screenshot/6.png">
 11、然後按一下「紅圈圈起」的地方，就可以重新載入模組<br>
 <br>
 <br>
