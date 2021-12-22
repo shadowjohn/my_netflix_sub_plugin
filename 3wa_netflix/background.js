@@ -27,6 +27,7 @@ function getMemory(wtfkey) {
 }
 function registerFontSize() {
   $("style[reqc='style_fontsize']").remove();
+  jQuery("svg image").attr('my3waFlag',null);
   /*jQuery("body").append(`
 <style reqc='style_fontsize'>  
   image{width:100%;height:70px;} 
@@ -55,7 +56,7 @@ setTimeout(function(){
     //get Last setting
     window['my_netflix_x_position'] = parseInt(getMemory('my_netflix_x_position'));
   }
-  window['my_netflix_fontsize'] = 0; //Default font size
+  window['my_netflix_fontsize'] = -34; //Default font size
   if(getMemory('my_netflix_fontsize')!=null)
   {
     //get Last setting
@@ -214,22 +215,46 @@ setTimeout(function(){
       $("image").attr('x',window['my_netflix_x_position']);
       //jQuery("image").centerX();
       if(jQuery("svg image").length<=0) return;
+      if(jQuery("svg image[my3waFlag='YES']").length > 0) return;
       var orin_height = parseInt(jQuery("svg image").height());
-      if(orin_height>=110)
-      {      
-          //雙行字    
-          jQuery("svg image").css({
-            'width':'100%',
-            'height': (170+window['my_netflix_fontsize'])+'px'
-          });  
-      }
-      else
+      console.log(orin_height);
+      switch(orin_height)
       {
-          jQuery("svg image").css({
-            'width':'100%',
-            'height': (120+window['my_netflix_fontsize'])+'px'
-          });       
+        case 50:
+        case 51:
+        case 52:
+        case 53:
+        case 54:
+        case 55:
+        case 56:
+        case 57:
+        case 58:
+        case 59:
+        case 60:
+        case 90:
+        case 91:
+        case 92:
+        case 93:
+        case 94:
+        case 95:
+        case 96:
+        case 97:
+        case 98:
+        case 99:           
+            jQuery("svg image").css({
+              'width':'100%',
+              'height': (110+window['my_netflix_fontsize'])+'px'
+            });
+            break;        
+        default:
+            jQuery("svg image").css({
+              'width':'100%',
+              'height': (180+window['my_netflix_fontsize'])+'px'
+            });
+            break;
       }
+      jQuery("svg image").attr('my3waFlag','YES');
+      
     },50);
   },3000); //setTimeout    
 }
