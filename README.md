@@ -75,6 +75,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
+
     (2021-12-15) V0.3 版：
     1、修正雙行字大小問題
     
