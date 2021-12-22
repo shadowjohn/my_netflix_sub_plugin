@@ -75,6 +75,7 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 <br>
 <img src="screenshot/6.png">
 11、然後按一下「紅圈圈起」的地方，就可以重新載入模組<br>
+回到 Netflix 建議按「F5」重新載入畫面，然後再按一次「3」啟動字體放大功能
 <br>
 <br>
 <h2>開發方法說明：</h2>
