@@ -67,6 +67,7 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 
 <img src="screenshot/V02_2.jpg">
 8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
+( 羽山自己家的設定 字體大小「-34」 )
 
 9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4</a>
 <br>
