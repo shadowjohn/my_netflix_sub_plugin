@@ -29,7 +29,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 2021-10-03
 <br>
 <h2>版本：</h2>
-V0.3 (2021-12-22)
+V0.4 (2021-12-23)
 <br><br>
 <h2>相依套件：</h2>
 jquery 3.6.0 (MIT https://jquery.org/license/)
@@ -67,7 +67,7 @@ jquery 3.6.0 (MIT https://jquery.org/license/)
 
 <img src="screenshot/V02_2.jpg">
 8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
-( 羽山自己家的設定 字體大小「-34」 )
+( 羽山自己家的設定 字體大小「1.5」 )
 
 9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4</a>
 <br>
@@ -84,8 +84,10 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-
-    (2021-12-15) V0.3 版：
+    (2021-12-23) V0.4 版：
+    1、改用比例放大字體 0.1~3.0
+    
+    (2021-12-22) V0.3 版：
     1、修正雙行字大小問題
     
     (2021-12-15) V0.2 版：
@@ -105,4 +107,5 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2021-12-15)2、字幕大小可再手動調整</li>
   <li>(Done 2021-12-15)3、修正 3 一直被連點的問題</li>
   <li>(Done 2021-12-22)4、修正雙行字大小的問題</li>
+  <li>(Done 2021-12-23)5、改用比例放大</li>
 </ul>

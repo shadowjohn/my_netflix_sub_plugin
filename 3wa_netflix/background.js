@@ -28,18 +28,6 @@ function getMemory(wtfkey) {
 function registerFontSize() {
   $("style[reqc='style_fontsize']").remove();
   jQuery("svg image").attr('my3waFlag',null);
-  /*jQuery("body").append(`
-<style reqc='style_fontsize'>  
-  image{width:100%;height:70px;} 
-  image[height='90']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;} 
-  image[height='95']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
-  image[height='106']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
-  image[height='105']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
-  image[height='108']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
-  image[height='107']{width:100%;height:`+(120+window['my_netflix_fontsize'])+`px;}
-  image[height='110']{width:100%;height:`+(130+window['my_netflix_fontsize'])+`px;}
-</style>`);
-  */ 
 }
 //主程式開始
 //3秒後執行
@@ -56,12 +44,14 @@ setTimeout(function(){
     //get Last setting
     window['my_netflix_x_position'] = parseInt(getMemory('my_netflix_x_position'));
   }
-  window['my_netflix_fontsize'] = -34; //Default font size
-  if(getMemory('my_netflix_fontsize')!=null)
+  window['my_netflix_fontsize'] = 1.5; //Default font size
+  if(getMemory('my_netflix_fontsize_V0.4')!=null)
   {
     //get Last setting
-    window['my_netflix_fontsize'] = parseInt(getMemory('my_netflix_fontsize'));
+    window['my_netflix_fontsize'] = parseFloat(getMemory('my_netflix_fontsize_V0.4'));
   }
+  window['my_netflix_fontsize'] = (window['my_netflix_fontsize']>=3)?3:window['my_netflix_fontsize'];
+  window['my_netflix_fontsize'] = (window['my_netflix_fontsize']<=0.1)?0.1:window['my_netflix_fontsize'];
   //註冊style到 head
   registerFontSize();
   jQuery("head style[reqc='s']").remove();
@@ -173,12 +163,12 @@ setTimeout(function(){
   jQuery("div[reqc='my_netflix_controller_div']").remove();
   jQuery("body").prepend(" \
     <div reqc='my_netflix_controller_div' class='my_netflix_controller_class'> \
-      3waNetflix V0.2<br> \
+      3waNetflix V0.4<br> \
       By 3WA Studio<br> \
       <img src='https://3wa.tw/pic/3wa_logo.png' width='35' onerror=\"this.style.display='none';\"> \
       <br> \
       SUB (Font Size)   <span reqc='my_netflix_fontsize_span'>"+window['my_netflix_fontsize']+"</span><br> \
-      <input class='my_netflix_fontsize_input_range_class' reqc='my_netflix_fontsize_input' type='range' min='-100' max='50' value='"+window['my_netflix_fontsize']+"'> \
+      <input class='my_netflix_fontsize_input_range_class' reqc='my_netflix_fontsize_input' type='range' min='0.1' max='3' step='0.1' value='"+window['my_netflix_fontsize']+"'> \
       <br> \
       SUB (X Axis)   <span reqc='my_netflix_x_position_span'>"+window['my_netflix_x_position']+"</span><br> \
       <input class='my_netflix_x_position_input_range_class' reqc='my_netflix_x_position_input' type='range' min='-300' max='300' value='"+window['my_netflix_x_position']+"'> \
@@ -195,8 +185,8 @@ setTimeout(function(){
     }); 
     
     jQuery("input[reqc='my_netflix_fontsize_input']").unbind("input").bind("input",function(){      
-      window['my_netflix_fontsize'] = parseInt(jQuery(this).val());
-      setMemory('my_netflix_fontsize',window['my_netflix_fontsize']);
+      window['my_netflix_fontsize'] = parseFloat(jQuery(this).val());
+      setMemory('my_netflix_fontsize_V0.4',window['my_netflix_fontsize']);
       $("span[reqc='my_netflix_fontsize_span']").text(window['my_netflix_fontsize']);
       
       //重新註冊字大小
@@ -218,6 +208,12 @@ setTimeout(function(){
       if(jQuery("svg image[my3waFlag='YES']").length > 0) return;
       var orin_height = parseInt(jQuery("svg image").height());
       console.log(orin_height);
+      jQuery("svg image").css({
+              'width':'100%',
+              'height': (orin_height*window['my_netflix_fontsize'])+'px'
+            });
+      jQuery("svg image").attr('my3waFlag','YES');
+      return;
       switch(orin_height)
       {
         case 50:
@@ -243,17 +239,17 @@ setTimeout(function(){
         case 99:           
             jQuery("svg image").css({
               'width':'100%',
-              'height': (110+window['my_netflix_fontsize'])+'px'
+              'height': (orin_height*window['my_netflix_fontsize'])+'px'
             });
             break;        
         default:
             jQuery("svg image").css({
               'width':'100%',
-              'height': (180+window['my_netflix_fontsize'])+'px'
+              'height': (186+window['my_netflix_fontsize'])+'px'
             });
             break;
       }
-      jQuery("svg image").attr('my3waFlag','YES');
+      
       
     },50);
   },3000); //setTimeout    
