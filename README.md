@@ -46,9 +46,9 @@ V0.5 (2021-12-26)
 
 <h2>使用方法：</h2>
 
-1、下載：
-(V0.5 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.5/3wa_netflix.zip
-(V0.4 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.4/3wa_netflix.zip
+1、下載：<br>
+(V0.5 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.5/3wa_netflix.zip<br>
+(V0.4 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.4/3wa_netflix.zip<br>
 <br>
 2、解壓縮zip檔
 <br>
