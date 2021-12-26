@@ -375,7 +375,7 @@ function run_3wa_netflix()
       clearTimeout(window['wtf_clear']);
     });
     appClass.method.$(".my_netflix_controller_class").unbind("mouseout");
-    appClass.method.$(".my_netflix_controller_class").unbind("mouseout",function(){
+    appClass.method.$(".my_netflix_controller_class").bind("mouseout",function(){
       window['wtf_clear'] = setTimeout(function(){
         //jQuery(".my_netflix_controller_class").animate({'opacity':0.001},300);
         appClass.method.$(".my_netflix_controller_class").fadeOut("fast");
