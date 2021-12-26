@@ -1,0 +1,14 @@
+{
+  "name": "3waNetflix",
+  "action": {},
+  "manifest_version": 3,
+  "version": "0.4",
+  "description": "讓 netflix 的字幕稍微調大一點",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
