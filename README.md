@@ -3,7 +3,7 @@ netflix 字幕放大 extension
 
 <h2>功能：</h2>
 有用 netflix 的朋友應該都會弄台電腦把 netflix 接到電視用大螢幕播，netflix 的字幕小到讓人很火大。<br>
-網路上一堆垃圾瀏覽器 extension、包含官方的 https://www.netflix.com/SubtitlePreferences 設定後都無效...<br> 
+網路上一堆瀏覽器 extension、包含官方的 https://www.netflix.com/SubtitlePreferences 設定後都無效...<br> 
 萬念俱灰下，只好自己練功...<br>
 <br>
 <h2>程式開發：</h2>
@@ -12,8 +12,9 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 字幕 image 是圖片，所以要調整字幕變大，最簡單的方法就是加載 css<br>
 讓字幕有新的影像寬度100%，新高度，如 120px、130px(依單、雙行字調整)<br>
 並修正字幕的 x 軸起始位置，對程式寫法有興趣的朋友，可以詳見 3wa_netflix/background.js<br>
-我將整包 jquery3.6.0 載進來比較方便開發，pure js已很久沒寫沒那麼熟練...<br>
+<s>我將整包 jquery3.6.0 載進來比較方便開發，pure js已很久沒寫沒那麼熟練...</s><br>
 然後就在head註冊新的css，並利用 setInterval 不斷的修正 image 起始位置<br>
+註：0.5 版後，移除 jquery 3.6.0 ，重寫了一套精簡單版的 jquery 放在 background.js 裡<br>
 邏輯很簡單，就這樣而已^^ 
 <br>
 <br>
@@ -29,10 +30,10 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 2021-10-03
 <br>
 <h2>版本：</h2>
-V0.4 (2021-12-23)
+V0.5 (2021-12-26)
 <br><br>
 <h2>相依套件：</h2>
-jquery 3.6.0 (MIT https://jquery.org/license/)
+<s>jquery 3.6.0 (MIT https://jquery.org/license/)</s>
 <br><br>
 <img src="screenshot/V02_1.jpg">
 <p align="center">執行前</p>
@@ -84,6 +85,9 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
+    (2021-12-26) V0.5 版：
+    1、移除 jQuery 3.6.0
+    
     (2021-12-23) V0.4 版：
     1、改用比例放大字體 0.1~3.0
     
@@ -108,4 +112,5 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2021-12-15)3、修正 3 一直被連點的問題</li>
   <li>(Done 2021-12-22)4、修正雙行字大小的問題</li>
   <li>(Done 2021-12-23)5、改用比例放大</li>
+  <li>(Done 2021-12-26)6、移除 jQuery 3.6.0</li>
 </ul>
