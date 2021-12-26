@@ -87,6 +87,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
+
     (2021-12-26) V0.5 版：
     1、移除 jQuery 3.6.0
     2、點「3」後，不用等3秒了
