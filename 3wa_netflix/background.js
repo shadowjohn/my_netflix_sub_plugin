@@ -240,10 +240,10 @@ function run_3wa_netflix()
     window['my_netflix_x_position'] = parseInt(appClass.method.getMemory('my_netflix_x_position'));
   }
   window['my_netflix_fontsize'] = 1.5; //Default font size
-  if(appClass.method.getMemory('my_netflix_fontsize_V0.6')!=null)
+  if(appClass.method.getMemory('my_netflix_fontsize_V0.5')!=null)
   {
     //get Last setting
-    window['my_netflix_fontsize'] = parseFloat(appClass.method.getMemory('my_netflix_fontsize_V0.6'));
+    window['my_netflix_fontsize'] = parseFloat(appClass.method.getMemory('my_netflix_fontsize_V0.5'));
   }
   window['my_netflix_fontsize'] = (window['my_netflix_fontsize']>=3)?3:window['my_netflix_fontsize'];
   window['my_netflix_fontsize'] = (window['my_netflix_fontsize']<=0.1)?0.1:window['my_netflix_fontsize'];
@@ -385,7 +385,7 @@ function run_3wa_netflix()
     appClass.method.$("input[reqc='my_netflix_fontsize_input']").unbind("input");
     appClass.method.$("input[reqc='my_netflix_fontsize_input']").bind("input",function(){      
       window['my_netflix_fontsize'] = parseFloat(appClass.method.$("input[reqc='my_netflix_fontsize_input']").val());
-      appClass.method.setMemory('my_netflix_fontsize_V0.6',window['my_netflix_fontsize']);
+      appClass.method.setMemory('my_netflix_fontsize_V0.5',window['my_netflix_fontsize']);
       appClass.method.$("span[reqc='my_netflix_fontsize_span']").text(window['my_netflix_fontsize']);
       
       //重新註冊字大小
