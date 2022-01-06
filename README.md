@@ -30,7 +30,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 2021-10-03
 <br>
 <h2>版本：</h2>
-V0.5 (2021-12-26)
+V0.6 (2022-01-06)
 <br><br>
 <h2>相依套件：</h2>
 <s>jquery 3.6.0 (MIT https://jquery.org/license/)</s>
@@ -47,8 +47,8 @@ V0.5 (2021-12-26)
 <h2>使用方法：</h2>
 
 1、下載：<br>
-(V0.5 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.5/3wa_netflix.zip<br>
-(V0.4 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.4/3wa_netflix.zip<br>
+(V0.6 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.6/3wa_netflix.zip<br>
+(V0.5 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.5/3wa_netflix.zip<br>
 <br>
 2、解壓縮zip檔
 <br>
@@ -80,7 +80,7 @@ V0.5 (2021-12-26)
 <img src="screenshot/6.png">
 11、然後按一下「紅圈圈起」的地方，就可以重新載入模組<br>
 回到 Netflix 建議按「F5」重新載入畫面，然後再按一次「3」啟動字體放大功能<br>
-(註：V0.5 版不用等3秒了，點了馬上使用)
+(註：V0.5 版後不用等3秒了，點了馬上使用)
 <br>
 <br>
 <h2>開發方法說明：</h2>
@@ -88,7 +88,9 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-
+    (2022-01-06) V0.6 版：
+    1、移除不必要的 console.log
+    
     (2021-12-26) V0.5 版：
     1、移除 jQuery 3.6.0
     2、點「3」後，不用等3秒了
