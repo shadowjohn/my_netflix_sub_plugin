@@ -102,7 +102,7 @@ function run_3wa_netflix()
                 sp = v;                
               }
               let c = sp/1000.0;
-              console.log(c);
+              //console.log(c);
               this.css({
                 'transition':c+'s',
                 'opacity':0
@@ -240,10 +240,10 @@ function run_3wa_netflix()
     window['my_netflix_x_position'] = parseInt(appClass.method.getMemory('my_netflix_x_position'));
   }
   window['my_netflix_fontsize'] = 1.5; //Default font size
-  if(appClass.method.getMemory('my_netflix_fontsize_V0.5')!=null)
+  if(appClass.method.getMemory('my_netflix_fontsize_V0.6')!=null)
   {
     //get Last setting
-    window['my_netflix_fontsize'] = parseFloat(appClass.method.getMemory('my_netflix_fontsize_V0.5'));
+    window['my_netflix_fontsize'] = parseFloat(appClass.method.getMemory('my_netflix_fontsize_V0.6'));
   }
   window['my_netflix_fontsize'] = (window['my_netflix_fontsize']>=3)?3:window['my_netflix_fontsize'];
   window['my_netflix_fontsize'] = (window['my_netflix_fontsize']<=0.1)?0.1:window['my_netflix_fontsize'];
@@ -358,7 +358,7 @@ function run_3wa_netflix()
   appClass.method.$("div[reqc='my_netflix_controller_div']").remove();
   appClass.method.$("body").prepend(" \
     <div reqc='my_netflix_controller_div' class='my_netflix_controller_class'> \
-      3waNetflix V0.5<br> \
+      3waNetflix V0.6<br> \
       By 3WA Studio<br> \
       <img src='https://3wa.tw/pic/3wa_logo.png' width='35' onerror=\"this.style.display='none';\"> \
       <br> \
@@ -385,7 +385,7 @@ function run_3wa_netflix()
     appClass.method.$("input[reqc='my_netflix_fontsize_input']").unbind("input");
     appClass.method.$("input[reqc='my_netflix_fontsize_input']").bind("input",function(){      
       window['my_netflix_fontsize'] = parseFloat(appClass.method.$("input[reqc='my_netflix_fontsize_input']").val());
-      appClass.method.setMemory('my_netflix_fontsize_V0.5',window['my_netflix_fontsize']);
+      appClass.method.setMemory('my_netflix_fontsize_V0.6',window['my_netflix_fontsize']);
       appClass.method.$("span[reqc='my_netflix_fontsize_span']").text(window['my_netflix_fontsize']);
       
       //重新註冊字大小
@@ -411,7 +411,7 @@ function run_3wa_netflix()
         appClass.method.$("svg image").attr("orin_height",appClass.method.$("svg image").attr("height"));
       }
       var orin_height = parseInt( appClass.method.$("svg image").attr("orin_height") );
-      console.log(orin_height);
+      //console.log(orin_height);
       appClass.method.$("svg image").css({
               'width':'100%',
               'height': (orin_height*window['my_netflix_fontsize'])+'px'
