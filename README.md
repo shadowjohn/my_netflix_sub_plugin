@@ -29,8 +29,12 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 <h2>最初更新時間：</h2>
 2021-10-03
 <br>
+<h2>官方上架更新時間：</h2>
+(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
+<br>
 <h2>版本：</h2>
 V0.6 (2022-01-06)
+
 <br><br>
 <h2>相依套件：</h2>
 <s>jquery 3.6.0 (MIT https://jquery.org/license/)</s>
@@ -45,8 +49,11 @@ V0.6 (2022-01-06)
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
 <h2>使用方法：</h2>
+0、使用官方 Chrome Store 安裝：https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 
-1、下載：<br>
+或
+
+1、(原始檔下載安裝方法)：<br>
 (V0.6 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.6/3wa_netflix.zip<br>
 (V0.5 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.5/3wa_netflix.zip<br>
 <br>
