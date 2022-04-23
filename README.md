@@ -54,8 +54,8 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V0.8 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.8/3wa_netflix.zip<br>
-(V0.7 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.7/3wa_netflix.zip<br>
+(V0.9 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.9/3wa_netflix.zip<br>
+(V0.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.8/3wa_netflix.zip<br>
 
 <br>
 2、解壓縮zip檔
