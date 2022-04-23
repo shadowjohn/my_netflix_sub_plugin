@@ -33,7 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-V0.8 (2022-04-20)
+V0.9 (2022-04-23)
 
 <br><br>
 <h2>相依套件：</h2>
@@ -96,6 +96,10 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2022-04-23) V0.9 版：
+  1、加入字體粗細可以調整
+  2、加入字框粗細可以調整
+  
   (2022-04-20) V0.8 版：
   1、加入字距可以調整
   
@@ -128,12 +132,14 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>  
 <h2>Todo：</h2>
 <ul>
-  <li>(Done 2021-12-15)1、放大後字幕置中問題修正</li>
-  <li>(Done 2021-12-15)2、字幕大小可再手動調整</li>
-  <li>(Done 2021-12-15)3、修正 3 一直被連點的問題</li>
-  <li>(Done 2021-12-22)4、修正雙行字大小的問題</li>
-  <li>(Done 2021-12-23)5、改用比例放大</li>
-  <li>(Done 2021-12-26)6、移除 jQuery 3.6.0</li>
-  <li>(Done 2021-12-26)7、點「3」後，不用等3秒了</li>
-  <li>(Done 2022-04-20)8、字距可以調整了</li>
+  <li>(Done 2021-12-15)  1、放大後字幕置中問題修正</li>
+  <li>(Done 2021-12-15)  2、字幕大小可再手動調整</li>
+  <li>(Done 2021-12-15)  3、修正 3 一直被連點的問題</li>
+  <li>(Done 2021-12-22)  4、修正雙行字大小的問題</li>
+  <li>(Done 2021-12-23)  5、改用比例放大</li>
+  <li>(Done 2021-12-26)  6、移除 jQuery 3.6.0</li>
+  <li>(Done 2021-12-26)  7、點「3」後，不用等3秒</li>
+  <li>(Done 2022-04-20)  8、字距可以調整</li>
+  <li>(Done 2022-04-23)  9、字體粗細可調</li>
+  <li>(Done 2022-04-23) 10、字框粗細可調</li>
 </ul>
