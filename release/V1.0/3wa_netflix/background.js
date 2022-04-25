@@ -268,7 +268,7 @@ function run_3wa_netflix()
 //3秒後執行
 //setTimeout(function(){
   //console.log(location.href);
-  if(location.href.indexOf("netflix")==-1) {
+  if(location.href.indexOf("netflix.com")==-1) {
     console.log(location.href.indexOf("netflix"));
     console.log("only run on netflix url...");
     return; //只有在 netflix 才有效

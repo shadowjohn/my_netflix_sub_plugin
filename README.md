@@ -100,6 +100,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <pre>
   (2022-04-25) V1.0 版：
   1、修正修改後紀錄的問題
+  2、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com
   
     (2022-04-23) V0.9 版：
     1、加入字體粗細可以調整
@@ -147,5 +148,6 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-04-20)  8、字距可以調整</li>
   <li>(Done 2022-04-23)  9、字體粗細可調</li>
   <li>(Done 2022-04-23) 10、字框粗細可調</li>
-  <li>(Done 2022-04-25) 11、修改後紀錄的問題修正</li>  
+  <li>(Done 2022-04-25) 11、修改後紀錄的問題修正</li>
+  <li>(Done 2022-04-25) 12、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com</li>  
 </ul>
