@@ -33,7 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-V1.0 (2022-04-25)
+V1.0 (2022-04-25)<br>
 V0.9 (2022-04-23)
 
 <br><br>
