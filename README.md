@@ -33,6 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+V1.0 (2022-04-25)
 V0.9 (2022-04-23)
 
 <br><br>
@@ -54,8 +55,9 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V0.9 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.9/3wa_netflix.zip<br>
-(V0.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.8/3wa_netflix.zip<br>
+(V1.0 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.0/3wa_netflix.zip<br>
+(V0.9 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V0.9/3wa_netflix.zip<br>
+
 
 <br>
 2、解壓縮zip檔
@@ -96,10 +98,12 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-04-23) V0.9 版：
-  1、加入字體粗細可以調整
-  2、加入字框粗細可以調整
-
+  (2022-04-25) V1.0 版：
+  1、修正修改後紀錄的問題
+  
+    (2022-04-23) V0.9 版：
+    1、加入字體粗細可以調整
+    2、加入字框粗細可以調整
 
     (2022-04-20) V0.8 版：
     1、加入字距可以調整
@@ -143,4 +147,5 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-04-20)  8、字距可以調整</li>
   <li>(Done 2022-04-23)  9、字體粗細可調</li>
   <li>(Done 2022-04-23) 10、字框粗細可調</li>
+  <li>(Done 2022-04-25) 11、修改後紀錄的問題修正</li>  
 </ul>
