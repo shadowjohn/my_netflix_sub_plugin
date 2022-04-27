@@ -562,7 +562,7 @@ function run_3wa_netflix()
               }
             }
         }
-        m = m.join('').split('');
+        m = m.filter(x=> x !='' && x != null);
         my3waSubDiv.html(m.join("<br>"));
         my3waSubDiv.css({
             'position':'absolute',
