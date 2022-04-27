@@ -539,10 +539,26 @@ function run_3wa_netflix()
         var m = new Array();
         for(var i=0,max_i=orinSubs.length;i<max_i;i++){
             var txt = orinSubs[i].innerText;
-            if(!m.includes(txt))
+            if(m.length==0) //空的
             {
-              //2022-04-27 不要加重複的字
-              m.push(txt);
+                m.push(txt);
+            }
+            else 
+            {
+              var isFound = false;
+              //2022-04-28 不要加重複的字
+              for(var j=0,max_j=m.length;j<max_j;j++)
+              {
+                if(m[j].indexOf(txt)!=-1)
+                {
+                    isFound = true;
+                    break;
+                }
+              }
+              if(isFound==false)
+              {
+                m.push(txt);
+              }
             }
         }
         my3waSubDiv.html(m.join("<br>"));
