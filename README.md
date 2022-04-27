@@ -33,6 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+V1.2 (2022-04-28)<br>
 V1.1 (2022-04-25)<br>
 V1.0 (2022-04-25)<br>
 V0.9 (2022-04-23)
@@ -56,8 +57,8 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V1.1 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.1/3wa_netflix.zip<br>
-(V1.0 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.0/3wa_netflix.zip<br>
+(V1.2 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.2/3wa_netflix.zip<br>
+(V1.1 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.1/3wa_netflix.zip<br>
 
 
 <br>
@@ -99,9 +100,12 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-04-25) V1.1 版：
-  1、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com
-  2、此版本同 V1.0 只是送簽到 Google Extension 商店的版本少了 dcard 修正，重新發一版
+  (2022-04-25) V1.2 版：
+  1、網友 MAN哥 遇到字會重複變雙行的問題修正
+  
+    (2022-04-25) V1.1 版：
+    1、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com
+    2、此版本同 V1.0 只是送簽到 Google Extension 商店的版本少了 dcard 修正，重新發一版
     
     (2022-04-25) V1.0 版：
     1、修正修改後紀錄的問題
@@ -154,5 +158,6 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-04-23)  9、字體粗細可調</li>
   <li>(Done 2022-04-23) 10、字框粗細可調</li>
   <li>(Done 2022-04-25) 11、修改後紀錄的問題修正</li>
-  <li>(Done 2022-04-25) 12、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com</li>  
+  <li>(Done 2022-04-25) 12、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com</li>
+  <li>(Done 2022-04-28) 13、1、網友 MAN哥 遇到字會重複變雙行的問題修正</li>  
 </ul>
