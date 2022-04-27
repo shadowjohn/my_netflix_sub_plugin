@@ -544,22 +544,17 @@ function run_3wa_netflix()
                 m.push(txt);
             }
             else 
-            {
-              var isFound = false;
+            {              
               //2022-04-28 不要加重複的字
               for(var j=0,max_j=m.length;j<max_j;j++)
               {
                 if(m[j].indexOf(txt)!=-1)
-                {
-                    isFound = true;
+                {                    
                     m[j]=""; //清掉前面重複字的，保留後面的
                     break;
                 }
-              }
-              if(isFound==false)
-              {
-                m.push(txt);
-              }
+              }              
+              m.push(txt);              
             }
         }
         m = m.filter(x=> x !='' && x != null);
