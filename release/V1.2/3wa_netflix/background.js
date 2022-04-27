@@ -552,6 +552,7 @@ function run_3wa_netflix()
                 if(m[j].indexOf(txt)!=-1)
                 {
                     isFound = true;
+                    m[j]=""; //清掉前面重複字的，保留後面的
                     break;
                 }
               }
@@ -561,6 +562,7 @@ function run_3wa_netflix()
               }
             }
         }
+        m = m.join('').split('');
         my3waSubDiv.html(m.join("<br>"));
         my3waSubDiv.css({
             'position':'absolute',
