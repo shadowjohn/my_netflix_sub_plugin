@@ -33,6 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+V1.3 (2022-05-01)<br>
 V1.2 (2022-04-28)<br>
 V1.1 (2022-04-25)<br>
 V1.0 (2022-04-25)<br>
@@ -57,8 +58,8 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V1.2 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.2/3wa_netflix.zip<br>
-(V1.1 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.1/3wa_netflix.zip<br>
+(V1.3 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.3/3wa_netflix.zip<br>
+(V1.2 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.2/3wa_netflix.zip<br>
 
 
 <br>
@@ -100,8 +101,12 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-04-25) V1.2 版：
-  1、網友 MAN哥 遇到字會重複變雙行的問題修正
+  (2022-05-01) V1.3 版：
+  1、字幕高度可以調整
+  2、界面功能只在 netflix.com/watch 才會顯示
+  
+    (2022-04-25) V1.2 版：
+    1、網友 MAN哥 遇到字會重複變雙行的問題修正
   
     (2022-04-25) V1.1 版：
     1、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com
@@ -159,5 +164,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-04-23) 10、字框粗細可調</li>
   <li>(Done 2022-04-25) 11、修改後紀錄的問題修正</li>
   <li>(Done 2022-04-25) 12、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com</li>
-  <li>(Done 2022-04-28) 13、1、網友 MAN哥 遇到字會重複變雙行的問題修正</li>  
+  <li>(Done 2022-04-28) 13、網友 MAN哥 遇到字會重複變雙行的問題修正</li>
+  <li>(Done 2022-05-01) 14、字幕高度可以調整</li>
+  <li>(Done 2022-05-01) 15、界面功能只在 netflix.com/watch 才會顯示</li>  
 </ul>
