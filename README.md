@@ -174,5 +174,10 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-04-25) 12、dcard 的網址有 netflix 也會誤判成 netflix，要改成檢查完整的 netflix.com</li>
   <li>(Done 2022-04-28) 13、網友 MAN哥 遇到字會重複變雙行的問題修正</li>
   <li>(Done 2022-05-01) 14、字幕高度可以調整</li>
-  <li>(Done 2022-05-01) 15、界面功能只在 netflix.com/watch 才會顯示</li>  
+  <li>(Done 2022-05-01) 15、界面功能只在 netflix.com/watch 才會顯示</li>
+  <li>(Done 2022-05-11) 16、界面改到右上角</li>
+  <li>(Done 2022-05-11) 17、字框粗細 0~50</li>
+  <li>(Done 2022-05-11) 18、取消文字陰影</li>
+  <li>(Done 2022-05-11) 19、增加字體顏色</li>
+  <li>(Done 2022-05-11) 20、增加字體邊框顏色</li>  
 </ul>
