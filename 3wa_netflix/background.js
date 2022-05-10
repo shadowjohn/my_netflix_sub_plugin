@@ -314,7 +314,7 @@ function run_3wa_netflix()
     background-color: rgba(255,255,255,0.8); 
     font-size:24px; 
     top:0px; 
-    right:80px; 
+    left: 35%; 
     border:2px solid #00f; 
     border-radius: 5px;
     opacity:0.01; 
