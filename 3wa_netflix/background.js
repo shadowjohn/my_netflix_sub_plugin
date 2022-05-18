@@ -1,7 +1,7 @@
 function run_3wa_netflix() 
 {    
   var appClass = {
-    appVersion: "1.5",
+    appVersion: "1.6",
     method: {
         "getWindowSize":function(){
           var myWidth = 0, myHeight = 0;
@@ -275,13 +275,13 @@ function run_3wa_netflix()
   }
   
   var _myNetFlixSettings = {
-    'my_netflix_font_color': { 'default' : '#0400ff' }, // 字色
-    'my_netflix_font_border_color': { 'default' : '#ffd1d1' }, // 字框色
+    'my_netflix_font_color': { 'default' : '#fff5f8' }, // 字色
+    'my_netflix_font_border_color': { 'default' : '#1c5cb0' }, // 字框色
     'my_netflix_font_bolder': { 'default' : 400, 'min': 100, 'max':700,'step':300, 'sets':{100:'細緻',400:'正常',700:'粗體'} }, // 字粗
-    'my_netflix_y_position': { 'default' : 10, 'min': -20, 'max': 100,'step':1 }, //y 軸位置
-    'my_netflix_fontsize': { 'default' : 1.5, 'min':0.1 , 'max': 3,'step':0.1 }, //文字大小
-    'my_netflix_fontspace': { 'default' : 0, 'min':-50, 'max':50,'step':0.1 }, //文字間距
-    'my_netflix_font_text_shadow': { 'default' : 2.5, 'min':0, 'max':50,'step':0.1 } //字框粗細
+    'my_netflix_y_position': { 'default' : 12, 'min': -20, 'max': 100,'step':1 }, //y 軸位置
+    'my_netflix_fontsize': { 'default' : 1.6, 'min':0.1 , 'max': 3,'step':0.1 }, //文字大小
+    'my_netflix_fontspace': { 'default' : 12.5, 'min':-50, 'max':50,'step':0.1 }, //文字間距
+    'my_netflix_font_text_shadow': { 'default' : 10, 'min':0, 'max':50,'step':0.1 } //字框粗細
   };
   
   for(var k in _myNetFlixSettings)
@@ -411,7 +411,7 @@ function run_3wa_netflix()
     <div reqc='my_netflix_controller_div' class='my_netflix_controller_class'> \
       <img src='https://3wa.tw/pic/3wa_logo.png' width='35' onerror=\"this.style.display='none';\">&nbsp;&nbsp;&nbsp;3waNetflix V"+appClass.appVersion+" \
       <br> \
-      <table style='width:100%;'> \
+      <table style='width:100%;' reqc='my_netflix_controller_table'> \
         <tr> \
           <td valign='top' style='padding-right:5px;width:220px;text-align:left;'> \
           <br> \
@@ -448,13 +448,27 @@ function run_3wa_netflix()
     ");
     //set Default
     
-       
+    //註冊一個 interval，如果網頁是 netflix.com/watch/  .my_netflix_controller_class 才有事件
+    setInterval(function(){
+      if(location.href.indexOf("netflix.com/watch/")==-1) {
+        //2022-05-18 #22 修正在選影片頁時，控制項不能被點選
+        //不是播放頁
+        appClass.method.$(".my_netflix_controller_class").css({
+          'pointer-events':'none' 
+        });
+      }
+      else{
+        appClass.method.$(".my_netflix_controller_class").css({
+          'pointer-events':'auto' 
+        });
+      }
+    },2000);  
     
     appClass.method.$(".my_netflix_controller_class").unbind("mousemove");
     appClass.method.$(".my_netflix_controller_class").bind("mousemove",function(){
-      if(location.href.indexOf("netflix.com/watch/")==-1) {
+      if(location.href.indexOf("netflix.com/watch/")==-1) {                
         return;
-      }
+      }      
       appClass.method.$(".my_netflix_controller_class").css({'opacity':1});
       clearTimeout(window['wtf_clear']);
     });
