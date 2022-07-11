@@ -1,6 +1,13 @@
 function run_3wa_netflix() {
     var appClass = {
-        appVersion: "1.7",
+        appVersion: "1.8",
+        subData: {
+            netflixURL: null,
+            subURL: '', //切換字幕時，取到的字幕網址放這裡
+            outerDiv: null, //字幕框的最外 div h3外的第四個div
+            allSubs: [], //取得所有種類的字幕，如 繁體中文、英文、日文...
+            allSubsEvent: [] //儲所有種類字幕點下的事件
+        },
         method: {
             "arduino_map": function (x, in_min, in_max, out_min, out_max) {
                 //x = 輸入值
@@ -38,6 +45,14 @@ function run_3wa_netflix() {
                 }
                 */
                 //];
+                d.contains = function (data) {
+                    //用來找內有符合的
+                    for (let i = 0, max_i = this.length; i < max_i; i++) {
+                        if (this[i].textContent.includes(data)) {
+                            return this[i];
+                        }
+                    }
+                };
                 d.remove = function () {
                     for (let i = 0, max_i = this.length; i < max_i; i++) {
                         this[i].remove();
@@ -292,7 +307,206 @@ function run_3wa_netflix() {
                 this.$("style[reqc='style_fontsize']").remove();
                 //jQuery("svg image").attr('my3waFlag',null);
                 this.$("svg image").attr('my3waFlag', null);
-            } //註冊字體大小
+            }, //註冊字體大小            
+            "myCloneNode": function (oElm, bDeep, bEvents) { //複製事件
+                //From : http://blog.sivavaka.com/2010/11/javascript-clonenode-doesnt-copy-event.html
+                //myCloneNode(OriginalNode, true, true);
+                var
+                    aInputSubElements
+                    , eNodeCopy
+                    , aNodeCopySubElements
+                    , n1, n2
+
+                    , allEvents = ['onabort', 'onbeforecopy', 'onbeforecut', 'onbeforepaste', 'onblur', 'onchange', 'onclick',
+                        'oncontextmenu', 'oncopy', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave',
+                        'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onfocus', 'oninput', 'oninvalid', 'onkeydown',
+                        'onkeypress', 'onkeyup', 'onload', 'onmousedown', 'onmousemove', 'onmouseout',
+                        'onmouseover', 'onmouseup', 'onmousewheel', 'onpaste', 'onreset', 'onresize', 'onscroll', 'onsearch', 'onselect', 'onselectstart', 'onsubmit', 'onunload']
+
+
+                // defaults
+                bDeep = bDeep || false;
+                bEvents = bEvents || false;
+
+                // clone
+                eNodeCopy = oElm.cloneNode(bDeep);
+
+                // events
+                if (bEvents) {
+                    aInputSubElements = oElm.getElementsByTagName('*');
+                    aNodeCopySubElements = eNodeCopy.getElementsByTagName('*')
+
+                    // The node root
+                    for (n2 = 0; n2 < allEvents.length; n2++) {
+                        if (oElm[allEvents[n2]]) {
+                            eNodeCopy[allEvents[n2]] = oElm[allEvents[n2]];
+                        }
+                    }
+
+                    // Node descendants
+                    for (n1 = 0; n1 < aInputSubElements.length; n1++) {
+                        for (n2 = 0; n2 < allEvents.length; n2++) {
+                            if (aInputSubElements[n1][allEvents[n2]]) {
+                                aNodeCopySubElements[n1][allEvents[n2]] = aInputSubElements[n1][allEvents[n2]];
+                            }
+                        }
+                    }
+                }
+
+                return eNodeCopy;
+            },
+            "subInit": function () {
+                //字幕初始化
+                //2022-07-10 增加，如果 appClass.subData.allSubs 是空的
+                //或是 location.href 與 appClass.subData.netflixURL 不同，就執行字幕初始化
+                if (appClass.subData.netflixURL == location.href) {
+                    //console.log("已取到字幕了...");
+                    return;
+                }
+                if (appClass.method.$(".ltr-fntwn3").length == 0) {
+                    //無法取得下面工作列，無法取字幕
+                    console.log("無法取得下面工作列，無法取字幕...");
+                    return;
+                }
+                //按一下
+                appClass.method.$(".ltr-fntwn3")[0].click();
+                if (appClass.method.$("button[aria-label='音訊和字幕']").length == 0) {
+                    //無法取得字幕列表
+                    console.log("無法取得字幕列表...");
+                    return;
+                }
+                appClass.method.$("button[aria-label='音訊和字幕']")[0].click();
+                //從 h3 innerTEXT = 字幕 取得字幕列表
+                var h3dom = appClass.method.$("h3").contains("字幕");
+
+                //把整個 div 複製出來 h3 的外層 4 div
+                appClass.subData.outerDiv = appClass.method.myCloneNode(h3dom.closest("div").closest("div").closest("div"),true,true);
+
+                //放入fake
+                //appClass.method.$("div[reqc='my_netflix_fake_subs']")[0].appendChild(appClass.subData.outerDiv);
+
+                console.log(h3dom);
+                if (h3dom.closest("div").querySelectorAll("li").length == 0) {
+                    //無法取得字幕列表
+                    console.log("無法取得字幕列表... h3 div -> li");
+                    return;
+                }
+                appClass.subData.netflixURL = location.href;
+                appClass.subData.allSubs = new Array();
+                appClass.subData.allSubsEvent = new Array();
+
+                var m = new Array();
+
+                for (var i = 0, max_i = h3dom.closest("div").querySelectorAll("li").length; i < max_i; i++) {
+                    var subName = h3dom.closest("div").querySelectorAll("li")[i].innerText;
+                    appClass.subData.allSubs.push(subName);
+                    appClass.subData.allSubsEvent.push(appClass.method.myCloneNode(h3dom.closest("div").querySelectorAll("li")[i],true,true)); //copy node
+                    var d = "<option value='" + subName + "'>" + subName + "</option>";
+                    m.push(d);
+                }
+                //console.log(appClass.subData);
+                //字幕1組合
+                //appClass.method.$("select[reqc='my_netflix_sub1']").html(m.join(''));
+                //字幕2組合
+                appClass.method.$("select[reqc='my_netflix_sub2']").html(m.join(''));
+
+                //字幕初始化
+                //appClass.method.$("select[reqc='my_netflix_sub1']").val(window['my_netflix_sub1']);
+                appClass.method.$("select[reqc='my_netflix_sub2']").val(window['my_netflix_sub2']);
+
+                //appClass.method.$("select[reqc='my_netflix_sub1']").unbind("change");
+                /*appClass.method.$("select[reqc='my_netflix_sub1']").bind("change", function () {
+                    var current_sub1 = appClass.method.$("select[reqc='my_netflix_sub1']").val();
+                    appClass.method.setMemory("my_netflix_sub1", current_sub1);
+                    appClass.method._subChangeSub1(current_sub1);
+                });
+                */
+
+                appClass.method.$("select[reqc='my_netflix_sub2']").unbind("change");
+                appClass.method.$("select[reqc='my_netflix_sub2']").bind("change", function () {
+                    //次字幕切換
+                    clearInterval(window['wtfff']);
+                    var current_sub2 = appClass.method.$("select[reqc='my_netflix_sub2']").val();
+                    window['wtfff'] = setInterval(function () {
+                        var orin_sub = "繁體中文";
+                        appClass.method._subChangeSub1(orin_sub);
+                        var index = appClass.method._subGetIndex("繁體中文");                        
+                        appClass.subData.allSubsEvent[index].click();
+
+                        //console.log(index);
+                        //console.log(appClass.subData.allSubsEvent[index]);
+
+                        setTimeout(function () {
+                            appClass.method._subChangeSub1("英文");
+                            console.log("英文");
+                            var index = appClass.method._subGetIndex("英文");
+                            appClass.subData.allSubsEvent[index].click();
+
+                            //console.log(index);
+                            //console.log(appClass.subData.allSubsEvent[index]);
+                        }, 200);
+                        //var current_sub2 = appClass.method.$("select[reqc='my_netflix_sub2']").val();
+                        //appClass.method.setMemory("my_netflix_sub2", current_sub2);
+                        //appClass.method._subChangeSub1(current_sub2);
+                    }, 400);
+                });
+            }, //字幕初始化
+            "getCureentSub": function () { //取得目前的字幕是哪一個
+
+            },
+            "_subGetIndex": function (subName) { //取得此 sub 是第幾個
+                var index = -1;
+                for (var i = 0, max_i = appClass.subData.allSubs.length; i < max_i; i++) {
+                    if (subName == appClass.subData.allSubs[i]) {
+                        index = i;
+                        break;
+                    }
+                }
+                return index;
+            },
+            "_subChangeSub1": function (subName) { //字幕1切換                
+                //視同點右下字幕效果                
+                if (appClass.method.$("button[aria-label='音訊和字幕']").length == 0) {
+                    appClass.method.$(".ltr-fntwn3")[0].click();
+                    setTimeout(function () {
+                        appClass.method._subChangeSub1(subName);
+                    }.bind(subName), 200);
+                    return;
+                }
+                if (appClass.method.$("button[aria-label='音訊和字幕']").length == 0) {
+                    //無法取得字幕列表
+                    console.log("無法取得字幕列表...");
+                    return;
+                }
+                appClass.method.$("button[aria-label='音訊和字幕']")[0].click();
+                //從 h3 innerTEXT = 字幕 取得字幕列表
+                var h3dom = appClass.method.$("h3").contains("字幕");
+                //console.log(h3dom);
+                if (h3dom.closest("div").querySelectorAll("li").length == 0) {
+                    //無法取得字幕列表
+                    console.log("無法取得字幕列表... h3 div -> li");
+                    return;
+                }
+                //console.log(subName);
+                for (var i = 0, max_i = h3dom.closest("div").querySelectorAll("li").length; i < max_i; i++) {
+                    //console.log(h3dom.closest("div").querySelectorAll("li")[i].innerText);
+                    //console.log(subName);
+                    if (h3dom.closest("div").querySelectorAll("li")[i].innerText == subName) {
+                        //console.log(h3dom.closest("div").querySelectorAll("li")[i].innerText);
+                        //console.log(h3dom.closest("div").querySelectorAll("li")[i]);
+                        h3dom.closest("div").querySelectorAll("li")[i].click(); //按下去                        
+                        //console.log(h3dom.closest("div").querySelectorAll("li")[i].click.toString());
+
+                        //設定完成後，trigger h3 離開
+                        //h3dom.closest("div").mouseout();
+                        return;
+                    }
+                }
+
+
+
+
+            }
         }
     };
 
@@ -314,7 +528,9 @@ function run_3wa_netflix() {
         'my_netflix_y_position': { 'default': 12, 'min': -40, 'max': 100, 'step': 1 }, //y 軸位置
         'my_netflix_fontsize': { 'default': 1.6, 'min': 0.1, 'max': 3, 'step': 0.1 }, //文字大小
         'my_netflix_fontspace': { 'default': 12.5, 'min': -50, 'max': 50, 'step': 0.1 }, //文字間距
-        'my_netflix_font_text_shadow': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 } //字框粗細
+        'my_netflix_font_text_shadow': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
+        //'my_netflix_sub1': { 'default': '繁體中文' },
+        'my_netflix_sub2': { 'default': '英文' }
     };
 
     for (var k in _myNetFlixSettings) {
@@ -475,8 +691,22 @@ function run_3wa_netflix() {
         邊框顏色： \
         <br> \
         <input type='color' reqc='my_netflix_font_border_color_input' value='"+ window['my_netflix_font_border_color'] + "' style='width:100%;'> \
-      </td> \
-      </tr> \
+        <br> \
+        <br> \
+        <!-- \
+        字幕１： \
+        <br> \
+        <select reqc='my_netflix_sub1' value='"+ window['my_netflix_sub1'] + "' style='width:100%;'></select> \
+        <br> \
+        <br> \
+        --> \
+        第二字幕： \
+        <br> \
+        <select reqc='my_netflix_sub2' value='" + window['my_netflix_sub2'] + "' style='width:100%;'></select> \
+        <div reqc='my_netflix_fake_subs'><!--用來放測試的Event--> \
+        </div> \
+        </td> \
+        </tr> \
       </table> \
     </div> \
     ");
@@ -492,11 +722,17 @@ function run_3wa_netflix() {
             });
         }
         else {
+            //是播放頁
             appClass.method.$(".my_netflix_controller_class").css({
                 'pointer-events': 'auto'
             });
+            //字幕初始化
+            appClass.method.subInit();
         }
     }, 2000);
+
+
+
 
     appClass.method.$(".my_netflix_controller_class").unbind("mousemove");
     appClass.method.$(".my_netflix_controller_class").bind("mousemove", function () {

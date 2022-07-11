@@ -33,6 +33,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+V1.8 (2022-07-10)<br>
 V1.7 (2022-06-11)<br>
 V1.6 (2022-05-18)<br>
 V1.5 (2022-05-12)<br>
@@ -62,8 +63,8 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V1.7 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.7/3wa_netflix.zip<br>
-(V1.6 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.6/3wa_netflix.zip<br>
+(V1.8 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip<br>
+(V1.7 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.7/3wa_netflix.zip<br>
 
 
 <br>
@@ -198,4 +199,5 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-05-18) 22、修正在選影片頁時，控制項不能被點選</li>
   <li>(Done 2022-05-18) 23、檢查 chrome 字體置中的問題</li>
   <li>(Done 2022-06-11) 24、當使用者使用1080p套件，仍為圖片型文字，調整字幕置中的問題</li>  
+  <li>25、雙字幕功能</li>
 </ul>
