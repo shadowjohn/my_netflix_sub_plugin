@@ -51,7 +51,7 @@ V0.9 (2022-04-23)
 <img src="screenshot/V02_1.jpg">
 <p align="center">執行前</p>
 <br>
-<img src="screenshot/V02_2.jpg">
+<img src="screenshot/v1.4.jpg">
 <p align="center">執行後</p>
 <br>
 <br>
