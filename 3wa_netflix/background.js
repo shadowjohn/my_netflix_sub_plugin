@@ -194,19 +194,29 @@ function run_3wa_netflix() {
     border-radius: 5px;
     opacity:0.01; 
   } 
+  /* From : https://stackoverflow.com/questions/1409649/how-to-change-the-height-of-a-br */
+  /*
+  .my_netflix_controller_class br{    
+    display: block; 
+    content: ""; 
+    margin-top: 5px; 
+    margin-bottom: 5px;
+  }
+  */
   /* 標題 */
   .my_netflix_controller_title_class{
     border-bottom: 3px solid #000;
     font-weight: bold;    
     text-align: center;
+    margin-bottom:2px;
   }
   .my_netflix_controller_class select{    
-    margin: 18px 0;
+    margin: 0;
     width: 100%;
   }
   .my_netflix_controller_class input[type='range']{
     -webkit-appearance: none;
-    margin: 18px 0;
+    margin: 12px 0;
     width: 100%;
   }
   .my_netflix_controller_class input[type='range']:focus {
@@ -318,9 +328,6 @@ function run_3wa_netflix() {
           字框粗細   <span reqc='my_netflix_font_text_shadow_span'>"+ window['my_netflix_font_text_shadow'] + "</span><br> \
           <input class='my_netflix_font_text_shadow_input_range_class' reqc='my_netflix_font_text_shadow_input' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow']['step'] + "' value='" + window['my_netflix_font_text_shadow'] + "'> \
           <br> \
-          字幕高度   <span reqc='my_netflix_y_position_span'>"+ window['my_netflix_y_position'] + "</span><br> \
-          <input class='my_netflix_y_position_input_range_class' reqc='my_netflix_y_position_input' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position']['step'] + "' value='" + window['my_netflix_y_position'] + "'></div> \
-          <br> \
           字型 \
           <select reqc='my_netflix_font_family_select'></select> \
           <br> \
@@ -329,6 +336,9 @@ function run_3wa_netflix() {
           <br> \
           邊框顏色 \
           <input type='color' reqc='my_netflix_font_border_color_input' value='"+ window['my_netflix_font_border_color'] + "' style='width:100%;'> \
+          字幕高度   <span reqc='my_netflix_y_position_span'>"+ window['my_netflix_y_position'] + "</span><br> \
+          <input class='my_netflix_y_position_input_range_class' reqc='my_netflix_y_position_input' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position']['step'] + "' value='" + window['my_netflix_y_position'] + "'></div> \
+          <br> \
       </td> \
       <td valign='top' style='border-left: 1px dashed #00c;padding-left:5px;text-align:left;'> \
           <div class='my_netflix_controller_title_class'>第二字幕</center></div> \
@@ -345,14 +355,6 @@ function run_3wa_netflix() {
           字框粗細   <span reqc='my_netflix_font_text_shadow_span_2'>"+ window['my_netflix_font_text_shadow_2'] + "</span><br> \
           <input class='my_netflix_font_text_shadow_input_range_class_2' reqc='my_netflix_font_text_shadow_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['step'] + "' value='" + window['my_netflix_font_text_shadow_2'] + "'> \
           <br> \
-          <div style='display:none;'> \
-            <!--第二字幕不用設高度--> \
-            字幕高度 < span reqc = 'my_netflix_y_position_span_2' > "+ window['my_netflix_y_position_2'] + "</span > <br> \
-            <input class='my_netflix_y_position_input_range_class_2' reqc='my_netflix_y_position_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position_2']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position_2']['step'] + "' value='" + window['my_netflix_y_position_2'] + "'></div> \
-            <br> \
-          </div> \
-          <br> \
-          <br> \
           字型 \
           <select reqc='my_netflix_font_family_select_2'></select> \
           <br> \
@@ -361,6 +363,12 @@ function run_3wa_netflix() {
           <br> \
           邊框顏色 \
           <input type='color' reqc='my_netflix_font_border_color_input_2' value='"+ window['my_netflix_font_border_color_2'] + "' style='width:100%;'> \
+          <div style='display:none;'> \
+            <!--第二字幕不用設高度--> \
+            字幕高度 < span reqc = 'my_netflix_y_position_span_2' > "+ window['my_netflix_y_position_2'] + "</span > <br> \
+            <input class='my_netflix_y_position_input_range_class_2' reqc='my_netflix_y_position_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position_2']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position_2']['step'] + "' value='" + window['my_netflix_y_position_2'] + "'></div> \
+            <br> \
+          </div> \
       </td> \
       </tr> \
       </table> \
