@@ -15,6 +15,12 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 <s>我將整包 jquery3.6.0 載進來比較方便開發，pure js已很久沒寫沒那麼熟練...</s><br>
 然後就在head註冊新的css，並利用 setInterval 不斷的修正 image 起始位置<br>
 註：0.5 版後，移除 jquery 3.6.0 ，重寫了一套精簡單版的 jquery 放在 background.js 裡<br>
+註：1.9 版後，重新加回 jquery 3.6.0 ，放棄了自己寫的精簡版 jquery ，自己重刻 jquery 覺得人生太難，事件太多了 XXXXD<br>
+1.9 版的雙字幕，研究了許久，原本想破解下載字幕位置、嘗試找出 movie metadata 註冊 xhr、重新 hook JSON.parse<br>
+但 chrome extension 在 manifest V3 以後，只能使用 service_worker，且 sandbox 化後限制很多，無法直接改寫前端 window 裡的東西<br>
+考量 manifest V2 明年就會終止維護與上架，還是決定繼續使用 V3 開發<br>
+目前找到一個暗黑作法，就是模擬使用者無腦手動點第一字幕、第二字幕，反覆一直點，取得字幕，再一併顯示<br>
+如果有想到更好的作法再調整吧<br>
 邏輯很簡單，就這樣而已^^ 
 <br>
 <br>
@@ -33,6 +39,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 (2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+V1.9 (2022-09-22)<br>
 V1.8 (2022-07-11)<br>
 V1.7 (2022-06-11)<br>
 V1.6 (2022-05-18)<br>
@@ -63,9 +70,9 @@ V0.9 (2022-04-23)
 或
 
 1、(原始檔下載安裝方法)：<br>
-(V1.8 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip<br>
-(V1.7 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.7/3wa_netflix.zip<br>
-
+(V1.9 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.9/3wa_netflix.zip <br>
+(V1.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
+(歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
 <br>
 2、解壓縮zip檔
@@ -106,8 +113,16 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-07-11) V1.8 版：
-  1、修正文字間距問題
+  (2022-09-22) V1.9 版：
+  1、雙字幕功能
+  2、第二字幕 UI 設定介面
+  3、加入字型選擇
+  4、使用者正在「準備切換下一集」或「選集數」 或 「調影片速度」，停用設定 UI
+  5、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
+  6、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行
+
+    (2022-07-11) V1.8 版：
+    1、修正文字間距問題
 
     (2022-06-11) V1.7 版：
     1、當使用者使用1080p套件，仍為圖片型文字，調整字幕置中的問題
@@ -203,4 +218,10 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-05-18) 23、檢查 chrome 字體置中的問題</li>
   <li>(Done 2022-06-11) 24、當使用者使用1080p套件，仍為圖片型文字，調整字幕置中的問題</li>
   <li>(Done 2022-07-11) 25、修正文字間距問題</li>
+  <li>26、雙字幕功能</li>
+  <li>(Done 2022-09-22)27、使用者正在「準備切換下一集」或「選集數」 或 「調影片速度」，停用設定 UI</li>
+  <li>28、第二字幕 UI 設定介面</li>
+  <li>29、加入字型選擇</li>
+  <li>30、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到</li>
+  <li>(Done 2022-09-22)31、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行</li>
 </ul>
