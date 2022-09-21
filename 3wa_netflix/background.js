@@ -151,6 +151,16 @@ function run_3wa_netflix() {
         'my_netflix_font_text_shadow': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
 
         //第二字幕
+        'my_netflix_font_family_2': {
+            'default': 'Netflix Sans', 'sets': ['Netflix Sans', '微軟正黑體', '標楷體', 'Copperplate', 'Arial', 'Helvetica']
+        }, //字型
+        'my_netflix_font_color_2': { 'default': '#fff5f8' }, // 字色
+        'my_netflix_font_border_color_2': { 'default': '#1c5cb0' }, // 字框色
+        'my_netflix_font_bolder_2': { 'default': 400, 'min': 100, 'max': 700, 'step': 300, 'sets': { 100: '細緻', 400: '正常', 700: '粗體' } }, // 字粗
+        'my_netflix_y_position_2': { 'default': 12, 'min': -40, 'max': 100, 'step': 1 }, //y 軸位置
+        'my_netflix_fontsize_2': { 'default': 1.6, 'min': 0.1, 'max': 3, 'step': 0.1 }, //文字大小
+        'my_netflix_fontspace_2': { 'default': 12.5, 'min': -50, 'max': 50, 'step': 0.1 }, //文字間距
+        'my_netflix_font_text_shadow_2': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
     };
 
     for (var k in _myNetFlixSettings) {
@@ -321,6 +331,36 @@ function run_3wa_netflix() {
           <input type='color' reqc='my_netflix_font_border_color_input' value='"+ window['my_netflix_font_border_color'] + "' style='width:100%;'> \
       </td> \
       <td valign='top' style='border-left: 1px dashed #00c;padding-left:5px;text-align:left;'> \
+          <div class='my_netflix_controller_title_class'>第二字幕</center></div> \
+          <br> \
+          字體大小   <span reqc='my_netflix_fontsize_span_2'>"+ window['my_netflix_fontsize_2'] + "</span><br> \
+          <input class='my_netflix_fontsize_input_range_class_2' reqc='my_netflix_fontsize_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontsize_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontsize_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontsize_2']['step'] + "' value='" + window['my_netflix_fontsize_2'] + "'> \
+          <br> \
+          字體粗細   <span reqc='my_netflix_font_bolder_span_2'>"+ _myNetFlixSettings['my_netflix_font_bolder_2']['sets'][window['my_netflix_font_bolder_2']] + "</span><br> \
+          <input class='my_netflix_font_bolder_input_range_class_2' reqc='my_netflix_font_bolder_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_bolder_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_bolder_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_bolder_2']['step'] + "' value='" + window['my_netflix_font_bolder_2'] + "'> \
+          <br> \
+          字體間距   <span reqc='my_netflix_fontspace_span_2'>"+ window['my_netflix_fontspace_2'] + "</span><br> \
+          <input class='my_netflix_fontspace_input_range_class_2' reqc='my_netflix_fontspace_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontspace_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontspace_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontspace_2']['step'] + "' value='" + window['my_netflix_fontspace_2'] + "'> \
+          <br> \
+          字框粗細   <span reqc='my_netflix_font_text_shadow_span_2'>"+ window['my_netflix_font_text_shadow_2'] + "</span><br> \
+          <input class='my_netflix_font_text_shadow_input_range_class_2' reqc='my_netflix_font_text_shadow_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['step'] + "' value='" + window['my_netflix_font_text_shadow_2'] + "'> \
+          <br> \
+          <div style='display:none;'> \
+            <!--第二字幕不用設高度--> \
+            字幕高度 < span reqc = 'my_netflix_y_position_span_2' > "+ window['my_netflix_y_position_2'] + "</span > <br> \
+            <input class='my_netflix_y_position_input_range_class_2' reqc='my_netflix_y_position_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position_2']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position_2']['step'] + "' value='" + window['my_netflix_y_position_2'] + "'></div> \
+            <br> \
+          </div> \
+          <br> \
+          <br> \
+          字型 \
+          <select reqc='my_netflix_font_family_select_2'></select> \
+          <br> \
+          字體顏色 \
+          <input type='color' reqc='my_netflix_font_color_input_2' value='"+ window['my_netflix_font_color_2'] + "' style='width:100%;'> \
+          <br> \
+          邊框顏色 \
+          <input type='color' reqc='my_netflix_font_border_color_input_2' value='"+ window['my_netflix_font_border_color_2'] + "' style='width:100%;'> \
       </td> \
       </tr> \
       </table> \
@@ -336,6 +376,14 @@ function run_3wa_netflix() {
         }
         $("select[reqc='my_netflix_font_family_select']").html(m.join(""));
         $("select[reqc='my_netflix_font_family_select']").val(window['my_netflix_font_family']);
+
+        m = new Array();
+        for (var i = 0, max_i = _myNetFlixSettings.my_netflix_font_family_2.sets.length; i < max_i; i++) {
+            var d = "<option value='" + _myNetFlixSettings.my_netflix_font_family_2.sets[i] + "'>" + _myNetFlixSettings.my_netflix_font_family_2.sets[i] + "</option>";
+            m.push(d);
+        }
+        $("select[reqc='my_netflix_font_family_select_2']").html(m.join(""));
+        $("select[reqc='my_netflix_font_family_select_2']").val(window['my_netflix_font_family_2']);
     }
 
 
@@ -391,12 +439,12 @@ function run_3wa_netflix() {
         }, 300);
     });
 
-    $(".my_netflix_controller_class *").unbind("mousemove").bind("mousemove", function (e) {
+    $(".my_netflix_controller_class select,.my_netflix_controller_class div").unbind("mousemove").bind("mousemove", function (e) {
         //控制項裡的東西，需要 bubble 穿透
         e.preventDefault();
     });
 
-    //字型
+    //字型 主要
     $("select[reqc='my_netflix_font_family_select']").unbind("change").bind("change", function () {
         window['my_netflix_font_family'] = $("select[reqc='my_netflix_font_family_select']").val();
         appClass.method.setMemory('my_netflix_font_family', window['my_netflix_font_family']);
@@ -404,8 +452,16 @@ function run_3wa_netflix() {
         //重新註冊字大小
         appClass.method.registerFontSize();
     });
+    //字型 次要
+    $("select[reqc='my_netflix_font_family_select_2']").unbind("change").bind("change", function () {
+        window['my_netflix_font_family_2'] = $("select[reqc='my_netflix_font_family_select_2']").val();
+        appClass.method.setMemory('my_netflix_font_family_2', window['my_netflix_font_family_2']);
 
-    //字體大小
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    //主要 字體大小
     $("input[reqc='my_netflix_fontsize_input']").unbind("input").bind("input", function () {
         window['my_netflix_fontsize'] = parseFloat($("input[reqc='my_netflix_fontsize_input']").val());
         appClass.method.setMemory('my_netflix_fontsize', window['my_netflix_fontsize']);
@@ -415,7 +471,17 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字體顏色
+    //次要 字體大小
+    $("input[reqc='my_netflix_fontsize_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_fontsize_2'] = parseFloat($("input[reqc='my_netflix_fontsize_input_2']").val());
+        appClass.method.setMemory('my_netflix_fontsize_2', window['my_netflix_fontsize_2']);
+        $("span[reqc='my_netflix_fontsize_span_2']").text(window['my_netflix_fontsize_2']);
+
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字體顏色
     $("input[reqc='my_netflix_font_color_input']").unbind("input").bind("input", function () {
         window['my_netflix_font_color'] = $("input[reqc='my_netflix_font_color_input']").val();
         appClass.method.setMemory('my_netflix_font_color', window['my_netflix_font_color']);
@@ -428,7 +494,20 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字框顏色
+    // 次要 字體顏色
+    $("input[reqc='my_netflix_font_color_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_font_color_2'] = $("input[reqc='my_netflix_font_color_input_2']").val();
+        appClass.method.setMemory('my_netflix_font_color_2', window['my_netflix_font_color_2']);
+
+        if (appClass.method.isImageFont()) {
+            appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字體顏色】...", 2500, false, { 'font-size': '32px' });
+            return;
+        }
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字框顏色
     $("input[reqc='my_netflix_font_border_color_input']").unbind("input").bind("input", function () {
         window['my_netflix_font_border_color'] = $("input[reqc='my_netflix_font_border_color_input']").val();
         appClass.method.setMemory('my_netflix_font_border_color', window['my_netflix_font_border_color']);
@@ -441,7 +520,20 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字體粗細
+    // 次要 字框顏色
+    $("input[reqc='my_netflix_font_border_color_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_font_border_color_2'] = $("input[reqc='my_netflix_font_border_color_input_2']").val();
+        appClass.method.setMemory('my_netflix_font_border_color_2', window['my_netflix_font_border_color_2']);
+
+        if (appClass.method.isImageFont()) {
+            appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字框顏色】...", 2500, false, { 'font-size': '32px' });
+            return;
+        }
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字體粗細
     $("input[reqc='my_netflix_font_bolder_input']").unbind("input").bind("input", function () {
 
         window['my_netflix_font_bolder'] = parseFloat($("input[reqc='my_netflix_font_bolder_input']").val());
@@ -457,7 +549,23 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字體間距
+    // 次要 字體粗細
+    $("input[reqc='my_netflix_font_bolder_input_2']").unbind("input").bind("input", function () {
+
+        window['my_netflix_font_bolder_2'] = parseFloat($("input[reqc='my_netflix_font_bolder_input_2']").val());
+        appClass.method.setMemory('my_netflix_font_bolder_2', window['my_netflix_font_bolder_2']);
+        var v = _myNetFlixSettings['my_netflix_font_bolder_2']['sets'][window['my_netflix_font_bolder_2']];
+        $("span[reqc='my_netflix_font_bolder_span_2']").text(v);
+
+        if (appClass.method.isImageFont()) {
+            appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字體粗細】...", 2500, false, { 'font-size': '32px' });
+            return;
+        }
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字體間距
     $("input[reqc='my_netflix_fontspace_input']").unbind("input").bind("input", function () {
         window['my_netflix_fontspace'] = parseFloat($("input[reqc='my_netflix_fontspace_input']").val());
         appClass.method.setMemory('my_netflix_fontspace', window['my_netflix_fontspace']);
@@ -471,7 +579,21 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字體 Y 軸位置
+    // 次要 字體間距
+    $("input[reqc='my_netflix_fontspace_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_fontspace_2'] = parseFloat($("input[reqc='my_netflix_fontspace_input_2']").val());
+        appClass.method.setMemory('my_netflix_fontspace_2', window['my_netflix_fontspace_2']);
+        $("span[reqc='my_netflix_fontspace_span_2']").text(window['my_netflix_fontspace_2']);
+
+        if (appClass.method.isImageFont()) {
+            appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字體間距】...", 2500, false, { 'font-size': '32px' });
+            return;
+        }
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字體 Y 軸位置
     $("input[reqc='my_netflix_y_position_input']").unbind("input").bind("input", function () {
         window['my_netflix_y_position'] = parseFloat($("input[reqc='my_netflix_y_position_input']").val());
         appClass.method.setMemory('my_netflix_y_position', window['my_netflix_y_position']);
@@ -481,11 +603,35 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    // 字體邊框
+    // 次要 字體 Y 軸位置
+    $("input[reqc='my_netflix_y_position_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_y_position_2'] = parseFloat($("input[reqc='my_netflix_y_position_input_2']").val());
+        appClass.method.setMemory('my_netflix_y_position_2', window['my_netflix_y_position_2']);
+        $("span[reqc='my_netflix_y_position_span_2']").text(window['my_netflix_y_positio_2']);
+
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 主要 字體邊框
     $("input[reqc='my_netflix_font_text_shadow_input']").unbind("input").bind("input", function () {
         window['my_netflix_font_text_shadow'] = parseFloat($("input[reqc='my_netflix_font_text_shadow_input']").val());
         appClass.method.setMemory('my_netflix_font_text_shadow', window['my_netflix_font_text_shadow']);
         $("span[reqc='my_netflix_font_text_shadow_span']").text(window['my_netflix_font_text_shadow']);
+
+        if (appClass.method.isImageFont()) {
+            appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字體邊框】...", 2500, false, { 'font-size': '32px' });
+            return;
+        }
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    // 次要 字體邊框
+    $("input[reqc='my_netflix_font_text_shadow_input_2']").unbind("input").bind("input", function () {
+        window['my_netflix_font_text_shadow_2'] = parseFloat($("input[reqc='my_netflix_font_text_shadow_input_2']").val());
+        appClass.method.setMemory('my_netflix_font_text_shadow_2', window['my_netflix_font_text_shadow_2']);
+        $("span[reqc='my_netflix_font_text_shadow_span_2']").text(window['my_netflix_font_text_shadow_2']);
 
         if (appClass.method.isImageFont()) {
             appClass.method.smallComment("1080p 「圖片型字幕」無法調整【字體邊框】...", 2500, false, { 'font-size': '32px' });
