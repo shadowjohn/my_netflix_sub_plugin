@@ -589,7 +589,7 @@ function run_3wa_netflix() {
                 m[i] = "<p reqc='my3waSubDivSpan' data-text=\"" + m[i].replace("\"", "“") + "\"></p>"; //
             }
             subs = m.join("<br>");
-            console.log(subs);
+            //console.log(subs);
             my3waSubDiv.html(subs + `
             <style>
                 div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan']{
