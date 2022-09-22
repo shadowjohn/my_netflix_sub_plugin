@@ -2,12 +2,12 @@
 netflix 字幕放大 extension
 
 <h2>功能：</h2>
-有用 netflix 的朋友應該都會弄台電腦把 netflix 接到電視用大螢幕播，netflix 的字幕小到讓人很火大。<br>
+	有用 netflix 的朋友應該都會弄台電腦把 netflix 接到電視用大螢幕播，netflix 的字幕小到讓人很火大。<br>
 網路上一堆瀏覽器 extension、包含官方的 https://www.netflix.com/SubtitlePreferences 設定後都無效...<br> 
 萬念俱灰下，只好自己練功...<br>
 <br>
 <h2>程式開發：</h2>
-此程式是 chrome、brave、edge extension 擴充程式，使用 javascript 開發。<br>
+	此程式是 chrome、brave、edge extension 擴充程式，使用 javascript 開發。<br>
 netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等同載一個新的 image tag<br>
 字幕 image 是圖片，所以要調整字幕變大，最簡單的方法就是加載 css<br>
 讓字幕有新的影像寬度100%，新高度，如 120px、130px(依單、雙行字調整)<br>
@@ -25,35 +25,35 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 <br>
 <br>
 <h2>程式開發：</h2>
-作者：羽山秋人 (https://3wa.tw/)
+	作者：羽山秋人 (https://3wa.tw/)
 <br>
 <br>
 <h2>License：</h2>
-完全免費的 MIT License
+	完全免費的 MIT License
 <br>
 <br>
 <h2>最初更新時間：</h2>
-2021-10-03
+	2021-10-03
 <br>
 <h2>官方上架更新時間：</h2>
-(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
+	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-V1.9 (2022-09-22)<br>
-V1.8 (2022-07-11)<br>
-V1.7 (2022-06-11)<br>
-V1.6 (2022-05-18)<br>
-V1.5 (2022-05-12)<br>
-V1.4 (2022-05-11)<br>
-V1.3 (2022-05-01)<br>
-V1.2 (2022-04-28)<br>
-V1.1 (2022-04-25)<br>
-V1.0 (2022-04-25)<br>
-V0.9 (2022-04-23)
+	V1.9 (2022-09-22)<br>
+	V1.8 (2022-07-11)<br>
+	V1.7 (2022-06-11)<br>
+	V1.6 (2022-05-18)<br>
+	V1.5 (2022-05-12)<br>
+	V1.4 (2022-05-11)<br>
+	V1.3 (2022-05-01)<br>
+	V1.2 (2022-04-28)<br>
+	V1.1 (2022-04-25)<br>
+	V1.0 (2022-04-25)<br>
+	V0.9 (2022-04-23)
 
 <br><br>
 <h2>相依套件：</h2>
-jQuery 3.6.0<br>
+	jQuery 3.6.0<br>
 
 <br><br>
 <img src="screenshot/V02_1.jpg">
@@ -66,11 +66,12 @@ jQuery 3.6.0<br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
 <h2>使用方法：</h2>
-0、使用官方 Chrome Store 安裝：https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
+1、使用官方 Chrome Store 安裝：https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
+從 Store 安裝直接跳步驟 9 直接看使用範例即可
 
 或
 
-1、(原始檔下載安裝方法)：<br>
+(原始檔下載安裝方法)：<br>
 (V1.9 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.9/3wa_netflix.zip <br>
 (V1.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
@@ -122,6 +123,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   5、使用者正在「準備切換下一集」或「選集數」 或 「調影片速度」，停用設定 UI
   6、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
   7、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行
+  8、修正字幕不需要強制大寫：font-variant: small-caps
   
 
     (2022-07-11) V1.8 版：
@@ -227,4 +229,5 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>29、加入字型選擇</li>
   <li>30、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到</li>
   <li>(Done 2022-09-22)31、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行</li>
+  <li>(Done 2022-09-23)32、修正字幕不需要強制大寫：font-variant: small-caps</li>
 </ul>
