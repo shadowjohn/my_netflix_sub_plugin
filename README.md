@@ -1,5 +1,5 @@
 # my_netflix_sub_plugin
-netflix 字幕放大 extension
+netflix 字幕放大、雙字幕顯示 extension
 
 <h2>功能：</h2>
 	有用 netflix 的朋友應該都會弄台電腦把 netflix 接到電視用大螢幕播，netflix 的字幕小到讓人很火大。<br>
