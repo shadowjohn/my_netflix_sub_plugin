@@ -39,7 +39,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-	V1.9 (2022-09-22)<br>
+	V1.9 beta (2022-09-24)<br>
 	V1.8 (2022-07-11)<br>
 	V1.7 (2022-06-11)<br>
 	V1.6 (2022-05-18)<br>
@@ -124,6 +124,11 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   6、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
   7、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行
   8、修正字幕不需要強制大寫：font-variant: small-caps
+  9、主要字幕、次要字幕可各自設定樣式
+  10、如果有下一集、工作人員名單、返回瀏覽、略過簡介，要可以點
+  11、已知問題：
+	(1). 啟動 3waNetflix V1.9 版後，下方進度條會失蹤，需要用滑鼠滑過下排音量控制才會出現
+	(2). 當滑鼠進入下排控制區時，字幕功能就會暫停，請往上移開
   
 
     (2022-07-11) V1.8 版：
@@ -230,4 +235,7 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>30、UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到</li>
   <li>(Done 2022-09-22)31、原 3wanetflix 的字幕要插在 video 裡，這樣全螢幕才有作用，現在發現要再 video 外層的 div 才行</li>
   <li>(Done 2022-09-23)32、修正字幕不需要強制大寫：font-variant: small-caps</li>
+  <li>(Done 2022-09-24)34、使用者正在「準備切換下一集」或「選集數」 或 「調影片速度」，停用設定 UI</li>
+  <li>(Done 2022-09-24)35、主要字幕、次要字幕可各自設定樣式</li>
+  <li>(Done 2022-09-24)36、如果有下一集、工作人員名單、返回瀏覽、略過簡介，要可以點</li>
 </ul>
