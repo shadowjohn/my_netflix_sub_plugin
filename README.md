@@ -104,7 +104,8 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
 ( 羽山自己家的設定 字體大小「1.5」 )
 
-9、使用範例影片：<a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4</a>
+9、使用範例影片：
+https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.mp4?raw=true
 <br>
 <img src="screenshot/7.png">
 10、如果只是要更新的版本，可以把 manifest.json、background.js 覆蓋<br>
