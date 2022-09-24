@@ -56,12 +56,17 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 	jQuery 3.6.0<br>
 
 <br><br>
-<img src="screenshot/V02_1.jpg">
+<img src="screenshot/V1.9_0.png">
 <p align="center">執行前</p>
 <br>
-<img src="screenshot/v1.4.jpg">
+<img src="screenshot/v1.9_1.png">
 <p align="center">執行後</p>
 <br>
+<img src="screenshot/v1.9_2.png">
+<p align="center">執行後</p>
+<br>
+<img src="screenshot/v1.9_3.png">
+<p align="center">執行後</p>
 <br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
