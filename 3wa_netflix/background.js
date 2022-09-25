@@ -362,6 +362,7 @@ function run_3wa_netflix() {
             subtitleUIInterval: null, // 字幕一直出現的 interval，時間相當短 50ms
             watchIntervalUI: null, //判斷網址列是否符合
             fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標
+            controller_classUI_HideTimeout: null, // 控制框 UI 滑鼠移出，delay 500ms 才會漸暗
         },
         "flag": {
             mouse: {
@@ -803,20 +804,28 @@ function run_3wa_netflix() {
         // Example: https://3wa.tw/demo/htm/test_javascript.php?id=157
         var mouseInDivHeightPercent = (e.offsetY / $(this).height() * 100.0);
         if (mouseInDivHeightPercent >= 70) {
-            return;
+            //怪怪的，先不要
+            //return;
         }
 
         $(".my_netflix_controller_class").stop().css({ 'opacity': 1 });
         //$(".my_netflix_controller_class").fadeIn("fast"); //使用 jquery 居然不能用 fadeIn ? 還是沒用 jquery-ui 忘了
-        clearTimeout(appClass.interval.waitControlUIHideShowInterval);
+        clearTimeout(appClass.interval.waitControlUIHideShowInterval);        
     });
-    $(".my_netflix_controller_class").unbind("mouseout").bind("mouseout", function () {
+
+    // 改成 mouseleave 比較正常，mouseout 會因為進入內層物件也離開
+    // issue 47、調整畫面很容易滑鼠移動就消失，將 mouseout 改成 mouseleave 後較為正常
+    $(".my_netflix_controller_class").unbind("mouseleave").bind("mouseleave", function () {
+        //3waNetflix 控制框
         //滑鼠移出，等一下，再慢慢消失
-        appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
-            $(".my_netflix_controller_class").animate({
-                "opacity": 0
-            }, 500);
-        }, 300);
+        clearTimeout(appClass.interval.controller_classUI_HideTimeout);
+        appClass.interval.controller_classUI_HideTimeout = setTimeout(function () {
+            appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
+                $(".my_netflix_controller_class").stop().animate({
+                    "opacity": 0
+                }, 500);
+            }, 300);
+        }, 500);
     });
 
     $(".my_netflix_controller_class select,.my_netflix_controller_class div").unbind("mousemove").bind("mousemove", function (e) {
