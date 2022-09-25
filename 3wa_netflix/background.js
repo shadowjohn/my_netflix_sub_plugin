@@ -479,6 +479,7 @@ function run_3wa_netflix() {
     position:fixed; 
     color:#000; 
     z-index: 9999999999; 
+    pointer-events: none;
     background-color: rgba(255,255,255,0.8); 
     font-size:18px; 
     top:0px; 
@@ -619,12 +620,39 @@ function run_3wa_netflix() {
     text-align: left;
     padding: 2px;
   }
+  /* 新版的右下按鈕 */
+  button[reqc='my_control-audio-subtitle']:hover{    
+    transition: transform 150ms ease 0s;
+    animation: shake 0.8s;
+  }
+  @keyframes shake{
+     0%{
+       transform: rotate(0deg);
+     }
+     25%{
+       transform: rotate(10deg) ;
+       box-shadow: 0 0 0 4px rgba(255,255,0,0.4);
+     }       
+     50%{
+       transform: rotate(0deg);
+       box-shadow: 0 0 0 7px rgba(255,255,0,0.9)
+     }
+     75%{
+       transform: rotate(-10deg);
+       box-shadow: 0 0 0 4px rgba(255,255,0,0.4)
+     }
+     100%{
+       transform: rotate(0deg);
+       box-shadow: 0 0 0 0px rgba(0,0,0,0.2)
+     }
+   }
 </style>`);
 
     //註冊一個調整字幕位置的功能
     $("div[reqc='my_netflix_controller_div']").remove();
     $("body").prepend(" \
     <div reqc='my_netflix_controller_div' class='my_netflix_controller_class'> \
+      <img reqc='x_close' src='https://3wa.tw/pic/x_close.png' width='28' height='28' style='cursor:pointer;position:absolute;right:2px;top:2px;' onerror=\"this.style.border='1px solid #f00';\" alt='關閉' title='關閉'> \
       <img src='https://3wa.tw/pic/3wa_logo.png' width='28' onerror=\"this.style.display='none';\">&nbsp;&nbsp;&nbsp;3waNetflix V"+ appClass.appVersion + " \
       <span id='thetabs'> \
         <ul> \
@@ -728,6 +756,17 @@ function run_3wa_netflix() {
          </span><!--thetabs--> \
     </div> \
     ");
+    //按到 x_close 的效果
+    $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
+        $("div[reqc='my_netflix_controller_div']").trigger("mouseleave");
+    });
+
+    //首次載入，搖一下
+    setTimeout(function () {
+        $("button[reqc='my_control-audio-subtitle']").css({
+            'animation': 'shake 0.8s'
+        });
+    }, 1500);
 
     //變成 tabs
     appClass.method.mytabs($("#thetabs"), {
@@ -801,7 +840,7 @@ function run_3wa_netflix() {
             });
         }
     }, 600);
-    $(".my_netflix_controller_class").unbind("mousemove").bind("mousemove", function (e) {
+    $(".my_netflix_controller_class").unbind("mousemovemousemove").bind("mousemovemousemove", function (e) {
         if (location.href.indexOf("netflix.com/watch/") == -1) {
             //不是播放頁，離開
             return;
@@ -810,13 +849,17 @@ function run_3wa_netflix() {
         // Example: https://3wa.tw/demo/htm/test_javascript.php?id=157
         // Issue 48、UI 控制區，只有滑鼠進入的高度 36% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
         //console.log(e);
-        var mouseInDivHeightPercent = (e.originalEvent.layerY / $(".my_netflix_controller_class").height() * 100.0);
+        //var mouseInDivHeightPercent = (e.originalEvent.layerY / $(".my_netflix_controller_class").height() * 100.0);
         //console.log(mouseInDivHeightPercent);
-        if (mouseInDivHeightPercent >= 36) {            
-            return;
-        }
+        //if (mouseInDivHeightPercent >= 36) {
+        //    return;
+        //}
 
-        $(".my_netflix_controller_class").stop().css({ 'opacity': 1 });
+        $(".my_netflix_controller_class").stop().css({
+            'opacity': 1,
+            'display': 'inline',
+            'pointer-events': 'auto'
+        });
         //$(".my_netflix_controller_class").fadeIn("fast"); //使用 jquery 居然不能用 fadeIn ? 還是沒用 jquery-ui 忘了
         clearTimeout(appClass.interval.waitControlUIHideShowInterval);
     });
@@ -829,7 +872,9 @@ function run_3wa_netflix() {
         clearTimeout(appClass.interval.waitControlUIHideShowInterval);
         appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
             $(".my_netflix_controller_class").stop().animate({
-                "opacity": 0
+                'opacity': 0,
+                'display': 'none',
+                'pointer-events': 'auto'
             }, 500);
         }, 300);
 
@@ -1375,8 +1420,29 @@ function run_3wa_netflix() {
         // data-uia='timeline-bar' //播放軸
         //下方控制列，在「div[data-uia='player'] div[data-uia='video-canvas'] 後面的 div」，當播放器消失時，會直接被 remove
         $("button[data-uia='control-audio-subtitle']").css({
-            'opacity': 0.1
+            'opacity': 0.1,
+            'position': 'absolute',
+            'z-index': -999,  // 沉下去
+            'display': 'none'
         });
+        //複製一個新版 3waNetflix 用的 control-audio-subtitle btn
+        if ($("button[reqc='my_control-audio-subtitle']").length == 0) {
+            var btn = $("button[data-uia='control-audio-subtitle']").clone();
+            btn.attr({
+                'data-uia': null,
+                'reqc': 'my_control-audio-subtitle',
+                'attr': '3waNetflix'
+            }).css({
+                'display': 'block',
+                'opacity': '1',
+                'position': 'static',
+                'z-index': 1
+            }).appendTo($("button[data-uia='control-audio-subtitle']").closest("div"));
+            $("button[reqc='my_control-audio-subtitle']").unbind("click").click(function () {
+                $(".my_netflix_controller_class").trigger("mousemovemousemove");
+            });
+        }
+        //然後定義到我的按鈕
 
         /*var tmp = "";
         tmp += '$("div[data-uia=\'episode-preview\']").length : ' + $("div[data-uia='episode-preview']").length + "\n";
