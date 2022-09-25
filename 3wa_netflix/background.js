@@ -400,7 +400,8 @@ function run_3wa_netflix() {
             sub2: null,  //第二字幕
             timelineBarDom: null, //播放條
             timeLineSliding: false, //是否捲動中
-            inControl: false //滑鼠是否在下方控制區
+            inControl: false, //滑鼠是否在下方控制區
+            lastSubTime: null //影片最後抓到字幕的時間
         },
         "doms": {
 
@@ -777,6 +778,7 @@ function run_3wa_netflix() {
     ");
     //按到 x_close 的效果
     $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
+        //觸發離開即可
         $("div[reqc='my_netflix_controller_div']").trigger("mouseleave");
     });
 
@@ -1594,18 +1596,21 @@ function run_3wa_netflix() {
             //$(".player-timedtext").css({'display':'none'});        
 
             if (appClass.flag.isSubGet != true) {
-                return;
+                //return;
+                //用這個來判斷似乎不是好事
             }
             var orinSubs = $(".player-timedtext-text-container span");
-
+            window['lastWord_a'] = appClass.method.trim(window['lastWord_a']);
+            window['lastWord_b'] = appClass.method.trim(window['lastWord_b']);
             window['lastWord_c'] = window['lastWord_a'];
             window['lastWord_c'] += (window['lastWord_b'] == null || window['lastWord_b'] == "") ? "" : "\n" + window['lastWord_b'];
             window['lastWord_c'] = appClass.method.trim(window['lastWord_c']);
             //console.log(window['lastWord_c'] + "\n\n" + m_now_texts.join("\n"));
+            //console.log("window['lastWord_c']: " + encodeURIComponent(window['lastWord_c']));
             if (window['lastWord_c'] == "") {
                 //跟上次一樣                
                 //無字中
-                console.log('無字中');
+                //console.log('無字中');
                 my3waSubDiv.html('');
                 return;
             }
@@ -1773,16 +1778,28 @@ function run_3wa_netflix() {
 
                 all3waDoms_2.eq(i)[0].style.setProperty("letter-spacing", window['my_netflix_fontspace_2'] + 'px', "important");
             }
-
+            appClass.flag.lastSubTime = Date.now();
 
         } //2022/03/21 新版 0.7 文字型字幕
-        else {
-            //離開 video 模式了   
-            my3waSubDiv.css({
-                //    'display': 'none'
-            });
-            return;
+        else
+        {
+            // 沒有字幕了
+            // 修正 Issue 42、無人說話時，字幕退場的時間不精準
+            // 如果連續 2 秒都沒有字幕框，字幕退場
+            if (appClass.flag.lastSubTime == null) {
+                appClass.flag.lastSubTime = Date.now();
+            }
+            //如果現在時間，減去 lastSubTime 大於 2 秒 才關字幕
+            if (Date.now() - appClass.flag.lastSubTime >= 2000) {
+                my3waSubDiv.css({
+                    'display': 'none'
+                });
+                appClass.flag.lastSubTime = Date.now();
+            }
+            //return;
         }
+
+
 
         //如果有下一集、工作人員名單、返回瀏覽、略過簡介，要可以點
         $("button[data-uia='watch-credits-seamless-button']").css({ // 下一集
