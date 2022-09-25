@@ -1595,6 +1595,8 @@ function run_3wa_netflix() {
             //2022/03/21 新版 0.7
             //$(".player-timedtext").css({'display':'none'});        
 
+            // Fix Issue 41、調整 UI 時，有時會失效
+            // 拿 isSubGet 來判字幕進場，會造成後面無法改字樣式，因為直接離開了
             if (appClass.flag.isSubGet != true) {
                 //return;
                 //用這個來判斷似乎不是好事
@@ -1781,8 +1783,7 @@ function run_3wa_netflix() {
             appClass.flag.lastSubTime = Date.now();
 
         } //2022/03/21 新版 0.7 文字型字幕
-        else
-        {
+        else {
             // 沒有字幕了
             // 修正 Issue 42、無人說話時，字幕退場的時間不精準
             // 如果連續 2 秒都沒有字幕框，字幕退場
@@ -1790,7 +1791,8 @@ function run_3wa_netflix() {
                 appClass.flag.lastSubTime = Date.now();
             }
             //如果現在時間，減去 lastSubTime 大於 2 秒 才關字幕
-            if (Date.now() - appClass.flag.lastSubTime >= 2000) {
+            //且影片要播放時，影片暫停時不用隱藏
+            if (!$("video")[0].paused && Date.now() - appClass.flag.lastSubTime >= 2000) {
                 my3waSubDiv.css({
                     'display': 'none'
                 });
