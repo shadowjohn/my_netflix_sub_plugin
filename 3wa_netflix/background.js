@@ -275,6 +275,26 @@ function run_3wa_netflix() {
                         'pointer-events': 'auto', //不可穿透
                     });
 
+                    $("button[data-uia='watch-credits-seamless-button']").css({ // 下一集
+                        'pointer-events': 'auto'
+                    });
+                    $("button[data-uia='next-episode-seamless-button']").css({ // 工作人員名單
+                        'pointer-events': 'auto'
+                    });
+                    $("button[data-uia='nfplayer-exit']").css({ // 返回瀏覽
+                        'pointer-events': 'auto'
+                    });
+                    $("button[data-uia='player-skip-intro']").css({ // 略過簡介
+                        'pointer-events': 'auto'
+                    });
+                    // 修正 issue 40
+                    $("button[data-uia='control-nav-back']").css({ // 回上頁按鈕
+                        'pointer-events': 'auto'
+                    });
+                    $("button[data-uia='control-flag']").css({ // 問題回報鈕
+                        'pointer-events': 'auto'
+                    });
+
                     //如果是全螢幕模式，6 秒隱藏
                     if (document.fullscreenElement) {
                         // 功能全螢幕，每隔六秒滑鼠沒移動，自動隱藏
@@ -621,8 +641,7 @@ function run_3wa_netflix() {
     padding: 2px;
   }
   /* 新版的右下按鈕 */
-  button[reqc='my_control-audio-subtitle']:hover{    
-    transition: transform 150ms ease 0s;
+  button[reqc='my_control-audio-subtitle']:hover{        
     animation: shake 0.8s;
   }
   @keyframes shake{
@@ -631,15 +650,15 @@ function run_3wa_netflix() {
      }
      25%{
        transform: rotate(10deg) ;
-       box-shadow: 0 0 0 4px rgba(255,255,0,0.4);
+       box-shadow: 0 0 0 2px rgba(255,255,0,0.2);
      }       
      50%{
        transform: rotate(0deg);
-       box-shadow: 0 0 0 7px rgba(255,255,0,0.9)
+       box-shadow: 0 0 0 4px rgba(255,255,0,0.7)
      }
      75%{
        transform: rotate(-10deg);
-       box-shadow: 0 0 0 4px rgba(255,255,0,0.4)
+       box-shadow: 0 0 0 2px rgba(255,255,0,0.2)
      }
      100%{
        transform: rotate(0deg);
@@ -766,6 +785,11 @@ function run_3wa_netflix() {
         $("button[reqc='my_control-audio-subtitle']").css({
             'animation': 'shake 0.8s'
         });
+        setTimeout(function () { //搖完了
+            $("button[reqc='my_control-audio-subtitle']").css({
+                'animation': ''
+            });
+        }, 1000);
     }, 1500);
 
     //變成 tabs
@@ -873,9 +897,14 @@ function run_3wa_netflix() {
         appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
             $(".my_netflix_controller_class").stop().animate({
                 'opacity': 0,
-                'display': 'none',
                 'pointer-events': 'auto'
-            }, 500);
+            }, 500, function () {
+                //after fadeOut
+                //From : https://stackoverflow.com/questions/23560395/how-to-do-something-in-jquery-after-animation-finish
+                $(".my_netflix_controller_class").css({
+                    'display': 'none'
+                });
+            });
         }, 300);
 
     });
