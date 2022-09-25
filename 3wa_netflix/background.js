@@ -12,8 +12,13 @@ function run_3wa_netflix() {
         appVersion: "2.0",
         movieID: null,
         method: {
-            "trim": function (data) {
-                return data.replace(/(^\s*)|(\s*$)/g, "");
+            "trim": function (data) {                
+                if (typeof(data)=="string") {
+                    return data.replace(/(^\s*)|(\s*$)/g, "");
+                }
+                else {
+                    return data;
+                }
             },
             "loadScript": function (src) {
                 return new Promise(function (resolve, reject) {
@@ -320,7 +325,7 @@ function run_3wa_netflix() {
                         appClass.flag.inControl = false;
                         //$("#my3wanetflix_alert_sub_comments").hide();
                     }
-                    console.log("appClass.flag.inControl: " + appClass.flag.inControl);
+                    //console.log("appClass.flag.inControl: " + appClass.flag.inControl);
                 });
 
 
@@ -1511,8 +1516,15 @@ function run_3wa_netflix() {
             $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
             appClass.flag.isSubGet = false;
             setTimeout(function () {
-                window['lastWord_a'] = $(".player-timedtext-text-container").text();
+                //window['lastWord_a'] = $(".player-timedtext-text-container").text();
                 //console.log("window['lastWord_a']: " + window['lastWord_a']);
+                //這裡的 $(".player-timedtext-text-container") 有可能是多行...
+                //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
+                var _m = new Array();
+                for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
+                    _m.push($(".player-timedtext-text-container").eq(i).text());
+                }
+                window['lastWord_a'] = _m.join(" ");
             }, 50)
             if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉") {
                 setTimeout(function () {
@@ -1520,8 +1532,16 @@ function run_3wa_netflix() {
 
                     setTimeout(function () {
                         if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉") {
-                            window['lastWord_b'] = $(".player-timedtext-text-container").text();
+                            //window['lastWord_b'] = $(".player-timedtext-text-container").text();
                             //console.log("window['lastWord_b']: " + window['lastWord_b']);
+                            //這裡的 $(".player-timedtext-text-container") 有可能是多行...
+                            //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
+                            var _m = new Array();
+                            for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
+                                _m.push($(".player-timedtext-text-container").eq(i).text());
+                            }
+                            window['lastWord_b'] = _m.join(" ");
+                            
                         }
                         else {
                             //沒設定字幕
@@ -1601,7 +1621,9 @@ function run_3wa_netflix() {
                 //return;
                 //用這個來判斷似乎不是好事
             }
-            var orinSubs = $(".player-timedtext-text-container span");
+            //var orinSubs = $(".player-timedtext-text-container span");
+            //完啦，player-timedtext-text-container 是多行
+
             window['lastWord_a'] = appClass.method.trim(window['lastWord_a']);
             window['lastWord_b'] = appClass.method.trim(window['lastWord_b']);
             window['lastWord_c'] = window['lastWord_a'];
