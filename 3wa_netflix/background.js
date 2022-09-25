@@ -12,8 +12,8 @@ function run_3wa_netflix() {
         appVersion: "2.0",
         movieID: null,
         method: {
-            "trim": function (data) {                
-                if (typeof(data)=="string") {
+            "trim": function (data) {
+                if (typeof (data) == "string") {
                     return data.replace(/(^\s*)|(\s*$)/g, "");
                 }
                 else {
@@ -149,7 +149,7 @@ function run_3wa_netflix() {
                 });
                 dom.find("> ul li").css({
                     "display": "inline",
-                    "padding": "8px",
+                    "padding": "3px",
                     "border-top": "1px solid #fff",
                     "border-left": "1px solid #fff",
                     "border-right": "1px solid #fff",
@@ -528,7 +528,7 @@ function run_3wa_netflix() {
     border-bottom: 3px solid #000;
     font-weight: bold;    
     text-align: center;
-    margin-bottom:2px;
+    margin-bottom: 8px;
   }
   .my_netflix_controller_class select{    
     margin: 0;
@@ -554,8 +554,8 @@ function run_3wa_netflix() {
   .my_netflix_controller_class input[type='range']::-webkit-slider-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 1px solid #000000;
-    height: 28px;
-    width: 16px;
+    height: 30px;
+    width: 30px;
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
@@ -577,19 +577,19 @@ function run_3wa_netflix() {
   .my_netflix_controller_class input[type='range']::-moz-range-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 1px solid #000000;
-    height: 36px;
-    width: 16px;
+    height: 30px;
+    width: 30px;
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
   }
   .my_netflix_controller_class input[type='range']::-ms-track {
     width: 100%;
-    height: 8.4px;
+    height: 8px;
     cursor: pointer;
     background: transparent;
     border-color: transparent;
-    border-width: 16px 0;
+    border-width: 25px 0;
     color: transparent;
   }
   .my_netflix_controller_class input[type='range']::-ms-fill-lower {
@@ -671,6 +671,15 @@ function run_3wa_netflix() {
        box-shadow: 0 0 0 0px rgba(0,0,0,0.2)
      }
    }
+
+    /* 主要字幕、次要字幕的表格 */
+    .my_netflix_sub_inside_table td{
+        padding: 3px;
+    }
+    .my_netflix_sub_inside_table tr:hover{
+        border-bottom: 1px dashed #008;
+        background-color: rgba(255,255,255,0.4);
+    }
 </style>`);
 
     //註冊一個調整字幕位置的功能
@@ -691,68 +700,88 @@ function run_3wa_netflix() {
         <span id='sub1_div'> \
               <table style='width:100%;'> \
                 <tr> \
-                  <td valign='top' style='padding-right:5px;width:220px;text-align:left;'> \
+                  <td valign='top' style='width:220px;text-align:left;'> \
                   <div class='my_netflix_controller_title_class'>主要字幕</center></div> \
-                  <br> \
-                  字體大小   <span reqc='my_netflix_fontsize_span'>"+ window['my_netflix_fontsize'] + "</span><br> \
-                  <input class='my_netflix_fontsize_input_range_class' reqc='my_netflix_fontsize_input' type='range' min='"+ _myNetFlixSettings['my_netflix_fontsize']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontsize']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontsize']['step'] + "' value='" + window['my_netflix_fontsize'] + "'> \
-                  <br> \
-                  字體粗細   <span reqc='my_netflix_font_bolder_span'>"+ _myNetFlixSettings['my_netflix_font_bolder']['sets'][window['my_netflix_font_bolder']] + "</span><br> \
-                  <input class='my_netflix_font_bolder_input_range_class' reqc='my_netflix_font_bolder_input' type='range' min='"+ _myNetFlixSettings['my_netflix_font_bolder']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_bolder']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_bolder']['step'] + "' value='" + window['my_netflix_font_bolder'] + "'> \
-                  <br> \
-                  字體間距   <span reqc='my_netflix_fontspace_span'>"+ window['my_netflix_fontspace'] + "</span><br> \
-                  <input class='my_netflix_fontspace_input_range_class' reqc='my_netflix_fontspace_input' type='range' min='"+ _myNetFlixSettings['my_netflix_fontspace']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontspace']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontspace']['step'] + "' value='" + window['my_netflix_fontspace'] + "'> \
-                  <br> \
-                  字框粗細   <span reqc='my_netflix_font_text_shadow_span'>"+ window['my_netflix_font_text_shadow'] + "</span><br> \
-                  <input class='my_netflix_font_text_shadow_input_range_class' reqc='my_netflix_font_text_shadow_input' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow']['step'] + "' value='" + window['my_netflix_font_text_shadow'] + "'> \
-                  <br> \
-                  字型 \
-                  <select reqc='my_netflix_font_family_select'></select> \
-                  <br> \
-                  字體顏色 \
-                  <input type='color' reqc='my_netflix_font_color_input' value='"+ window['my_netflix_font_color'] + "' style='width:100%;'> \
-                  <br> \
-                  邊框顏色 \
-                  <input type='color' reqc='my_netflix_font_border_color_input' value='"+ window['my_netflix_font_border_color'] + "' style='width:100%;'> \
-                  字幕高度   <span reqc='my_netflix_y_position_span'>"+ window['my_netflix_y_position'] + "</span><br> \
-                  <input class='my_netflix_y_position_input_range_class' reqc='my_netflix_y_position_input' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position']['step'] + "' value='" + window['my_netflix_y_position'] + "'></div> \
-                  <br> \
-              </td> \
+                    <table style='width:100%;' class='my_netflix_sub_inside_table'> \
+                      <tr> \
+                        <td>字體大小   <span reqc='my_netflix_fontsize_span'>"+ window['my_netflix_fontsize'] + "</span></td> \
+                        <td><input class='my_netflix_fontsize_input_range_class' reqc='my_netflix_fontsize_input' type='range' min='"+ _myNetFlixSettings['my_netflix_fontsize']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontsize']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontsize']['step'] + "' value='" + window['my_netflix_fontsize'] + "'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字體粗細   <span reqc='my_netflix_font_bolder_span'>"+ _myNetFlixSettings['my_netflix_font_bolder']['sets'][window['my_netflix_font_bolder']] + "</span></td> \
+                        <td><input class='my_netflix_font_bolder_input_range_class' reqc='my_netflix_font_bolder_input' type='range' min='"+ _myNetFlixSettings['my_netflix_font_bolder']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_bolder']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_bolder']['step'] + "' value='" + window['my_netflix_font_bolder'] + "'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字體間距   <span reqc='my_netflix_fontspace_span'>"+ window['my_netflix_fontspace'] + "</span></td> \
+                        <td><input class='my_netflix_fontspace_input_range_class' reqc='my_netflix_fontspace_input' type='range' min='"+ _myNetFlixSettings['my_netflix_fontspace']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontspace']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontspace']['step'] + "' value='" + window['my_netflix_fontspace'] + "'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字框粗細   <span reqc='my_netflix_font_text_shadow_span'>"+ window['my_netflix_font_text_shadow'] + "</span></td> \
+                        <td><input class='my_netflix_font_text_shadow_input_range_class' reqc='my_netflix_font_text_shadow_input' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow']['step'] + "' value='" + window['my_netflix_font_text_shadow'] + "'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字型</td> \
+                        <td><select reqc='my_netflix_font_family_select'></select></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字體顏色</td> \
+                        <td><input type='color' reqc='my_netflix_font_color_input' value='"+ window['my_netflix_font_color'] + "' style='width:100%;'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>邊框顏色</td> \
+                        <td><input type='color' reqc='my_netflix_font_border_color_input' value='"+ window['my_netflix_font_border_color'] + "' style='width:100%;'></td> \
+                      </tr> \
+                      <tr> \
+                        <td>字幕高度   <span reqc='my_netflix_y_position_span'>"+ window['my_netflix_y_position'] + "</span></td> \
+                        <td><input class='my_netflix_y_position_input_range_class' reqc='my_netflix_y_position_input' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position']['step'] + "' value='" + window['my_netflix_y_position'] + "'></div></td> \
+                      </tr> \
+                    </table> \
+                  </td> \
               </tr> \
               </table> \
             </span> \
             <span id='sub2_div'> \
                 <table style='width:100%;'> \
                     <tr> \
-                      <td valign='top' style='padding-left:5px;text-align:left;'> \
-                      <div class='my_netflix_controller_title_class'>第二字幕</center></div> \
-                      <br> \
-                      字體大小   <span reqc='my_netflix_fontsize_span_2'>"+ window['my_netflix_fontsize_2'] + "</span><br> \
-                      <input class='my_netflix_fontsize_input_range_class_2' reqc='my_netflix_fontsize_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontsize_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontsize_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontsize_2']['step'] + "' value='" + window['my_netflix_fontsize_2'] + "'> \
-                      <br> \
-                      字體粗細   <span reqc='my_netflix_font_bolder_span_2'>"+ _myNetFlixSettings['my_netflix_font_bolder_2']['sets'][window['my_netflix_font_bolder_2']] + "</span><br> \
-                      <input class='my_netflix_font_bolder_input_range_class_2' reqc='my_netflix_font_bolder_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_bolder_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_bolder_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_bolder_2']['step'] + "' value='" + window['my_netflix_font_bolder_2'] + "'> \
-                      <br> \
-                      字體間距   <span reqc='my_netflix_fontspace_span_2'>"+ window['my_netflix_fontspace_2'] + "</span><br> \
-                      <input class='my_netflix_fontspace_input_range_class_2' reqc='my_netflix_fontspace_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontspace_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontspace_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontspace_2']['step'] + "' value='" + window['my_netflix_fontspace_2'] + "'> \
-                      <br> \
-                      字框粗細   <span reqc='my_netflix_font_text_shadow_span_2'>"+ window['my_netflix_font_text_shadow_2'] + "</span><br> \
-                      <input class='my_netflix_font_text_shadow_input_range_class_2' reqc='my_netflix_font_text_shadow_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['step'] + "' value='" + window['my_netflix_font_text_shadow_2'] + "'> \
-                      <br> \
-                      字型 \
-                      <select reqc='my_netflix_font_family_select_2'></select> \
-                      <br> \
-                      字體顏色 \
-                      <input type='color' reqc='my_netflix_font_color_input_2' value='"+ window['my_netflix_font_color_2'] + "' style='width:100%;'> \
-                      <br> \
-                      邊框顏色 \
-                      <input type='color' reqc='my_netflix_font_border_color_input_2' value='"+ window['my_netflix_font_border_color_2'] + "' style='width:100%;'> \
-                      <br> \
-                      字幕高度 <span reqc='my_netflix_y_position_span_2'> "+ window['my_netflix_y_position_2'] + "</span > <br> \
-                      <input class='my_netflix_y_position_input_range_class_2' reqc='my_netflix_y_position_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position_2']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position_2']['step'] + "' value='" + window['my_netflix_y_position_2'] + "'></div> \
-                  </td> \
-                  </tr> \
-                </table> \
+                      <td valign='top' style='text-align:left;'> \
+                        <div class='my_netflix_controller_title_class'>第二字幕</center></div> \
+                        <table style='width:100%;' class='my_netflix_sub_inside_table'> \
+                            <tr> \
+                                <td>字體大小   <span reqc='my_netflix_fontsize_span_2'>"+ window['my_netflix_fontsize_2'] + "</span></td> \
+                                <td><input class='my_netflix_fontsize_input_range_class_2' reqc='my_netflix_fontsize_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontsize_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontsize_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontsize_2']['step'] + "' value='" + window['my_netflix_fontsize_2'] + "'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字體粗細   <span reqc='my_netflix_font_bolder_span_2'>"+ _myNetFlixSettings['my_netflix_font_bolder_2']['sets'][window['my_netflix_font_bolder_2']] + "</span></td> \
+                                <td><input class='my_netflix_font_bolder_input_range_class_2' reqc='my_netflix_font_bolder_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_bolder_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_bolder_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_bolder_2']['step'] + "' value='" + window['my_netflix_font_bolder_2'] + "'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字體間距   <span reqc='my_netflix_fontspace_span_2'>"+ window['my_netflix_fontspace_2'] + "</span></td> \
+                                <td><input class='my_netflix_fontspace_input_range_class_2' reqc='my_netflix_fontspace_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_fontspace_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_fontspace_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_fontspace_2']['step'] + "' value='" + window['my_netflix_fontspace_2'] + "'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字框粗細   <span reqc='my_netflix_font_text_shadow_span_2'>"+ window['my_netflix_font_text_shadow_2'] + "</span></td> \
+                                <td><input class='my_netflix_font_text_shadow_input_range_class_2' reqc='my_netflix_font_text_shadow_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_font_text_shadow_2']['min'] + "' max='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_font_text_shadow_2']['step'] + "' value='" + window['my_netflix_font_text_shadow_2'] + "'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字型</td> \
+                                <td><select reqc='my_netflix_font_family_select_2'></select></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字體顏色</td> \
+                                <td><input type='color' reqc='my_netflix_font_color_input_2' value='"+ window['my_netflix_font_color_2'] + "' style='width:100%;'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>邊框顏色</td> \
+                                <td><input type='color' reqc='my_netflix_font_border_color_input_2' value='"+ window['my_netflix_font_border_color_2'] + "' style='width:100%;'></td> \
+                            </tr> \
+                            <tr> \
+                                <td>字幕高度 <span reqc='my_netflix_y_position_span_2'> "+ window['my_netflix_y_position_2'] + "</span></td> \
+                                <td><input class='my_netflix_y_position_input_range_class_2' reqc='my_netflix_y_position_input_2' type='range' min='"+ _myNetFlixSettings['my_netflix_y_position_2']['min'] + "' min='" + _myNetFlixSettings['my_netflix_y_position_2']['max'] + "' step='" + _myNetFlixSettings['my_netflix_y_position_2']['step'] + "' value='" + window['my_netflix_y_position_2'] + "'></div></td> \
+                            </tr> \
+                        </table> \
+                        </td> \
+                        </tr> \
+                    </table> \
             </span> \
             <span id='subMessage_div'> \
                 <table style='width:100%;' class='my_netflix_subMessage_table_class'> \
@@ -785,6 +814,10 @@ function run_3wa_netflix() {
     $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
         //觸發離開即可
         $("div[reqc='my_netflix_controller_div']").trigger("mouseleave");
+    });
+    //緊緻一下畫面
+    $("#thetabs > ul").css({
+        'margin-bottom': '-8px'
     });
 
     //首次載入，搖一下
@@ -1541,7 +1574,7 @@ function run_3wa_netflix() {
                                 _m.push($(".player-timedtext-text-container").eq(i).text());
                             }
                             window['lastWord_b'] = _m.join(" ");
-                            
+
                         }
                         else {
                             //沒設定字幕
