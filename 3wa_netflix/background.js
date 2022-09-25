@@ -268,6 +268,13 @@ function run_3wa_netflix() {
                     $("body").css({
                         'cursor': 'auto'
                     });
+                    $("button[data-uia='control-flag']").css({ //問題回報
+                        'pointer-events': 'auto', //不可穿透
+                    });
+                    $("button[data-uia='rol-nav-back']").css({ //回上頁
+                        'pointer-events': 'auto', //不可穿透
+                    });
+
                     //如果是全螢幕模式，6 秒隱藏
                     if (document.fullscreenElement) {
                         // 功能全螢幕，每隔六秒滑鼠沒移動，自動隱藏
@@ -337,7 +344,7 @@ function run_3wa_netflix() {
                         console.log('FullScreen mode is activated');
                         document.exitFullscreen();
                         //離開全螢幕後，就不用隱藏滑鼠了
-                        clearTimeout(appClass.interval.fullScreenMouseNoMoveTimeout); 
+                        clearTimeout(appClass.interval.fullScreenMouseNoMoveTimeout);
                     }
                     else {
                         console.log('FullScreen mode is not activated');
@@ -361,8 +368,7 @@ function run_3wa_netflix() {
             subtitleInterval: null, // 字幕反覆取得多字幕            
             subtitleUIInterval: null, // 字幕一直出現的 interval，時間相當短 50ms
             watchIntervalUI: null, //判斷網址列是否符合
-            fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標
-            controller_classUI_HideTimeout: null, // 控制框 UI 滑鼠移出，delay 500ms 才會漸暗
+            fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標            
         },
         "flag": {
             mouse: {
@@ -802,15 +808,17 @@ function run_3wa_netflix() {
         }
         // Issue 30. UI 控制區，只有滑鼠進入的高度 70% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
         // Example: https://3wa.tw/demo/htm/test_javascript.php?id=157
-        var mouseInDivHeightPercent = (e.offsetY / $(this).height() * 100.0);
-        if (mouseInDivHeightPercent >= 70) {
-            //怪怪的，先不要
-            //return;
+        // Issue 48、UI 控制區，只有滑鼠進入的高度 36% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
+        //console.log(e);
+        var mouseInDivHeightPercent = (e.originalEvent.layerY / $(".my_netflix_controller_class").height() * 100.0);
+        //console.log(mouseInDivHeightPercent);
+        if (mouseInDivHeightPercent >= 36) {            
+            return;
         }
 
         $(".my_netflix_controller_class").stop().css({ 'opacity': 1 });
         //$(".my_netflix_controller_class").fadeIn("fast"); //使用 jquery 居然不能用 fadeIn ? 還是沒用 jquery-ui 忘了
-        clearTimeout(appClass.interval.waitControlUIHideShowInterval);        
+        clearTimeout(appClass.interval.waitControlUIHideShowInterval);
     });
 
     // 改成 mouseleave 比較正常，mouseout 會因為進入內層物件也離開
@@ -818,14 +826,13 @@ function run_3wa_netflix() {
     $(".my_netflix_controller_class").unbind("mouseleave").bind("mouseleave", function () {
         //3waNetflix 控制框
         //滑鼠移出，等一下，再慢慢消失
-        clearTimeout(appClass.interval.controller_classUI_HideTimeout);
-        appClass.interval.controller_classUI_HideTimeout = setTimeout(function () {
-            appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
-                $(".my_netflix_controller_class").stop().animate({
-                    "opacity": 0
-                }, 500);
-            }, 300);
-        }, 500);
+        clearTimeout(appClass.interval.waitControlUIHideShowInterval);
+        appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
+            $(".my_netflix_controller_class").stop().animate({
+                "opacity": 0
+            }, 500);
+        }, 300);
+
     });
 
     $(".my_netflix_controller_class select,.my_netflix_controller_class div").unbind("mousemove").bind("mousemove", function (e) {
