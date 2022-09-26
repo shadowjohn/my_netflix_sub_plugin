@@ -29,6 +29,34 @@ function run_3wa_netflix() {
                     script.src = src;
                 });
             },
+            "fixOrinURL": function () {
+                //非 播放頁時，修正原來的 URL.create...
+                // 如果有 window.my_netflix_URLCREATEOBJECTURL
+                var img = document.createElement('img');
+                img.style.display = "none";
+                img.style.position = "absolute";
+                img.style.zIndex = -10;
+                img.setAttribute("onerror", `
+                        if(window.my_netflix_URLCREATEOBJECTURL!=null){
+                            window.URL.createObjectURL = window.my_netflix_URLCREATEOBJECTURL;
+                            window.my_netflix_URLCREATEOBJECTURL = null;
+                            //移除 img[reqc='fixCURL']、div[reqc='my_netflix_imageSubsB64']
+                            if(document.querySelectorAll("img[reqc='fixCURL']").length!=0)
+                            {
+                              document.querySelectorAll("img[reqc='fixCURL']")[0].remove();
+                            }
+                            if(document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length!=0)
+                            {
+                              document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']")[0].remove();
+                            }
+                        }
+                        //移除自己
+                        this.remove();
+                `);
+                //append to body
+                document.querySelectorAll("body")[0].appendChild(img);
+                img.setAttribute("src",appClass.flag.fakeURL);
+            },
             "getMovieID": function () {
                 var href = location.href;
                 //https://www.netflix.com/watch/81087271?trackId=254015180&tctx=0%2C
@@ -237,46 +265,49 @@ function run_3wa_netflix() {
                 //jQuery("svg image").attr('my3waFlag',null);
                 $("svg image").attr('my3waFlag', null);
             }, //註冊字體大小
-            "loadUIInit": function () { //要 bind UI
-
+            "loadUIInit": function () { //要 bind UI                
                 //注入 createObjectURL 
                 //沒想到可以用 img onerror 的方法，把語法注入...
                 //那就用這個方法重新註冊 URL.createObjectURL... ~_~!!
-
-                $("body").append("<img onerror=\"var a = window.URL.createObjectURL;window.URL.createObjectURL = function (aaa) { window.localStorage.setItem('my_3wanetflix_createObjectURL',window.btoa(aaa));a(aaa);};\" reqc='fixCURL' style='display:none;position:absolute;z-index:-1;'>");
-                $("img[reqc='fixCURL']").attr("onerror", `
+                if ($("img[reqc='fixCURL']").length == 0) {
+                    console.log("Inject..............URL createObjectURL");
+                    $("body").append("<img reqc='fixCURL' style='display:none;position:absolute;z-index:-1;'>");
+                    $("img[reqc='fixCURL']").attr("onerror", `
                     if(document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length==0)
                     {
 	                    var eDiv = document.createElement('div');
 	                    eDiv.style.cssText = 'position:absolute;width:0%;height:%;left:0px;top:0px;opacity:0;z-index:-100;background:#000;display:none;';
 	                    eDiv.setAttribute('reqc','my_netflix_imageSubsB64');
 	                    document.body.appendChild(eDiv);
-	                    var a = window.URL.createObjectURL;
+	                    window.my_netflix_URLCREATEOBJECTURL = window.URL.createObjectURL;
 	                    window.URL.createObjectURL = function(bdata){
 	                        var dom = document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
 		                    if(dom.length!=0){
 		                      var reader = new FileReader();
 		                      reader.onload = function() {
 		                        var dom = document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
-			                    if(dom.length==0) return;
-		                        var dataUrl = reader.result;
-		                        var b64 = dataUrl;
-		                        var m = dom[0].innerHTML.split('|||3WA_BR|||');
-                                //字幕|||3WA|||時間
-		                        m.push(b64+"|||3WA|||"+new Date().getTime());
+			                    if(dom.length!=0)
+                                {
+		                            var dataUrl = reader.result;
+		                            var b64 = dataUrl;
+		                            var m = dom[0].innerHTML.split('|||3WA_BR|||');
+                                    //字幕|||3WA|||時間
+		                            m.push(b64+"|||3WA|||"+new Date().getTime());
                                 
-		                        m = m.slice(-10); /* keep last 10 */
-		                        dom[0].innerHTML = m.join('|||3WA_BR|||');
+		                            m = m.slice(-10); /* keep last 10 */
+		                            dom[0].innerHTML = m.join('|||3WA_BR|||');
+                                }
 		                      };
 		                      reader.readAsDataURL(bdata);
 		                    }
-		                    var result = a(bdata);
-		                    return result;
+		                    window.my_netflix_URLCREATEOBJECTURL(bdata);
+		                    //return result;
 	                    }
                     }
                     `
-                );
-                $("img[reqc='fixCURL']").attr('src', 'https://www.netflix.com/3wanetflix.png');
+                    );
+                    $("img[reqc='fixCURL']").attr('src', appClass.flag.fakeURL);
+                }
 
                 //將原廠的字幕藏掉
                 $("head").append("<style>.player-timedtext{z-index:-2;}</style>");
@@ -436,6 +467,7 @@ function run_3wa_netflix() {
             fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標            
         },
         "flag": {
+            fakeURL: 'https://www.netflix.com/3wanetflix.png',
             mouse: {
                 X: null,
                 Y: null
@@ -484,7 +516,7 @@ function run_3wa_netflix() {
         console.log(location.href.indexOf("netflix"));
         console.log("only run on netflix url...");
         //return; //只有在 netflix 才有效
-    }
+    }    
 
     // bind ui   
     clearInterval(appClass.interval.uiInterval);
@@ -914,7 +946,7 @@ function run_3wa_netflix() {
         $("select[reqc='my_netflix_font_family_select_2']").html(m.join(""));
         $("select[reqc='my_netflix_font_family_select_2']").val(window['my_netflix_font_family_2']);
     }
-
+   
 
     //註冊一個 interval，如果網頁是 netflix.com/watch/  .my_netflix_controller_class 才有事件
     clearInterval(appClass.interval.watchIntervalUI);
@@ -926,12 +958,29 @@ function run_3wa_netflix() {
                 'pointer-events': 'none',
                 'z-index': -1 //下去~_~
             });
+            //fix one time
+            appClass.method.fixOrinURL();
         }
         else {
             //appClass.method.getMovieID(); //取得影片 ID
             //console.log(appClass.movieID);
             //這就是播放頁了
             //是播放頁，且滑鼠移入
+            //修正按到下一集
+            if ($("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='episode-preview-button']").bind("click", function () {
+                    appClass.method.fixOrinURL();                    
+                })
+            }
+            if ($("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL') != "YES") {
+                $("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL', "YES");
+                $("div[data-uia='episode-pane-item-preview-open']").bind("click", function () {
+                    appClass.method.fixOrinURL();
+                })
+            }
+
+
             if ($("div[data-uia='episode-preview']").length != 0 ||
                 $("div[data-uia='episode-pane-back']").length != 0 ||
                 $("div[data-uia='playback-speed']").length != 0) {
@@ -942,6 +991,9 @@ function run_3wa_netflix() {
                 });
                 return;
             }
+
+            
+
             $(".my_netflix_controller_class").css({
                 'pointer-events': 'auto',
                 'z-index': 9999999999 //上來~~~
@@ -2082,8 +2134,9 @@ function run_3wa_netflix() {
             for (var i = 0, max_i = all3waDoms_2_img.length; i < max_i; i++) {
                 //第二組，加入一些 margin-top
                 if (i == 0) {
+                    //經測試後，圖片型的 -52 差不多剛好
                     all3waDoms_2_img.eq(i).css({
-                        'margin-top': window['my_netflix_y_position_2'] + 'px'
+                        'margin-top': (window['my_netflix_y_position_2'] - 52) + 'px'
                     });
                 }
             }
@@ -2119,7 +2172,8 @@ function run_3wa_netflix() {
         });
         $("button[data-uia='nfplayer-exit']").css({ // 返回瀏覽
             'pointer-events': 'auto'
-        });
+        });        
+
         $("button[data-uia='player-skip-intro']").css({ // 略過簡介
             'pointer-events': 'auto'
         });
