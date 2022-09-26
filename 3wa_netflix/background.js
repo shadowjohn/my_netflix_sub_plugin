@@ -505,8 +505,8 @@ function run_3wa_netflix() {
         'my_netflix_font_color': { 'default': '#fff5f8' }, // 字色
         'my_netflix_font_border_color': { 'default': '#1c5cb0' }, // 字框色
         'my_netflix_font_bolder': { 'default': 400, 'min': 100, 'max': 700, 'step': 300, 'sets': { 100: '細緻', 400: '正常', 700: '粗體' } }, // 字粗
-        'my_netflix_y_position': { 'default': 13, 'min': -40, 'max': 100, 'step': 1 }, //y 軸位置
-        'my_netflix_fontsize': { 'default': 1.6, 'min': 0.1, 'max': 3, 'step': 0.1 }, //文字大小
+        'my_netflix_y_position': { 'default': 18, 'min': -40, 'max': 100, 'step': 1 }, //y 軸位置
+        'my_netflix_fontsize': { 'default': 1.5, 'min': 0.1, 'max': 3, 'step': 0.1 }, //文字大小
         'my_netflix_fontspace': { 'default': 12.5, 'min': -50, 'max': 50, 'step': 0.1 }, //文字間距
         'my_netflix_font_text_shadow': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
 
