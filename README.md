@@ -39,7 +39,8 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-	V1.9 beta (2022-09-24)<br>
+	V2.0 (2022-09-27)<br>
+	V1.9 (2022-09-24)<br>
 	V1.8 (2022-07-11)<br>
 	V1.7 (2022-06-11)<br>
 	V1.6 (2022-05-18)<br>
@@ -77,7 +78,8 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 或
 
 (原始檔下載安裝方法)：<br>
-(V1.9 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.9/3wa_netflix.zip <br>
+(V2.0 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.0/3wa_netflix.zip <br>
+(V1.9 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.9/3wa_netflix.zip <br>
 (V1.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -102,6 +104,7 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 
 <img src="screenshot/V02_2.jpg">
 8、如果字體大小、位置仍滿不意，可以將滑鼠移至畫面中上方，就會出現調整選單<br>
+( 3waNetflix V2.0 版以後，將調整選單取代原本右下角的字幕按鈕 )<br>
 ( 羽山自己家的設定 字體大小「1.5」 )
 
 9、使用範例影片：
@@ -121,6 +124,21 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2022-09-27) V2.0 版：
+  38、使用注意事項獨立一個 tab 分頁
+  39、圖片型字幕閃耀問題修正
+  40、當畫面靜置一段時間，會發生無法回上頁、右上的問題反應也無法點選
+  41、調整 UI 時，有時會失效
+  42、無人說話時，字幕退場的時間不精準  
+  44、如果使用者在調整時間軸，延長消失時間(6秒)
+  45、全螢幕時，滑鼠沒移動一段時間後要自動隱藏(6秒)
+  46、縮小設定畫面可以觸發顯示的範圍
+  47、調整畫面很容易滑鼠移動就消失，將 mouseout 改成 mouseleave 後較為正常
+  48、UI 控制區，只有滑鼠進入的高度 36% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到
+  49、UI 控制區，改成點右下角語言，並加入嘻花效果
+  50、英文字幕，二行字會黏在一起
+  51、UI 控制區畫面改緊緻，滑塊加大
+
   (2022-09-24) V1.9 版：
   1、加回 jQuery 3.6.0
   2、雙字幕功能
@@ -247,4 +265,18 @@ Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
   <li>(Done 2022-09-24)35、主要字幕、次要字幕可各自設定樣式</li>
   <li>(Done 2022-09-24)36、如果有下一集、工作人員名單、返回瀏覽、略過簡介，要可以點</li>
   <li>(Done 2022-09-24)37、第二字幕高度可調</li>
+  <li>(Done 2022-09-25)38、使用注意事項獨立一個 tab 分頁</li>
+  <li>(Done 2022-09-27)39、圖片型字幕閃耀問題修正</li>
+  <li>(Done 2022-09-25)40、當畫面靜置一段時間，會發生無法回上頁、右上的問題反應也無法點選</li>
+  <li>(Done 2022-09-25)41、調整 UI 時，有時會失效</li>
+  <li>(Done 2022-09-25)42、無人說話時，字幕退場的時間不精準</li>
+  <li>43、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕</li>
+  <li>(Done 2022-09-25)44、如果使用者在調整時間軸，延長消失時間(6秒)</li>
+  <li>(Done 2022-09-25)45、全螢幕時，滑鼠沒移動一段時間後要自動隱藏(6秒)</li>
+  <li>(Done 2022-09-25)46、縮小設定畫面可以觸發顯示的範圍</li>
+  <li>(Done 2022-09-25)47、調整畫面很容易滑鼠移動就消失，將 mouseout 改成 mouseleave 後較為正常</li>
+  <li>(Done 2022-09-25)48、UI 控制區，只有滑鼠進入的高度 36% 切入才有效，不然螢幕太小時，調時間軸也會一直檔到</li>
+  <li>(Done 2022-09-25)49、UI 控制區，改成點右下角語言，並加入嘻花效果</li>
+  <li>(Done 2022-09-25)50、英文字幕，二行字會黏在一起</li>
+  <li>(Done 2022-09-25)51、UI 控制區畫面改緊緻，滑塊加大</li>
 </ul>
