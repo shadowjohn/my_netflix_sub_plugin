@@ -966,16 +966,24 @@ function run_3wa_netflix() {
             //console.log(appClass.movieID);
             //這就是播放頁了
             //是播放頁，且滑鼠移入
-            //修正按到下一集
+            //修正畫面按到下一集
             if ($("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL') != "YES") {
                 $("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL', "YES");
                 $("button[data-uia='episode-preview-button']").bind("click", function () {
                     appClass.method.fixOrinURL();                    
                 })
             }
+            //選集
             if ($("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL') != "YES") {
                 $("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL', "YES");
                 $("div[data-uia='episode-pane-item-preview-open']").bind("click", function () {
+                    appClass.method.fixOrinURL();
+                })
+            }
+            //最後字幕的下一集
+            if ($("button[data-uia='next-episode-seamless-button']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='next-episode-seamless-button']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='next-episode-seamless-button']").bind("click", function () {
                     appClass.method.fixOrinURL();
                 })
             }
