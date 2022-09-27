@@ -973,6 +973,13 @@ function run_3wa_netflix() {
                     appClass.method.fixOrinURL();                    
                 })
             }
+            //直接按下一集的三角按鈕
+            if ($("button[data-uia='control-next']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='control-next']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='control-next']").bind("click", function () {
+                    appClass.method.fixOrinURL();
+                })
+            }
             //選集
             if ($("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL') != "YES") {
                 $("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL', "YES");
