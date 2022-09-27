@@ -1286,7 +1286,7 @@ function run_3wa_netflix() {
                 //藏所有操作視窗
                 clearTimeout(window['controlUICloseTimeout']);
                 window['controlUICloseTimeout'] = setTimeout(function () {
-                    if (appClass.debug_mode == true) {
+                    if (appClass.debug_mode == false) {
                         $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
                     }
                     $("button[data-uia='control-flag']").hide(); //問題回報
