@@ -9,7 +9,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         debug_mode: false,
-        appVersion: "2.0",
+        appVersion: "2.1",
         movieID: null,
         method: {
             "trim": function (data) {
