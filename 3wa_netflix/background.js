@@ -449,6 +449,14 @@ function run_3wa_netflix() {
                         element.requestFullscreen().then(function () {
                             // element has entered fullscreen mode successfully                            
                             // 進入全螢幕了
+                            // Issue 54、全螢幕時，立刻隱藏下方控制區
+                            setTimeout(function () {
+                                //1000ms 後觸發，因為剛點完全螢幕，滑鼠會移開下方
+                                $("body").css({
+                                    'cursor': 'none'
+                                });
+                                $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
+                            }, 1000);
                         }).catch(function (error) {
                             // element could not enter fullscreen mode
                         });
