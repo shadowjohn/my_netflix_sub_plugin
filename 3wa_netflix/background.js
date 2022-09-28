@@ -55,7 +55,7 @@ function run_3wa_netflix() {
                 `);
                 //append to body
                 document.querySelectorAll("body")[0].appendChild(img);
-                img.setAttribute("src",appClass.flag.fakeURL);
+                img.setAttribute("src", appClass.flag.fakeURL);
             },
             "getMovieID": function () {
                 var href = location.href;
@@ -399,6 +399,37 @@ function run_3wa_netflix() {
                     //console.log("appClass.flag.inControl: " + appClass.flag.inControl);
                 });
 
+                if ($("body").attr('isDefinedKeyup') != "YES") {
+                    $("body").attr('isDefinedKeyup', "YES");
+                    $("body").bind("keyup", function (e) {
+                        // Issue 56、按「空白鍵」可以控制播放、停止
+                        // Issue 57、按「o 或 O」(Open) 可以喚出字幕選單
+                        switch (e.code.toLowerCase()) {
+                            case "keyo":
+                                {
+                                    //叫出選單
+                                    if ($(".my_netflix_controller_class").length != 0 && $(".my_netflix_controller_class").css('opacity') == 1) {
+                                        $(".my_netflix_controller_class").attr('my_hidenow', 'YES').trigger("mouseleave");
+                                    } else {
+                                        $(".my_netflix_controller_class").trigger("mousemovemousemove");
+                                    }
+                                }
+                                break;
+                            case "space":
+                                {
+                                    //按下暫停、繼續
+                                    if ($("video").length != 0) {
+                                        if ($("video")[0].paused) {
+                                            $("video")[0].play();
+                                        } else {
+                                            $("video")[0].pause();
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+                    });
+                }
 
                 //播放器單點，應該要暫停或開始播放
                 $("video").closest("div").unbind("click").click(function (e) {
@@ -524,7 +555,7 @@ function run_3wa_netflix() {
         console.log(location.href.indexOf("netflix"));
         console.log("only run on netflix url...");
         //return; //只有在 netflix 才有效
-    }    
+    }
 
     // bind ui   
     clearInterval(appClass.interval.uiInterval);
@@ -954,7 +985,7 @@ function run_3wa_netflix() {
         $("select[reqc='my_netflix_font_family_select_2']").html(m.join(""));
         $("select[reqc='my_netflix_font_family_select_2']").val(window['my_netflix_font_family_2']);
     }
-   
+
 
     //註冊一個 interval，如果網頁是 netflix.com/watch/  .my_netflix_controller_class 才有事件
     clearInterval(appClass.interval.watchIntervalUI);
@@ -978,7 +1009,7 @@ function run_3wa_netflix() {
             if ($("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL') != "YES") {
                 $("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL', "YES");
                 $("button[data-uia='episode-preview-button']").bind("click", function () {
-                    appClass.method.fixOrinURL();                    
+                    appClass.method.fixOrinURL();
                 })
             }
             //直接按下一集的三角按鈕
@@ -1015,7 +1046,7 @@ function run_3wa_netflix() {
                 return;
             }
 
-            
+
 
             $(".my_netflix_controller_class").css({
                 'pointer-events': 'auto',
@@ -1048,23 +1079,38 @@ function run_3wa_netflix() {
     });
 
     // 改成 mouseleave 比較正常，mouseout 會因為進入內層物件也離開
+    // 同 Issue 59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見
+    $(".my_netflix_controller_class").unbind("mousemove").bind("mousemove", function () {
+        if ($(this).css('opacity') > 0.1) {
+            //這樣比較不會一划開馬上就不見
+            $(this).stop().trigger('mousemovemousemove');
+        }
+    });
     // issue 47、調整畫面很容易滑鼠移動就消失，將 mouseout 改成 mouseleave 後較為正常
     $(".my_netflix_controller_class").unbind("mouseleave").bind("mouseleave", function () {
         //3waNetflix 控制框
         //滑鼠移出，等一下，再慢慢消失
-        clearTimeout(appClass.interval.waitControlUIHideShowInterval);
+        // Issue 59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見
+        clearTimeout(appClass.interval.waitControlUIHideShowInterval);        
+        var t = 1000;
+        var t_animate = 500;
+        if ($(this).attr('my_hidenow') == "YES") {
+            t = 0;
+            t_animate = 100;
+            $(this).attr('my_hidenow', '');
+        }
         appClass.interval.waitControlUIHideShowInterval = setTimeout(function () {
             $(".my_netflix_controller_class").stop().animate({
                 'opacity': 0,
                 'pointer-events': 'auto'
-            }, 500, function () {
+            }, t_animate, function () {
                 //after fadeOut
                 //From : https://stackoverflow.com/questions/23560395/how-to-do-something-in-jquery-after-animation-finish
                 $(".my_netflix_controller_class").css({
                     'display': 'none'
                 });
             });
-        }, 300);
+        }, t);
 
     });
 
@@ -2195,7 +2241,7 @@ function run_3wa_netflix() {
         });
         $("button[data-uia='nfplayer-exit']").css({ // 返回瀏覽
             'pointer-events': 'auto'
-        });        
+        });
 
         $("button[data-uia='player-skip-intro']").css({ // 略過簡介
             'pointer-events': 'auto'

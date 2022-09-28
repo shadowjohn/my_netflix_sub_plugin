@@ -288,5 +288,5 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986
   <li>56、按「空白鍵」可以控制播放、停止</li>
   <li>57、按「o 或 O」(Open) 可以喚出字幕選單</li>
   <li>58、3WA Icon 、x_close.png 改成 base64 png<li>
-  <li>59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
+  <li>(Done 2022-09-29)59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
 </ul>
