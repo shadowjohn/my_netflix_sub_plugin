@@ -310,6 +310,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-09-29)55、影片暫停時，暫停取新字幕</li>
   <li>(Done 2022-09-29)56、按「空白鍵」可以控制「播放、停止」</li>
   <li>(Done 2022-09-29)57、按「o 或 O」(Open) 可以「喚出字幕選單」</li>
-  <li>(Done 2022-09-29)58、3WA Icon 、x_close.png 改成 base64 png<li>
+  <li>(Done 2022-09-29)58、3WA Icon 、x_close.png 改成 base64 png</li>
   <li>(Done 2022-09-29)59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
 </ul>
