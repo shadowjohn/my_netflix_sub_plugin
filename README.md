@@ -49,6 +49,7 @@ V2.0 以這個方式開發也能過 chrome extension 商店的審核…是在暗
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.1 (2022-09-29)<br>
 	V2.0 (2022-09-27)<br>
 	V1.9 (2022-09-24)<br>
 	V1.8 (2022-07-11)<br>
@@ -70,14 +71,17 @@ V2.0 以這個方式開發也能過 chrome extension 商店的審核…是在暗
 <img src="screenshot/V1.9_0.png">
 <p align="center">執行前</p>
 <br>
-<img src="screenshot/V1.9_1.png">
+<img src="screenshot/V2.1_1.png">
 <p align="center">執行後</p>
 <br>
-<img src="screenshot/V1.9_2.png">
+<img src="screenshot/V2.1_2.png">
 <p align="center">執行後</p>
 <br>
-<img src="screenshot/V1.9_3.png">
+<img src="screenshot/V2.1_3.png">
 <p align="center">執行後</p>
+<br>
+<img src="screenshot/V2.1_4.png">
+<p align="center">注意事項、補充說明</p>
 <br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
@@ -88,9 +92,8 @@ V2.0 以這個方式開發也能過 chrome extension 商店的審核…是在暗
 或
 
 (原始檔下載安裝方法)：<br>
-(V2.0 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.0/3wa_netflix.zip <br>
-(V1.9 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.9/3wa_netflix.zip <br>
-(V1.8 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
+(V2.1 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.1/3wa_netflix.zip <br>
+(V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
 <br>
@@ -135,6 +138,15 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2022-09-29) V2.1 版：
+  1、直接按下一集的三角按鈕
+  2、全螢幕時，立刻隱藏下方控制區
+  3、影片暫停時，暫停取新字幕
+  4、按「空白鍵」可以控制「播放、停止」
+  5、按「o 或 O」(Open) 可以「喚出字幕選單」
+  6、3WA Icon 、x_close.png 改成 base64 png
+  7、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見
+
   (2022-09-27) V2.0 版：
   1、使用注意事項獨立一個 tab 分頁
   2、圖片型字幕閃耀問題修正
@@ -295,8 +307,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986
   <li>(Done 2022-09-25)53、直接按下一集的三角按鈕</li>
   <li>(Done 2022-09-29)54、全螢幕時，立刻隱藏下方控制區</li>
   <li>(Done 2022-09-29)55、影片暫停時，暫停取新字幕</li>
-  <li>(Done 2022-09-29)56、按「空白鍵」可以控制播放、停止</li>
-  <li>(Done 2022-09-29)57、按「o 或 O」(Open) 可以喚出字幕選單</li>
+  <li>(Done 2022-09-29)56、按「空白鍵」可以控制「播放、停止」</li>
+  <li>(Done 2022-09-29)57、按「o 或 O」(Open) 可以「喚出字幕選單」</li>
   <li>(Done 2022-09-29)58、3WA Icon 、x_close.png 改成 base64 png<li>
   <li>(Done 2022-09-29)59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
 </ul>
