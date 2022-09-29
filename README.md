@@ -33,7 +33,11 @@ V2.0 以這個方式開發也能過 chrome extension 商店的審核…是在暗
 <br>
 邏輯很簡單，就這樣而已^^ 
 <br>
+<h2>詳細的開發方法說明：</h2>
+Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935 <br>
+Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 <br>
+
 <h2>程式開發：</h2>
 	作者：羽山秋人 (https://3wa.tw/)
 <br>
@@ -131,10 +135,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 回到 Netflix 建議按「F5」重新載入畫面，然後再按一次「3」啟動字體放大功能<br>
 (註：V0.5 版後不用等3秒了，點了馬上使用)
 <br>
-<br>
-<h2>開發方法說明：</h2>
-Netflix 字幕加大心得分享：https://3wa.tw/blog/blog.php?id=1935
-Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986
 <br>
 <h2>版本說明：</h2>
 <pre>
