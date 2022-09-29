@@ -9,7 +9,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         debug_mode: false,
-        appVersion: "2.1",
+        appVersion: "2.2",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
