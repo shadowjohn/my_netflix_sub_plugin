@@ -312,5 +312,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-09-29)57、按「o 或 O」(Open) 可以「喚出字幕選單」</li>
   <li>(Done 2022-09-29)58、3WA Icon 、x_close.png 改成 base64 png</li>
   <li>(Done 2022-09-29)59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
-  <li>60、全螢幕回上一頁，要停止全螢幕</li>
+  <li>(Done 2022-09-30)60、全螢幕回上一頁，要停止全螢幕</li>
 </ul>

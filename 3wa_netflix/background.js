@@ -1020,13 +1020,29 @@ function run_3wa_netflix() {
                 'z-index': -1 //下去~_~
             });
             //fix one time
-            appClass.method.fixOrinURL();
+            appClass.method.fixOrinURL();            
         }
         else {
             //appClass.method.getMovieID(); //取得影片 ID
             //console.log(appClass.movieID);
             //這就是播放頁了
             //是播放頁，且滑鼠移入
+
+            //按到上一頁
+            if ($("button[data-uia='control-nav-back']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='econtrol-nav-back']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='control-nav-back']").bind("click", function () {
+                    appClass.method.fixOrinURL();
+                    if (document.fullscreenElement) {
+                        //如果回到首頁，仍是全螢幕嗎...
+                        //停止全螢幕
+                        // Issue 60、全螢幕回上一頁，要停止全螢幕
+                        document.exitFullscreen();
+                    }
+                })
+            }
+            
+
             //修正畫面按到下一集
             if ($("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL') != "YES") {
                 $("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL', "YES");
