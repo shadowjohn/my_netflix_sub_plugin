@@ -377,7 +377,13 @@ function run_3wa_netflix() {
                     $("button[data-uia='control-flag']").css({ // 問題回報鈕
                         'pointer-events': 'auto'
                     });
+                    $("button[data-uia='control-flag']").hide();
 
+                    //控制項顯示
+                    // Issue 65、全螢幕時，控制項每六秒隱藏
+                    $("div[data-uia='controls-standard']").css({
+                        'opacity': 1
+                    });
                     //如果是全螢幕模式，6 秒隱藏
                     if (document.fullscreenElement) {
                         // 功能全螢幕，每隔六秒滑鼠沒移動，自動隱藏
@@ -386,6 +392,11 @@ function run_3wa_netflix() {
                         appClass.interval.fullScreenMouseNoMoveTimeout = setTimeout(function () {
                             $("body").css({
                                 'cursor': 'none'
+                            });
+                            //控制項也要隱藏
+                            // Issue 65、全螢幕時，控制項每六秒隱藏
+                            $("div[data-uia='controls-standard']").css({
+                                'opacity': 0.01
                             });
                         }, 6000);
                     }
@@ -439,7 +450,7 @@ function run_3wa_netflix() {
                 }
 
                 //播放器單點，應該要暫停或開始播放
-                $("video").closest("div").unbind("click").click(function (e) {
+                $("video").unbind("click").click(function (e) {
                     //重新自定義畫面點到的效果
                     if ($("video")[0].paused) {
                         $("video")[0].play();
@@ -448,6 +459,9 @@ function run_3wa_netflix() {
                         $("video")[0].pause();
                     }
                     e.stopPropagation();
+                });
+                $("video").unbind("dblclick").bind("dblclick", function (e) {
+                    $("button[reqc='my3wanetflix_fullscreen_btn']").trigger("click");
                 });
                 //$("button[data-uia='control-play-pause-pause']").trigger("click");
                 //});
@@ -466,41 +480,6 @@ function run_3wa_netflix() {
                 $("button[data-uia='control-nav-back']").css({ 'pointer-events': 'auto' }); //回上頁按鈕
                 $("button[data-uia='control-flag']").css({ 'pointer-events': 'auto' }); //問題回報鈕
 
-                $("button[data-uia='control-fullscreen-enter']").hide();
-                $("button[data-uia='control-fullscreen-enter']").before("<button reqc='my3wanetflix_fullscreen_btn'>");
-                $("button[reqc='my3wanetflix_fullscreen_btn']").addClass($("button[data-uia='control-fullscreen-enter']").attr('class'));
-                //拷貝 svg 給自定的 fullscreen 使用
-                $("button[data-uia='control-fullscreen-enter'] div").clone().appendTo($("button[reqc='my3wanetflix_fullscreen_btn']"));
-                $("button[reqc='my3wanetflix_fullscreen_btn']").unbind("click").click(function () {
-                    var full_screen_element = document.fullscreenElement;
-                    // If no element is in full-screen
-                    if (full_screen_element !== null) {
-                        //console.log('FullScreen mode is activated');
-                        document.exitFullscreen();
-                        //離開全螢幕後，就不用隱藏滑鼠了
-                        clearTimeout(appClass.interval.fullScreenMouseNoMoveTimeout);
-                    }
-                    else {
-                        //console.log('FullScreen mode is not activated');
-                        var element = document.querySelector("body");
-                        // make the element go to full-screen mode
-                        element.requestFullscreen().then(function () {
-                            // element has entered fullscreen mode successfully                            
-                            // 進入全螢幕了
-                            // Issue 54、全螢幕時，立刻隱藏下方控制區
-                            setTimeout(function () {
-                                //1000ms 後觸發，因為剛點完全螢幕，滑鼠會移開下方
-                                $("body").css({
-                                    'cursor': 'none'
-                                });
-                                $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
-                            }, 1000);
-                        }).catch(function (error) {
-                            // element could not enter fullscreen mode
-                        });
-                    }
-                    return false;
-                });
 
             }
         },
@@ -511,6 +490,7 @@ function run_3wa_netflix() {
             subtitleUIInterval: null, // 字幕一直出現的 interval，時間相當短 50ms
             watchIntervalUI: null, //判斷網址列是否符合
             fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標            
+            omkt8s_Timeout: null //滑鼠進入控制區，進度條不要立馬 show
         },
         "flag": {
             fakeURL: 'https://www.netflix.com/3wanetflix.png',
@@ -624,7 +604,7 @@ function run_3wa_netflix() {
     text-align:center; 
     position:fixed; 
     color:#000; 
-    z-index: 9999999999; 
+    z-index: -100; /* 一開始要沉下去 */
     pointer-events: none;
     background-color: rgba(255,255,255,0.8); 
     font-size:18px; 
@@ -633,6 +613,7 @@ function run_3wa_netflix() {
     border:2px solid #00f; 
     border-radius: 5px;
     opacity:0.01; 
+    display:none;
   } 
   /* From : https://stackoverflow.com/questions/1409649/how-to-change-the-height-of-a-br */
   /*
@@ -1038,6 +1019,48 @@ function run_3wa_netflix() {
                 })
             }
 
+            //全螢幕
+            if ($("button[reqc='my3wanetflix_fullscreen_btn']").length == 0) {
+                $("button[data-uia='control-fullscreen-enter']").hide();
+                $("button[data-uia='control-fullscreen-enter']").before("<button reqc='my3wanetflix_fullscreen_btn'>");
+                $("button[reqc='my3wanetflix_fullscreen_btn']").addClass($("button[data-uia='control-fullscreen-enter']").attr('class'));
+                //拷貝 svg 給自定的 fullscreen 使用
+                $("button[data-uia='control-fullscreen-enter'] div").clone().appendTo($("button[reqc='my3wanetflix_fullscreen_btn']"));
+                $("button[reqc='my3wanetflix_fullscreen_btn']").unbind("mousemove").mousemove(function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
+                $("button[reqc='my3wanetflix_fullscreen_btn']").unbind("click").click(function () {
+                    var full_screen_element = document.fullscreenElement;
+                    // If no element is in full-screen
+                    if (full_screen_element !== null) {
+                        //console.log('FullScreen mode is activated');
+                        document.exitFullscreen();
+                        //離開全螢幕後，就不用隱藏滑鼠了
+                        clearTimeout(appClass.interval.fullScreenMouseNoMoveTimeout);
+                    }
+                    else {
+                        //console.log('FullScreen mode is not activated');
+                        var element = document.querySelector("body");
+                        // make the element go to full-screen mode
+                        element.requestFullscreen().then(function () {
+                            // element has entered fullscreen mode successfully                            
+                            // 進入全螢幕了
+                            // Issue 54、全螢幕時，立刻隱藏下方控制區
+                            setTimeout(function () {
+                                //1000ms 後觸發，因為剛點完全螢幕，滑鼠會移開下方
+                                $("body").css({
+                                    'cursor': 'none'
+                                });
+                                $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
+                            }, 1000);
+                        }).catch(function (error) {
+                            // element could not enter fullscreen mode
+                        });
+                    }
+                    return false;
+                });
+            }
+
 
             //修正畫面按到下一集
             if ($("button[data-uia='episode-preview-button']").attr('isDefinedfixOrinURL') != "YES") {
@@ -1045,6 +1068,9 @@ function run_3wa_netflix() {
                 $("button[data-uia='episode-preview-button']").bind("click", function () {
                     appClass.method.fixOrinURL();
                 })
+                $("button[data-uia='episode-preview-button']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
             }
             //直接按下一集的三角按鈕
             if ($("button[data-uia='control-next']").attr('isDefinedfixOrinURL') != "YES") {
@@ -1052,6 +1078,17 @@ function run_3wa_netflix() {
                 $("button[data-uia='control-next']").bind("click", function () {
                     appClass.method.fixOrinURL();
                 })
+                $("button[data-uia='control-next']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
+            }
+
+            //選集鈕
+            if ($("button[data-uia='control-episodes']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='control-episodes']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='control-episodes']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
             }
             //選集
             if ($("div[data-uia='episode-pane-item-preview-open']").attr('isDefinedfixOrinURL') != "YES") {
@@ -1059,13 +1096,35 @@ function run_3wa_netflix() {
                 $("div[data-uia='episode-pane-item-preview-open']").bind("click", function () {
                     appClass.method.fixOrinURL();
                 })
+                $("div[data-uia='episode-pane-item-preview-open']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
             }
+
+            //播放鈕
+            if ($("button[data-uia='control-play-pause-play']").attr('isDefinedfixOrinURL') != "YES") {
+                $("button[data-uia='control-play-pause-play']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='control-play-pause-play']").unbind("click").click(function () {
+                    if ($("video")[0].paused) {
+                        $("video")[0].play();
+                    } else {
+                        $("video")[0].pause();
+                    }
+                })
+                $("button[data-uia='control-play-pause-play']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
+            }
+
             //最後字幕的下一集
             if ($("button[data-uia='next-episode-seamless-button']").attr('isDefinedfixOrinURL') != "YES") {
                 $("button[data-uia='next-episode-seamless-button']").attr('isDefinedfixOrinURL', "YES");
                 $("button[data-uia='next-episode-seamless-button']").bind("click", function () {
                     appClass.method.fixOrinURL();
                 })
+                $("button[data-uia='next-episode-seamless-button']").bind("mousemove", function () {
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                });
             }
 
 
@@ -1075,7 +1134,8 @@ function run_3wa_netflix() {
                 //使用者正在「準備切換下一集」或「選集數」 或 「調影片速度」
                 //對小螢幕來說，會檔到畫面，就不展開功能
                 $(".my_netflix_controller_class").css({
-                    'pointer-events': 'none'
+                    'pointer-events': 'none',
+                    'z-index': -100
                 });
                 return;
             }
@@ -1141,6 +1201,7 @@ function run_3wa_netflix() {
                 //after fadeOut
                 //From : https://stackoverflow.com/questions/23560395/how-to-do-something-in-jquery-after-animation-finish
                 $(".my_netflix_controller_class").css({
+                    'z-index': -100,
                     'display': 'none'
                 });
             });
@@ -1708,6 +1769,12 @@ function run_3wa_netflix() {
                 'position': 'static',
                 'z-index': 1
             }).appendTo($("button[data-uia='control-audio-subtitle']").closest("div"));
+
+            //滑鼠飄進字幕，就不要觸發進度條了
+            $("button[reqc='my_control-audio-subtitle']").unbind("mouseover").bind("mouseover", function () {
+                clearTimeout(appClass.interval.omkt8s_Timeout);
+            });
+            //滑鼠去點字幕
             $("button[reqc='my_control-audio-subtitle']").unbind("click").click(function () {
                 $(".my_netflix_controller_class").trigger("mousemovemousemove");
             });
@@ -1730,8 +1797,12 @@ function run_3wa_netflix() {
                 if ($("div.active.ltr-omkt8s").length != 0) {
                     // 這裡需用 pure js 的 trigger 才不會一直點
                     // 找超久的，總算滑鼠移入，就會出現時間軸
-                    $("div.active.ltr-omkt8s")[0].click(); 
+
                     $("div.active.ltr-omkt8s").attr('my_isClicked', "YES");
+                    clearTimeout(appClass.interval.omkt8s_Timeout);
+                    appClass.interval.omkt8s_Timeout = setTimeout(function () {
+                        $("div.active.ltr-omkt8s")[0].click();
+                    }, 300);
                 }
             }
         }
