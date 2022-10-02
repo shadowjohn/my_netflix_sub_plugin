@@ -322,4 +322,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-01)63、雙點影片畫面，可全螢幕播放的功能</li>
   <li>(Done 2022-10-01)64、初次載入，設定 UI 看不到但按的到的問題修正</li>
   <li>(Done 2022-10-01)65、全螢幕時，控制項每六秒隱藏</li>
+  <li>66、切換日文、其他文字，有時仍會有殘影</li>
 </ul>
