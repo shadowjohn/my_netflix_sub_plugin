@@ -10,10 +10,7 @@
   },
   "host_permissions": [    
     "https://*.netflix.com/*"
-  ],
-  "optional_host_permissions": [
-    "*://*/"
-  ],
+  ],  
   "permissions": [
     "scripting",
     "activeTab"

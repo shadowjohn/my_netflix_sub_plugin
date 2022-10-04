@@ -2099,6 +2099,8 @@ function run_3wa_netflix() {
         }
         else {
             appClass.flag.isSubGet = true;
+            window['lastWord_b'] = "";
+            window['lastImage_b'] = new Array();
         }
 
         //console.log(appClass.flag.sub1 + " , " + appClass.flag.sub2);
