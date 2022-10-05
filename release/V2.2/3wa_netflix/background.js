@@ -1009,7 +1009,7 @@ function run_3wa_netflix() {
                     <tbody> \
                         <tr> \
                             <td field='項次'>1</td> \
-                            <td field='內容'>(待修正)<br>滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</td> \
+                            <td field='內容'>(待修正)<br>(圖片型字幕)滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>2</td> \
@@ -1661,7 +1661,9 @@ function run_3wa_netflix() {
                 $("div[data-uia='selector-audio-subtitle']").closest("div").closest("div").clone().appendTo($("#subMain_div"));
 
                 //備份字幕勾勾的 svg
-                appClass.doms['勾勾svg'] = $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li svg").clone();
+                //這裡不適合用 clone ，會copy到事件
+                //Issue 72、音訊切換，造成主字幕勾勾跑版
+                appClass.doms['勾勾svg'] = $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li svg")[0].outerHTML;//.clone(true);
                 appClass.doms['亮字效果'] = $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li svg").closest("div").find("div").attr('class');
 
                 //取一個暗字效果來用
@@ -1748,7 +1750,7 @@ function run_3wa_netflix() {
 
 
                 //註冊我的字幕選單裡的聲音被按到，同步原生的選單被按到
-                $("#subMain_div").find("div[reqc='我的字幕選單'] li[data-uia^='audio-item']").unbind("click").click(function (e) {
+                $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊'] li[data-uia^='audio-item']").unbind("click").click(function (e) {
 
                     //只要按到，就先移除目前所有字幕
                     //清空圖片型字幕
@@ -1765,15 +1767,17 @@ function run_3wa_netflix() {
                     $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName + "']").trigger("click");
 
                     //移除這裡範圍所有的 svg
-                    $(this).closest("div").find("li svg").remove();
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li svg").remove();
                     //移除所有亮字效果
-                    $(this).closest("div").find("li div").attr('class', appClass.doms['暗字效果']);
+
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li div").attr('class', appClass.doms['暗字效果']);
+
                     //目前點到的，變成有 svg 跟亮字效果
-                    $(this).append(appClass.doms['勾勾svg']);
+                    $(this).append(appClass.doms['勾勾svg']);                    
                     $(this).find("div").attr('class', appClass.doms['亮字效果']);
 
                     //其他沒勾勾的，變不明顯
-                    $(this).closest("div").find("li").find("div").css({
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li").find("div").css({
                         'margin-left': '0px'
                     });
                     //只有勾勾要明顯些
@@ -1800,15 +1804,15 @@ function run_3wa_netflix() {
                     appClass.flag.sub1 = $(this).text();
 
                     //移除這裡範圍所有的 svg
-                    $(this).closest("div").find("li svg").remove();
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕']").find("li svg").remove();
                     //移除所有亮字效果
-                    $(this).closest("div").find("li div").attr('class', appClass.doms['暗字效果']);
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕']").find("li div").attr('class', appClass.doms['暗字效果']);
                     //目前點到的，變成有 svg 跟亮字效果
                     $(this).append(appClass.doms['勾勾svg']);
                     $(this).find("div").attr('class', appClass.doms['亮字效果']);
 
                     //其他沒勾勾的，變不明顯
-                    $(this).closest("div").find("li").find("div").css({
+                    $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕']").find("li").find("div").css({
                         'margin-left': '0px'
                     });
                     //只有勾勾要明顯些
@@ -1982,10 +1986,16 @@ function run_3wa_netflix() {
             //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
             var _m = new Array();
             for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
-                _m.push($(".player-timedtext-text-container").eq(i).text());
+                //斷行會變 \n
+                //console.log($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__"));
+                $(".player-timedtext-text-container").eq(i).html($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__")).text();
+                var _sm = $(".player-timedtext-text-container").eq(i).text().split("__3WA__N__");
+                for (var j = 0, max_j = _sm.length; j < max_j; j++) {
+                    _m.push(_sm[j]);
+                }
             }
             //人民仍需要斷行!?            
-            window['lastWord_a'] = _m.join("<br>");
+            window['lastWord_a'] = _m.join("\n");
             if (window['lastWord_a'] != "") {
                 appClass.flag.isSub1Image = false;
                 //試看看移除字幕...
@@ -2107,7 +2117,7 @@ function run_3wa_netflix() {
         //setTimeout(function () {
         //}, 300);
 
-    }, 500);
+    }, 600);
 
     //字幕獨立變化
     clearInterval(appClass.interval.subtitleUIInterval);
@@ -2227,6 +2237,9 @@ function run_3wa_netflix() {
                 var m = window['lastWord_a'].split("\n");
                 for (var i = 0, max_i = m.length; i < max_i; i++) {
                     m[i] = "<p reqc='my3waSubDivSpan' data-text=\"" + m[i].replace("\"", "“") + "\"></p>"; //
+                    if (i != max_i - 1) {
+                        m[i] += "<hr reqc='my3waSubDivSpanHR'>";
+                    }
                     if ($.inArray(m[i], mm_subs) == -1) {
                         mm_subs.push(m[i]);
                     }
@@ -2265,17 +2278,18 @@ function run_3wa_netflix() {
                 m_now_texts.push(my3waSubDiv.find("p").eq(i).attr('data-text'));
             }
 
-            //console.log(subs);
+            //console.log(subs);            
             var subhtml = subs + `
                         <style>
-                            div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan']{
+                            div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan']{                                
                                 display:flex;
                                 align-items:center;
-                                justify-content:center;
+                                justify-content:center;                                
                                 width:100%;
                                 /* 修正雙行字高度 */                                        
                                 margin-top:0px; 
-                                margin-bottom:0px;                                        
+                                margin-bottom:0px;
+                                /* 如果是二、三行以上的字，加上行高 */
                             }                            
                             div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan']::before,
                             div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan']::after {
@@ -2323,6 +2337,15 @@ function run_3wa_netflix() {
             //my3waSubDiv.html(subhtml);
             // 字幕效果，特別感謝 张鑫旭
             // From : https://www.zhangxinxu.com/wordpress/2017/06/webkit-text-stroke-css-text-shadow/
+
+            var sub1_margin_bottom = 0;
+            if (typeof (window['lastWord_a']) == "string" && window['lastWord_a'].split("\n").length >= 2) {
+                sub1_margin_bottom = (31 * window['my_netflix_fontsize'] * window['lastWord_a'].split("\n").length - 1) / 2.0;
+            }
+            //2022-10-05 如果第一行文字是雙行以上，加入 margin-bottom
+            my3waSubDiv.find("p[reqc='my3waSubDivSpan']").eq(0).css({
+                'margin-top': -1 * sub1_margin_bottom + 'px'
+            });
             my3waSubDiv.css({
                 'position': 'absolute', //改 fixed 往下延伸?
                 'width': '100%',
@@ -2337,7 +2360,7 @@ function run_3wa_netflix() {
                 'pointer-events': 'none', //div 可穿透
                 //2022-04-20 增加字距
                 //字距改到各自的內容
-                //'letter-spacing': window['my_netflix_fontspace'] + 'px !important'
+                //'letter-spacing': window['my_netflix_fontspace'] + 'px !important'                                
             });
 
             //第一文字字幕動態調整樣式
@@ -2347,6 +2370,11 @@ function run_3wa_netflix() {
                 //'font-variant': 'small-caps', //強制大寫，怎麼會寫這行呢...Or2
                 'font-weight': window['my_netflix_font_bolder'],
                 'letter-spacing': window['my_netflix_fontspace'] + 'px !important'
+            });
+            my3waSubDiv.find("hr[reqc='my3waSubDivSpanHR']").css({
+                'visibility': 'hidden',
+                'margin-top': (31 * window['my_netflix_fontsize']) + 'px',
+                'margin-bottom': '0px'
             });
             //第二文字字幕動態調整樣式
             my3waSubDiv.find("p[reqc='my3waSubDivSpan_2']").css({
@@ -2366,10 +2394,26 @@ function run_3wa_netflix() {
                     var new_h = h * window['my_netflix_fontsize'];
                     var new_w = new_h * r;
                     //console.log("原 w,h: " + w + "," + h + "    新 w,h: " + new_w + "," + new_h);
-                    my3waSubDiv.find("img[reqc='my3waSubDivSpan']").css({
-                        'width': new_w + "px",
-                        'height': new_h + "px"
-                    }).show();
+                    if (new_w >= new_h) {
+                        my3waSubDiv.find("img[reqc='my3waSubDivSpan']").css({
+                            'width': new_w + "px",
+                            'height': new_h + "px"
+                        }).show();
+                    }
+                    else {
+                        //2022-10-05 如果圖片型字幕，高比寬多，移到右邊中間
+                        //Issue 69、直行日文字圖片型字幕，移到畫面右邊置中
+                        window['wh'] = appClass.method.getWindowSize();
+                        var r_percent = appClass.method.arduino_map($(window).width(), 800, 2048, 3, 15) + '%';
+                        //(($(window).width() / $(window).height()) > 2.5) ? '15%' : '8%';
+                        my3waSubDiv.find("img[reqc='my3waSubDivSpan']").css({
+                            'position': 'fixed',
+                            'right': r_percent,
+                            'top': (window['wh']['height'] / 2 - new_h / 2) + 'px',
+                            'width': new_w + "px",
+                            'height': new_h + "px"
+                        }).show();
+                    }
                 }
             }
             //第二圖片字幕動態調整樣式
@@ -2381,10 +2425,26 @@ function run_3wa_netflix() {
                     var new_h = h * window['my_netflix_fontsize_2'];
                     var new_w = new_h * r;
                     //console.log("原 w,h: " + w + "," + h + "    新 w,h: " + new_w + "," + new_h);
-                    my3waSubDiv.find("img[reqc='my3waSubDivSpan_2']").css({
-                        'width': new_w + "px",
-                        'height': new_h + "px"
-                    }).show();
+                    if (new_w >= new_h) {
+                        my3waSubDiv.find("img[reqc='my3waSubDivSpan_2']").css({
+                            'width': new_w + "px",
+                            'height': new_h + "px"
+                        }).show();
+                    }
+                    else {
+                        //2022-10-05 如果圖片型字幕，高比寬多，移到右邊中間
+                        //Issue 69、直行日文字圖片型字幕，移到畫面右邊置中
+                        window['wh'] = appClass.method.getWindowSize();
+                        var r_percent = appClass.method.arduino_map($(window).width(), 800, 2048, 3, 15) + '%';
+                        //(($(window).width() / $(window).height()) > 2.5) ? '15%' : '8%';
+                        my3waSubDiv.find("img[reqc='my3waSubDivSpan_2']").css({
+                            'position': 'fixed',
+                            'right': r_percent,
+                            'top': (window['wh']['height'] / 2 - new_h / 2) + 'px',
+                            'width': new_w + "px",
+                            'height': new_h + "px"
+                        }).show();
+                    }
                 }
             }
 
