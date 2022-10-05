@@ -29,6 +29,13 @@ netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等�
 <br>
 V2.0 以這個方式開發也能過 chrome extension 商店的審核…是在暗示咱網路的世界很危險了嗎...<br>
 勸各位沒有開放源始碼的 extension 別亂裝，細思極恐<br>
+<br>
+2022-10-05 補充：<br>
+查了一下 chrome extension V3 版本，有個「tabs.onUpdated」可以在切換 tabs 時，馬上觸發程式。<br>
+https://developer.chrome.com/docs/extensions/reference/tabs/#event-onUpdated <br>
+所以 V2.2 版後，不用再點「3」了，直接啟用<br>
+V2.2 版的第二字幕，若有抓取到字幕檔，直接使用字幕檔內容，就不用一直點畫面來回切換<br>
+抓取字幕檔的方式，直接改寫 XMLHttpRequest.prototype.open 從中獲取，效果卓越<br>
 
 <br>
 邏輯很簡單，就這樣而已^^ 
@@ -53,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.2 (2022-10-05)<br>
 	V2.1 (2022-09-29)<br>
 	V2.0 (2022-09-27)<br>
 	V1.9 (2022-09-24)<br>
@@ -96,7 +104,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V2.1 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.1/3wa_netflix.zip <br>
+(V2.2 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.2/3wa_netflix.zip <br>
+(V2.1 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.1/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -134,19 +143,28 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 11、然後按一下「紅圈圈起」的地方，就可以重新載入模組<br>
 回到 Netflix 建議按「F5」重新載入畫面，然後再按一次「3」啟動字體放大功能<br>
 (註：V0.5 版後不用等3秒了，點了馬上使用)
+(註：V2.2 版後，採用自動啟動，不用點「3」)
 <br>
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-09-29) V2.1 版：
-  1、直接按下一集的三角按鈕，會發生異常
-  2、全螢幕時，立刻隱藏下方控制區
-  3、影片暫停時，暫停取新字幕
-  4、按「空白鍵」可以控制「播放、停止」
-  5、按「o 或 O」(Open) 可以「喚出字幕選單」
-  6、3WA Icon 、x_close.png 改成 base64 png
-  7、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見
-  
+  (2022-10-05) V2.2 版：
+  1、全螢幕回上一頁，要停止全螢幕
+  2、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕(總算找到解法了~撒花)
+  3、如果第二字幕有字幕檔，直接讀出字幕檔顯示
+  4、安裝後 3waNetflix 後，自動啟動，不用手點了
+  5、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開
+  6、主字幕可正常依雙行字顯示
+  7、音訊切換，造成主字幕勾勾跑版
+
+    (2022-09-29) V2.1 版：
+    1、直接按下一集的三角按鈕，會發生異常
+    2、全螢幕時，立刻隱藏下方控制區
+    3、影片暫停時，暫停取新字幕
+    4、按「空白鍵」可以控制「播放、停止」
+    5、按「o 或 O」(Open) 可以「喚出字幕選單」
+    6、3WA Icon 、x_close.png 改成 base64 png
+    7、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見  
 
     (2022-09-27) V2.0 版：
     1、使用注意事項獨立一個 tab 分頁
@@ -295,7 +313,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-09-25)40、當畫面靜置一段時間，會發生無法回上頁、右上的問題反應也無法點選</li>
   <li>(Done 2022-09-25)41、調整 UI 時，有時會失效</li>
   <li>(Done 2022-09-25)42、無人說話時，字幕退場的時間不精準</li>
-  <li>43、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕</li>
+  <li>(Done 2022-10-01)43、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕</li>
   <li>(Done 2022-09-25)44、如果使用者在調整時間軸，延長消失時間(6秒)</li>
   <li>(Done 2022-09-25)45、全螢幕時，滑鼠沒移動一段時間後要自動隱藏(6秒)</li>
   <li>(Done 2022-09-25)46、縮小設定畫面可以觸發顯示的範圍</li>
@@ -312,4 +330,17 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-09-29)57、按「o 或 O」(Open) 可以「喚出字幕選單」</li>
   <li>(Done 2022-09-29)58、3WA Icon 、x_close.png 改成 base64 png</li>
   <li>(Done 2022-09-29)59、滑鼠移出設定 UI 視窗，等 1 秒再隱藏，重新滑入就停止計時，不然太容易不見</li>
+  <li>(Done 2022-09-30)60、全螢幕回上一頁，要停止全螢幕</li>
+  <li>(Done 2022-10-05)61、滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</li>
+  <li>(Done 2022-10-01)62、點影片會停止、繼續播放的功能，修正</li>
+  <li>(Done 2022-10-01)63、雙點影片畫面，可全螢幕播放的功能</li>
+  <li>(Done 2022-10-01)64、初次載入，設定 UI 看不到但按的到的問題修正</li>
+  <li>(Done 2022-10-01)65、全螢幕時，控制項每六秒隱藏</li>
+  <li>66、切換日文、其他文字，有時仍會有殘影</li>
+  <li>(Done 2022-10-05)67、如果第二字幕有字幕檔，直接讀出字幕檔顯示</li>
+  <li>(Done 2022-10-05)68、安裝後 3waNetflix 後，自動啟動，不用手點了</li>
+  <li>(Done 2022-10-05)69、直行日文字圖片型字幕，移到畫面右邊置中</li>
+  <li>70、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</li>
+  <li>(Done 2022-10-05)71、主字幕可正常依雙行字顯示</li>
+  <li>(Done 2022-10-05)72、音訊切換，造成主字幕勾勾跑版</li>
 </ul>
