@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         debug_mode: true,
-        appVersion: "2.2",
+        appVersion: "2.3",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -1773,7 +1773,7 @@ function run_3wa_netflix() {
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li div").attr('class', appClass.doms['暗字效果']);
 
                     //目前點到的，變成有 svg 跟亮字效果
-                    $(this).append(appClass.doms['勾勾svg']);                    
+                    $(this).append(appClass.doms['勾勾svg']);
                     $(this).find("div").attr('class', appClass.doms['亮字效果']);
 
                     //其他沒勾勾的，變不明顯
@@ -1927,15 +1927,18 @@ function run_3wa_netflix() {
             // Issue 43、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕
             if ($("div.active.ltr-omkt8s").attr('my_isClicked') == null) {
                 //
-                if ($("div.active.ltr-omkt8s").length != 0) {
+                if ($("div.active.ltr-omkt8s span").length != 0) {
                     // 這裡需用 pure js 的 trigger 才不會一直點
                     // 找超久的，總算滑鼠移入，就會出現時間軸
+                    // 不過這寫法不好，V2.3 先停用
 
-                    $("div.active.ltr-omkt8s").attr('my_isClicked', "YES");
-                    clearTimeout(appClass.interval.omkt8s_Timeout);
-                    appClass.interval.omkt8s_Timeout = setTimeout(function () {
-                        $("div.active.ltr-omkt8s")[0].click();
-                    }, 300);
+                    //$("div.active.ltr-omkt8s span").eq(0).attr('my_isClicked', "YES");
+                    //clearTimeout(appClass.interval.omkt8s_Timeout);
+                    //appClass.interval.omkt8s_Timeout = setTimeout(function () {
+                    //    if ($("div.active.ltr-omkt8s span").length != 0) {
+                    //$("div.active.ltr-omkt8s span").eq(0)[0].mousedown();
+                    //    }
+                    //}, 300);
                 }
             }
         }
