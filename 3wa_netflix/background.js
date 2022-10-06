@@ -426,6 +426,10 @@ function run_3wa_netflix() {
                 //藏掉原本的字幕列表
                 $("head").append("<style>div[data-uia='selector-audio-subtitle']{position:absolute;z-index:-2;}</style>");
 
+                //影片標題下移
+                //Issue 74、影片標題下移、加一點透明度
+                $("head").append("<style>div[data-uia='video-title']{opacity:0.8;position:absolute;bottom:-4%;}</style>")
+
                 //重要，嘗試修正播放捲軸
                 //並提示在捲軸時，無法翻譯
                 //註冊一下 #my3wanetflix_alert_sub_comments
@@ -1976,7 +1980,11 @@ function run_3wa_netflix() {
         if ($("video").length != 0 && $("video")[0].paused) {
             return;
         }
+
+        
         $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
+        
+
         appClass.flag.isSubGet = false;
         //window['lastWord_a'] = "";
         //window['lastWord_b'] = "";

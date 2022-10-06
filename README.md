@@ -343,4 +343,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>70、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</li>
   <li>(Done 2022-10-05)71、主字幕可正常依雙行字顯示</li>
   <li>(Done 2022-10-05)72、音訊切換，造成主字幕勾勾跑版</li>
+  <li>(Done 2022-10-06)73、停用自動顯示進度條(太容易造成影片停住)</li>
+  <li>(Done 2022-10-06)74、影片標題下移、加一點透明度</li>
 </ul>
