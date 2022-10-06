@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.3 (2022-10-06)<br>
 	V2.2 (2022-10-05)<br>
 	V2.1 (2022-09-29)<br>
 	V2.0 (2022-09-27)<br>
@@ -104,8 +105,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
+(V2.3 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.3/3wa_netflix.zip <br>
 (V2.2 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.2/3wa_netflix.zip <br>
-(V2.1 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.1/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -148,14 +149,18 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-10-05) V2.2 版：
-  1、全螢幕回上一頁，要停止全螢幕
-  2、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕(總算找到解法了~撒花)
-  3、如果第二字幕有字幕檔，直接讀出字幕檔顯示
-  4、安裝後 3waNetflix 後，自動啟動，不用手點了
-  5、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開
-  6、主字幕可正常依雙行字顯示
-  7、音訊切換，造成主字幕勾勾跑版
+  (2022-10-06) V2.3 版：
+  1、停用自動顯示進度條(太容易造成影片停住)
+  2、影片標題下移、加一點透明度
+
+    (2022-10-05) V2.2 版：
+    1、全螢幕回上一頁，要停止全螢幕
+    2、滑鼠進入下方 Control 區，時間軸需要顯示，不用透過滑過聲音鈕(總算找到解法了~撒花)
+    3、如果第二字幕有字幕檔，直接讀出字幕檔顯示
+    4、安裝後 3waNetflix 後，自動啟動，不用手點了
+    5、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開
+    6、主字幕可正常依雙行字顯示
+    7、音訊切換，造成主字幕勾勾跑版
 
     (2022-09-29) V2.1 版：
     1、直接按下一集的三角按鈕，會發生異常
@@ -343,4 +348,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>70、(圖片型字幕) 當滑鼠進入下方控制區，包含進度條，雙字幕將無法正常使用，請往上移開</li>
   <li>(Done 2022-10-05)71、主字幕可正常依雙行字顯示</li>
   <li>(Done 2022-10-05)72、音訊切換，造成主字幕勾勾跑版</li>
+  <li>(Done 2022-10-06)73、停用自動顯示進度條(太容易造成影片停住)</li>
+  <li>(Done 2022-10-06)74、影片標題下移、加一點透明度</li>
 </ul>
