@@ -60,7 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-	V2.3 (2022-10-06)<br>
+	V2.3 (2022-10-08)<br>
 	V2.2 (2022-10-05)<br>
 	V2.1 (2022-09-29)<br>
 	V2.0 (2022-09-27)<br>
@@ -149,9 +149,10 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-10-06) V2.3 版：
+  (2022-10-08) V2.3 版：
   1、停用自動顯示進度條(太容易造成影片停住)
   2、影片標題下移、加一點透明度
+  3、當切換音訊，再切回原來的音訊，沒有正常執行
 
     (2022-10-05) V2.2 版：
     1、全螢幕回上一頁，要停止全螢幕
@@ -350,4 +351,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-05)72、音訊切換，造成主字幕勾勾跑版</li>
   <li>(Done 2022-10-06)73、停用自動顯示進度條(太容易造成影片停住)</li>
   <li>(Done 2022-10-06)74、影片標題下移、加一點透明度</li>
+  <li>(Done 2022-10-08)75、當切換音訊，再切回原來的音訊，沒有正常執行</li>
 </ul>

@@ -1768,7 +1768,11 @@ function run_3wa_netflix() {
                     window['lastImage_b'] = new Array();
 
                     var data_uiaName = $(this).attr('data-uia');
-                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName + "']").trigger("click");
+                    //這裡是指原來的字幕音訊
+                    //console.log(data_uiaName);
+                    //這裡不能有 -selected
+                    //Fix Issue: 75、當切換音訊，再切回原來的音訊，沒有正常執行
+                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName.replace("-selected","") + "']").trigger("click");
 
                     //移除這裡範圍所有的 svg
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li svg").remove();
@@ -1981,9 +1985,9 @@ function run_3wa_netflix() {
             return;
         }
 
-        
+
         $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
-        
+
 
         appClass.flag.isSubGet = false;
         //window['lastWord_a'] = "";
