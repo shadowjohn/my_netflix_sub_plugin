@@ -420,8 +420,8 @@ function run_3wa_netflix() {
                 }
 
                 //將原廠的字幕藏掉
-                //Fix issue: 76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 41:30~41:40 左右)
-                $("head").append("<style>.player-timedtext{z-index:-222;}</style>");
+                //Fix issue: 76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)
+                $("head").append("<style>.player-timedtext{z-index:-222;opacity:0.01;}</style>");
 
                 //註冊新版雙字幕操作方法
                 //藏掉原本的字幕列表
