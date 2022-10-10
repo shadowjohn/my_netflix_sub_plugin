@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         debug_mode: true,
-        appVersion: "2.3",
+        appVersion: "2.4",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -420,7 +420,8 @@ function run_3wa_netflix() {
                 }
 
                 //將原廠的字幕藏掉
-                $("head").append("<style>.player-timedtext{z-index:-2;}</style>");
+                //Fix issue: 76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 41:30~41:40 左右)
+                $("head").append("<style>.player-timedtext{z-index:-222;}</style>");
 
                 //註冊新版雙字幕操作方法
                 //藏掉原本的字幕列表
