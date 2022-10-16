@@ -355,4 +355,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-10)76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)</li>
   <li>(Done 2022-10-17)77、當影片播放進入最後 1%，停止翻譯字幕</li>
   <li>(Done 2022-10-17)78、當影片暫停時，停止翻譯字幕</li>
+  <li>(Done 2022-10-17)79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發</li>
 </ul>

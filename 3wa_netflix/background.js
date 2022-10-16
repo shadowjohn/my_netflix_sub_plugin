@@ -1149,6 +1149,10 @@ function run_3wa_netflix() {
                     clearTimeout(appClass.interval.omkt8s_Timeout);
                 });
                 $("button[reqc='my3wanetflix_fullscreen_btn']").unbind("click").click(function () {
+                    //按到全螢幕時
+                    //參考: https://stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-click
+                    //Fix issue: 79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發
+                    $(this)[0].blur();
                     var full_screen_element = document.fullscreenElement;
                     // If no element is in full-screen
                     if (full_screen_element !== null) {
