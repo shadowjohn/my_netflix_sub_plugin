@@ -1773,7 +1773,7 @@ function run_3wa_netflix() {
                     //console.log(data_uiaName);
                     //這裡不能有 -selected
                     //Fix Issue: 75、當切換音訊，再切回原來的音訊，沒有正常執行
-                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName.replace("-selected","") + "']").trigger("click");
+                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName.replace("-selected", "") + "']").trigger("click");
 
                     //移除這裡範圍所有的 svg
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊']").find("li svg").remove();
@@ -1957,7 +1957,10 @@ function run_3wa_netflix() {
             $("div[data-uia='scrubber-rail']").length == 0 && //調聲音
             $("div[data-uia='playback-speed']").length == 0 && //播放速度
             appClass.flag.timeLineSliding == false && //不能在捲播放速度時
-            appClass.flag.inControl == false // 滑鼠不能在控制區
+            appClass.flag.inControl == false && // 滑鼠不能在控制區
+            $("video").length > 0 && $("video")[0].currentTime <= ($("video")[0].duration * 99 / 100.0) && // (Issue 77 當影片播放進入最後 1%，停止翻譯字幕)
+            $("video").length > 0 && $("video")[0].paused == false //暫停時不用一直翻譯 (Issue 78 當影片暫停時，停止翻譯字幕)
+
             //$("div[data-uia='timeline-bar']").length == 0 //播放條
         ) {
             //修正滑鼠移入下方控制項，沒有捲軸的問題
@@ -2539,7 +2542,7 @@ function run_3wa_netflix() {
             }
             //如果現在時間，減去 lastSubTime 大於 2 秒 才關字幕
             //且影片要播放時，影片暫停時不用隱藏
-            if (!$("video")[0].paused && Date.now() - appClass.flag.lastSubTime >= 2000) {
+            if ($("video").length > 0 && $("video")[0].paused == false && Date.now() - appClass.flag.lastSubTime >= 2000) {
                 my3waSubDiv.css({
                     'display': 'none'
                 });
