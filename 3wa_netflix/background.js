@@ -527,13 +527,59 @@ function run_3wa_netflix() {
 
                 if ($("body").attr('isDefinedKeyup') != "YES") {
                     $("body").attr('isDefinedKeyup', "YES");
-                    $("body").bind("keyup", function (e) {
+                    $("body").unbind("keydown");
+                    $("body").unbind("keyup");
+                    $("body").unbind("keydown").bind("keydown", function (e) {
                         // Issue 56、按「空白鍵」可以控制播放、停止
                         // Issue 57、按「o 或 O」(Open) 可以喚出字幕選單
+                        console.log(e.code.toLowerCase());
+                        
                         switch (e.code.toLowerCase()) {
-                            case "keyo":
+                            case "keym":
                                 {
-                                    //叫出選單
+                                    //靜音/有聲
+                                    if ($("button[data-uia='control-volume-off']").length == 0) {
+                                        $("button[data-uia='control-volume-high']").trigger("click");
+                                        $("button[data-uia='control-volume-medium']").trigger("click");
+                                        if ($("button[data-uia='control-volume-off']").length != 0) {
+                                            $("button[data-uia='control-volume-off']")[0].blur();
+                                        }
+                                        $("div[data-uia='scrubber']").hide(); //隱藏音效條
+                                    }
+                                    else {
+                                        $("button[data-uia='control-volume-off']").trigger("click");
+                                        if ($("button[data-uia='control-volume-high']").length != 0) {
+                                            $("button[data-uia='control-volume-high']")[0].blur();
+                                        }
+                                        if ($("button[data-uia='control-volume-medium']").length != 0) {
+                                            $("button[data-uia='control-volume-medium']")[0].blur();
+                                        }
+                                        $("div[data-uia='scrubber']").hide(); //隱藏音效條
+                                    }
+                                }
+                                break;
+                            case "arrowright": //下十秒
+                                {                                    
+                                    $("button[data-uia='control-forward10']").trigger("click");
+                                }
+                                break;
+                            case "arrowleft": //上十秒
+                                {                                    
+                                    $("button[data-uia='control-back10']").trigger("click");
+                                }
+                                break;
+                            case "keys": //略過片頭
+                                {
+                                    $("button[data-uia='player-skip-intro']").trigger("click");
+                                }
+                                break;
+                            case "keyf": //觸發我的全螢幕
+                                {                                    
+                                    $("button[reqc='my3wanetflix_fullscreen_btn']").trigger("click");
+                                }
+                                break;
+                            case "keyo": //叫出選單
+                                {
                                     if ($(".my_netflix_controller_class").length != 0 && $(".my_netflix_controller_class").css('opacity') == 1) {
                                         $(".my_netflix_controller_class").attr('my_hidenow', 'YES').trigger("mouseleave");
                                     } else {
@@ -541,9 +587,8 @@ function run_3wa_netflix() {
                                     }
                                 }
                                 break;
-                            case "space":
-                                {
-                                    //按下暫停、繼續
+                            case "space": //按下暫停、繼續
+                                {                                    
                                     if ($("video").length != 0) {
                                         if ($("video")[0].paused) {
                                             $("video")[0].play();
@@ -1033,7 +1078,27 @@ function run_3wa_netflix() {
                             <td field='項次'>(O)pen</td> \
                             <td field='內容' style='padding-left:15px;'>選單開啟／選單關閉</td> \
                         </tr> \
-                    </tbody> \
+                        <tr> \
+                            <td field='項次'>(F)ullScreen</td> \
+                            <td field='內容' style='padding-left:15px;'>全螢幕開／閉</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>←</td> \
+                            <td field='內容' style='padding-left:15px;'>上10秒</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>→</td> \
+                            <td field='內容' style='padding-left:15px;'>下十秒</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>(M)ute</td> \
+                            <td field='內容' style='padding-left:15px;'>聲音開／關</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>(S)kip</td> \
+                            <td field='內容' style='padding-left:15px;'>略過片頭</td> \
+                        </tr> \
+                    </tbody > \
                 </table> \
             </span> \
          </span><!--thetabs--> \
