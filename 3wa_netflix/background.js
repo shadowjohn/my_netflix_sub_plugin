@@ -533,7 +533,7 @@ function run_3wa_netflix() {
                         // Issue 56、按「空白鍵」可以控制播放、停止
                         // Issue 57、按「o 或 O」(Open) 可以喚出字幕選單
                         console.log(e.code.toLowerCase());
-                        
+
                         switch (e.code.toLowerCase()) {
                             case "keym":
                                 {
@@ -558,23 +558,25 @@ function run_3wa_netflix() {
                                     }
                                 }
                                 break;
-                            case "arrowright": //下十秒
-                                {                                    
-                                    $("button[data-uia='control-forward10']").trigger("click");
-                                }
-                                break;
                             case "arrowleft": //上十秒
-                                {                                    
+                            case "numpad4":
+                                {
                                     $("button[data-uia='control-back10']").trigger("click");
                                 }
                                 break;
+                            case "arrowright": //下十秒
+                            case "numpad6":
+                                {
+                                    $("button[data-uia='control-forward10']").trigger("click");
+                                }
+                                break;                            
                             case "keys": //略過片頭
                                 {
                                     $("button[data-uia='player-skip-intro']").trigger("click");
                                 }
                                 break;
                             case "keyf": //觸發我的全螢幕
-                                {                                    
+                                {
                                     $("button[reqc='my3wanetflix_fullscreen_btn']").trigger("click");
                                 }
                                 break;
@@ -588,7 +590,7 @@ function run_3wa_netflix() {
                                 }
                                 break;
                             case "space": //按下暫停、繼續
-                                {                                    
+                                {
                                     if ($("video").length != 0) {
                                         if ($("video")[0].paused) {
                                             $("video")[0].play();
@@ -900,14 +902,17 @@ function run_3wa_netflix() {
   }
   .my_netflix_subMessage_table_class th[field='項次']{
     width: 40px;
-    border-bottom: 1px dashed #00f;
+    border-bottom: 1px solid #00f;
+  }
+  .my_netflix_subMessage_table_class th[field='內容']{    
+    border-bottom: 1px solid #00f;
   }
   .my_netflix_subMessage_table_class td[field='項次']{
     text-align: center;
     font-weight: bold;
   }
   .my_netflix_subMessage_table_class td{
-    border-bottom: 1px dashed #00f;
+    border-bottom: 0.5px solid #00f;
     text-align: left;
     padding: 2px;
   }
@@ -1065,13 +1070,17 @@ function run_3wa_netflix() {
                             <td field='項次'>2</td> \
                             <td field='內容'>(待修正)<br>已知有些改 1080p 或是部分字幕是「圖片型字幕」出字會異常，之後再研究</td> \
                         </tr> \
+                     </tbody> \
+                    </table> \
+                    <table style='width:100%;' class='my_netflix_subMessage_table_class'> \
+                        <tbody> \
                         <tr> \
                             <th colspan='2'> \
                                 熱鍵說明 \
                             </th> \
                         </tr> \
                         <tr> \
-                            <td field='項次'>Space</td> \
+                            <td field='項次'>Space 空白鍵</td> \
                             <td field='內容' style='padding-left:15px;'>播放／暫停</td> \
                         </tr> \
                         <tr> \
