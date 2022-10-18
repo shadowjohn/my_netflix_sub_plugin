@@ -105,8 +105,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V2.3 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.3/3wa_netflix.zip <br>
-(V2.2 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.2/3wa_netflix.zip <br>
+(V2.4 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.4/3wa_netflix.zip <br>
+(V2.3 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.3/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -149,10 +149,22 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2022-10-08) V2.3 版：
-  1、停用自動顯示進度條(太容易造成影片停住)
-  2、影片標題下移、加一點透明度
-  3、當切換音訊，再切回原來的音訊，沒有正常執行
+  (2022-10-19) V2.4 版：
+  1、76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)
+  2、77、當影片播放進入最後 1%，停止翻譯字幕
+  3、78、當影片暫停時，停止翻譯字幕
+  4、79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發
+  5、80、熱鍵 → 下10秒
+  6、81、熱鍵 ← 上10秒
+  7、82、熱鍵 M 消音、有聲
+  8、83、熱鍵 F 全螢幕
+  9、83、熱鍵 S 略過片頭
+  10、84、熱鍵 N 下一集  
+
+    (2022-10-08) V2.3 版：
+    1、停用自動顯示進度條(太容易造成影片停住)
+    2、影片標題下移、加一點透明度
+    3、當切換音訊，再切回原來的音訊，沒有正常執行
 
     (2022-10-05) V2.2 版：
     1、全螢幕回上一頁，要停止全螢幕
@@ -342,7 +354,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-01)63、雙點影片畫面，可全螢幕播放的功能</li>
   <li>(Done 2022-10-01)64、初次載入，設定 UI 看不到但按的到的問題修正</li>
   <li>(Done 2022-10-01)65、全螢幕時，控制項每六秒隱藏</li>
-  <li>66、切換日文、其他文字，有時仍會有殘影</li>
+  <li>66、切換日文、其他圖片型文字，有時仍會有殘影</li>
   <li>(Done 2022-10-05)67、如果第二字幕有字幕檔，直接讀出字幕檔顯示</li>
   <li>(Done 2022-10-05)68、安裝後 3waNetflix 後，自動啟動，不用手點了</li>
   <li>(Done 2022-10-05)69、直行日文字圖片型字幕，移到畫面右邊置中</li>
@@ -352,5 +364,14 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-06)73、停用自動顯示進度條(太容易造成影片停住)</li>
   <li>(Done 2022-10-06)74、影片標題下移、加一點透明度</li>
   <li>(Done 2022-10-08)75、當切換音訊，再切回原來的音訊，沒有正常執行</li>
-  <li>76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 41:03~41:10 左右)</li>
+  <li>(Done 2022-10-10)76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)</li>
+  <li>(Done 2022-10-17)77、當影片播放進入最後 1%，停止翻譯字幕</li>
+  <li>(Done 2022-10-17)78、當影片暫停時，停止翻譯字幕</li>
+  <li>(Done 2022-10-17)79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發</li>
+  <li>(Done 2022-10-17)80、熱鍵 → 下10秒</li>
+  <li>(Done 2022-10-17)81、熱鍵 ← 上10秒</li>
+  <li>(Done 2022-10-17)82、熱鍵 M 消音、有聲</li>
+  <li>(Done 2022-10-17)83、熱鍵 F 全螢幕</li>
+  <li>(Done 2022-10-17)83、熱鍵 S 略過片頭</li>
+  <li>(Done 2022-10-18)84、熱鍵 N 下一集</li>
 </ul>
