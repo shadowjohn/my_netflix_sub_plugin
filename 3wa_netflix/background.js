@@ -17,7 +17,7 @@ function run_3wa_netflix() {
     function strlen(string) { var str = string + ''; var i = 0, chr = '', lgth = 0; if (!this.php_js || !this.php_js.ini || !this.php_js.ini['unicode.semantics'] || this.php_js.ini['unicode.semantics'].local_value.toLowerCase() !== 'on') { return string.length; } var getWholeChar = function (str, i) { var code = str.charCodeAt(i); var next = '', prev = ''; if (0xD800 <= code && code <= 0xDBFF) { if (str.length <= (i + 1)) { throw 'High surrogate without following low surrogate'; } next = str.charCodeAt(i + 1); if (0xDC00 > next || next > 0xDFFF) { throw 'High surrogate without following low surrogate'; } return str.charAt(i) + str.charAt(i + 1); } else if (0xDC00 <= code && code <= 0xDFFF) { if (i === 0) { throw 'Low surrogate without preceding high surrogate'; } prev = str.charCodeAt(i - 1); if (0xD800 > prev || prev > 0xDBFF) { throw 'Low surrogate without preceding high surrogate'; } return false; } return str.charAt(i); }; for (i = 0, lgth = 0; i < str.length; i++) { if ((chr = getWholeChar(str, i)) === false) { continue; } lgth++; } return lgth; }
 
     var appClass = {
-        debug_mode: true,
+        //debug_mode: true, //怪怪的，先不要
         appVersion: "2.4",
         movieID: null,
         icon: {
