@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.4 (2022-10-19)<br>
 	V2.3 (2022-10-08)<br>
 	V2.2 (2022-10-05)<br>
 	V2.1 (2022-09-29)<br>
@@ -93,7 +94,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 <img src="screenshot/V2.1_3.png">
 <p align="center">執行後</p>
 <br>
-<img src="screenshot/V2.1_4.png">
+<img src="screenshot/V2.4_1.png">
 <p align="center">注意事項、補充說明</p>
 <br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
