@@ -17,7 +17,7 @@ function run_3wa_netflix() {
     function strlen(string) { var str = string + ''; var i = 0, chr = '', lgth = 0; if (!this.php_js || !this.php_js.ini || !this.php_js.ini['unicode.semantics'] || this.php_js.ini['unicode.semantics'].local_value.toLowerCase() !== 'on') { return string.length; } var getWholeChar = function (str, i) { var code = str.charCodeAt(i); var next = '', prev = ''; if (0xD800 <= code && code <= 0xDBFF) { if (str.length <= (i + 1)) { throw 'High surrogate without following low surrogate'; } next = str.charCodeAt(i + 1); if (0xDC00 > next || next > 0xDFFF) { throw 'High surrogate without following low surrogate'; } return str.charAt(i) + str.charAt(i + 1); } else if (0xDC00 <= code && code <= 0xDFFF) { if (i === 0) { throw 'Low surrogate without preceding high surrogate'; } prev = str.charCodeAt(i - 1); if (0xD800 > prev || prev > 0xDBFF) { throw 'Low surrogate without preceding high surrogate'; } return false; } return str.charAt(i); }; for (i = 0, lgth = 0; i < str.length; i++) { if ((chr = getWholeChar(str, i)) === false) { continue; } lgth++; } return lgth; }
 
     var appClass = {
-        debug_mode: false,
+        debug_mode: true,
         appVersion: "2.4",
         movieID: null,
         icon: {
@@ -570,7 +570,12 @@ function run_3wa_netflix() {
                                 {
                                     $("button[data-uia='control-forward10']").trigger("click");
                                 }
-                                break;                            
+                                break;
+                            case "keyn": //下一集
+                                {
+                                    $("button[data-uia='control-next']").trigger("click");
+                                }
+                                break;
                             case "keys": //略過片頭
                                 {
                                     $("button[data-uia='player-skip-intro']").trigger("click");
@@ -1107,6 +1112,10 @@ function run_3wa_netflix() {
                         <tr> \
                             <td field='項次'>(S)kip</td> \
                             <td field='內容' style='padding-left:15px;'>略過片頭</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>(N)ext</td> \
+                            <td field='內容' style='padding-left:15px;'>下一集</td> \
                         </tr> \
                     </tbody > \
                 </table> \
@@ -1648,9 +1657,9 @@ function run_3wa_netflix() {
                 //藏所有操作視窗
                 clearTimeout(window['controlUICloseTimeout']);
                 window['controlUICloseTimeout'] = setTimeout(function () {
-                    if (appClass.debug_mode == false) {
-                        $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
-                    }
+                    //if (appClass.debug_mode == false) {
+                    //    $("div[data-uia='controls-standard']").css({ "opacity": 0.01 }); //下方工具
+                    //}
                     $("button[data-uia='control-flag']").hide(); //問題回報
                     $("button[data-uia='control-nav-back']").hide(); //回上頁
                     //改成 6000，修正 issue 44、如果使用者在調整時間軸，延長消失時間(6秒)
