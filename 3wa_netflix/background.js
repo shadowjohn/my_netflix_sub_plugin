@@ -662,7 +662,8 @@ function run_3wa_netflix() {
             subtitleUIInterval: null, // 字幕一直出現的 interval，時間相當短 50ms
             watchIntervalUI: null, //判斷網址列是否符合
             fullScreenMouseNoMoveTimeout: null, // 滑鼠全螢幕時，6 秒後會隱藏滑鼠指標            
-            omkt8s_Timeout: null //滑鼠進入控制區，進度條不要立馬 show
+            omkt8s_Timeout: null, //滑鼠進入控制區，進度條不要立馬 show
+            mouseMoveTimeLineTimeout: null //當滑鼠在移動時進入時間軸，不進行翻譯
         },
         "flag": {
             fakeURL: 'https://www.netflix.com/3wanetflix.png',
@@ -679,7 +680,8 @@ function run_3wa_netflix() {
             timeLineSliding: false, //是否捲動中
             inControl: false, //滑鼠是否在下方控制區
             lastSubTime: null, //影片最後抓到字幕的時間
-            isCheckSub1: false //是否已檢查目前進入控制項是主字幕
+            isCheckSub1: false, //是否已檢查目前進入控制項是主字幕
+            isSkipIntro: false //是否已跳過片頭，一片只會跳過一次
         },
         "doms": {
 
@@ -714,7 +716,7 @@ function run_3wa_netflix() {
     if (location.href.indexOf("netflix.com/watch/") == -1) {
         console.log(location.href.indexOf("netflix"));
         console.log("only run on netflix url...");
-        //return; //只有在 netflix 才有效
+        //return; //只有在 netflix 才有效        
     }
 
     // bind ui   
@@ -735,7 +737,8 @@ function run_3wa_netflix() {
         'my_netflix_sub1': { 'default': '繁體中文' }, // 最後選的字幕
         'my_netflix_font_family': {
             'default': 'Netflix Sans', 'sets': ['Netflix Sans', '微軟正黑體', '標楷體', 'Copperplate', 'Arial', 'Helvetica']
-        }, //字型
+        },
+        //主要字幕 字型
         'my_netflix_font_color': { 'default': '#fff5f8' }, // 字色
         'my_netflix_font_border_color': { 'default': '#1c5cb0' }, // 字框色
         'my_netflix_font_bolder': { 'default': 400, 'min': 100, 'max': 700, 'step': 300, 'sets': { 100: '細緻', 400: '正常', 700: '粗體' } }, // 字粗
@@ -748,7 +751,8 @@ function run_3wa_netflix() {
         'my_netflix_sub2': { 'default': '關閉' }, // 最後選的字幕
         'my_netflix_font_family_2': {
             'default': 'Netflix Sans', 'sets': ['Netflix Sans', '微軟正黑體', '標楷體', 'Copperplate', 'Arial', 'Helvetica']
-        }, //字型
+        },
+        //第二字幕 字型
         'my_netflix_font_color_2': { 'default': '#fff5f8' }, // 字色
         'my_netflix_font_border_color_2': { 'default': '#121212' }, // 字框色
         'my_netflix_font_bolder_2': { 'default': 400, 'min': 100, 'max': 700, 'step': 300, 'sets': { 100: '細緻', 400: '正常', 700: '粗體' } }, // 字粗
@@ -756,6 +760,9 @@ function run_3wa_netflix() {
         'my_netflix_fontsize_2': { 'default': 0.7, 'min': 0.1, 'max': 3, 'step': 0.1 }, //文字大小
         'my_netflix_fontspace_2': { 'default': 2.6, 'min': -50, 'max': 50, 'step': 0.1 }, //文字間距
         'my_netflix_font_text_shadow_2': { 'default': 5.6, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
+        //自動設定
+        'my_netflix_auto_skip_intro': { 'default': 'false' }, //自動跳過片頭，預設不啟動
+        'my_netflix_auto_next_movie': { 'default': 'false' } //自動切換下一集，預設不啟動
     };
 
     for (var k in _myNetFlixSettings) {
@@ -1080,9 +1087,18 @@ function run_3wa_netflix() {
                     </thead> \
                     <tbody> \
                         <tr> \
-                            <td field='項次' style='text-align:center; width:50px;'><input type='checkbox' reqc='my3wanetflix_autoSkipIntro' class='checkbox_class'></td> \
+                            <td field='項次' style='text-align:center; width:50px;'> \
+                                <input type='checkbox' reqc='my_netflix_auto_skip_intro' class='checkbox_class'> \
+                            </td> \
                             <td field='內容' style='padding-left:3px;'> \
-                                <span class='my_netflix_auto_title_span'>自動跳過片頭</span><br>注：啟動後，之後每部影片若有片頭，會自動跳過一次</td> \
+                                <span class='my_netflix_auto_title_span'>自動跳過片頭</span><br>注：啟動後，影片若有片頭，會自動跳過一次</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次' style='text-align:center; width:50px;'> \
+                                <input type='checkbox' reqc='my_netflix_auto_next_movie' class='checkbox_class'> \
+                            </td> \
+                            <td field='內容' style='padding-left:3px;'> \
+                                <span class='my_netflix_auto_title_span'>自動切換下集</span><br>注：啟動後，影片遇到下一集按鈕，會自動點擊</td> \
                         </tr> \
                     </tbody> \
                 </table> \
@@ -1155,6 +1171,12 @@ function run_3wa_netflix() {
          </span><!--thetabs--> \
     </div> \
     ");
+
+    //設定使用者點到的值
+
+    $("input[reqc='my_netflix_auto_skip_intro']").prop("checked", (window['my_netflix_auto_skip_intro'] == "false") ? false : true);
+    $("input[reqc='my_netflix_auto_next_movie']").prop("checked", (window['my_netflix_auto_next_movie'] == "false") ? false : true);
+
     //按到 x_close 的效果
     $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
         //觸發離開即可
@@ -1233,6 +1255,10 @@ function run_3wa_netflix() {
             });
             //fix one time
             appClass.method.fixOrinURL();
+
+            //非播放頁，視同重選影片了，intro flag 重置
+            // Issue: 86、使用者可自定自動跳過片頭
+            appClass.flag.isSkipIntro = false;
         }
         else {
             //appClass.method.getMovieID(); //取得影片 ID
@@ -1257,7 +1283,7 @@ function run_3wa_netflix() {
                 $("a[data-uia='postplay-back-to-browse']").attr('isDefinedfixOrinURL', "YES");
                 $("a[data-uia='postplay-back-to-browse']").bind("click", function () {
                     appClass.method.fixOrinURL();
-                    if (document.fullscreenElement) {                        
+                    if (document.fullscreenElement) {
                         //如果回到首頁，仍是全螢幕嗎...
                         //停止全螢幕
                         // Issue 88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕
@@ -1391,6 +1417,18 @@ function run_3wa_netflix() {
                 return;
             }
 
+            //如果需要跳過 intro 且此片還未跳過
+            //console.log(window['my_netflix_auto_skip_intro'] + "," + appClass.flag.isSkipIntro);
+            // Issue 86、使用者可自定自動跳過片頭 在此執行
+            if (window['my_netflix_auto_skip_intro'] == 'true' && appClass.flag.isSkipIntro == false) {
+                if ($("button[data-uia='player-skip-intro']").length > 0) {
+                    appClass.flag.isSkipIntro = true;
+                    appClass.method.smallComment("自動跳過片頭...", 3500, false, { 'font-size': '32px' });
+                    setTimeout(function () {
+                        $("button[data-uia='player-skip-intro']")[0].click(); //執行跳過片頭                        
+                    }, 2000);
+                }
+            }
 
 
             $(".my_netflix_controller_class").css({
@@ -1482,6 +1520,24 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
+    //按到自動-跳過片頭  
+    $("input[reqc='my_netflix_auto_skip_intro']").unbind("click").bind("click", function () {
+        window['my_netflix_auto_skip_intro'] = $("input[reqc='my_netflix_auto_skip_intro']").prop("checked").toString();
+        console.log(window['my_netflix_auto_skip_intro']);
+        appClass.method.setMemory('my_netflix_auto_skip_intro', window['my_netflix_auto_skip_intro']);
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+    //按到自動-跳下一集
+    $("input[reqc='my_netflix_auto_next_movie']").unbind("click").bind("click", function () {
+        window['my_netflix_auto_next_movie'] = $("input[reqc='my_netflix_auto_next_movie']").prop("checked").toString();
+        console.log(window['my_netflix_auto_next_movie']);
+        appClass.method.setMemory('my_netflix_auto_next_movie', window['my_netflix_auto_next_movie']);
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+
     //主要 字體大小
     $("input[reqc='my_netflix_fontsize_input']").unbind("input").bind("input", function () {
 
@@ -1494,6 +1550,9 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
 
     });
+
+
+
 
     //次要 字體大小
     $("input[reqc='my_netflix_fontsize_input_2']").unbind("input").bind("input", function () {
@@ -1685,14 +1744,14 @@ function run_3wa_netflix() {
             $(window).on("mousemove", function (e) {
                 //如果低於畫面的20% 就不翻譯??，因為是在操作 bar...
                 //appClass.flag.timeLineSliding = true;
-                clearTimeout(window['www']);
+                clearTimeout(appClass.interval.mouseMoveTimeLineTimeout);
 
                 if (appClass.flag.isPlayTimeLine == true) {
                     clearTimeout(window['controlUICloseTimeout']);
                     return;
                 }
 
-                window['www'] = setTimeout(function () {
+                appClass.interval.mouseMoveTimeLineTimeout = setTimeout(function () {
                     appClass.flag.timeLineSliding = false;
                 }, 2000);
                 $("div[data-uia='controls-standard']").css({ "opacity": 1 }); //下方工具
@@ -1711,7 +1770,7 @@ function run_3wa_netflix() {
             });
 
             $("div[data-uia='timeline-knob']").on("mouseover", function (e) {
-                clearTimeout(window['www']);
+                clearTimeout(appClass.interval.mouseMoveTimeLineTimeout);
                 appClass.flag.timeLineSliding = true;
                 appClass.flag.isPlayTimeLine = true;
                 clearTimeout(window['isPlayTimeLineTimeout']);
@@ -1778,12 +1837,16 @@ function run_3wa_netflix() {
         //如果「字幕選擇」裡面是空的，就備份原本的字幕單 !?
         var movieID = appClass.method.getMovieID();
         //console.log(movieID);
-        if (movieID == null) return;
+        if (movieID == null) return;        
+
         if ($("#subMain_div").attr('movieID') != movieID) {
             appClass.flag.mainSubHasData = false;
             //重選影片了，字幕重生
             appClass.flag.sub1 = null;
-            appClass.flag.sub2 = null;
+            appClass.flag.sub2 = null;            
+
+            //重選影片了，intro flag 重置
+            appClass.flag.isSkipIntro = false;
 
             //使用最後紀錄到的字幕
             appClass.flag.sub1 = window['my_netflix_sub1'];
@@ -2706,6 +2769,7 @@ function run_3wa_netflix() {
         $("button[data-uia='control-flag']").css({ // 問題回報鈕
             'pointer-events': 'auto'
         });
+
     }, 50);
 
     //},1); //setTimeout    
