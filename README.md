@@ -378,6 +378,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-18)84、熱鍵 N 下一集</li>
   <li>(Done 2022-11-05)85、熱鍵 S 發現 bug，有時按下後，會回到片頭</li>
   <li>(Done 2022-11-05)86、使用者可自定自動跳過片頭</li>
-  <li>87、使用者可自定自動跳至下一集</li>
+  <li>(Done 2022-11-05)87、使用者可自定自動跳至下一集</li>
   <li>(Done 2022-11-05)88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕</li>
 </ul>

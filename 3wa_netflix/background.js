@@ -1430,6 +1430,17 @@ function run_3wa_netflix() {
                 }
             }
 
+            // Issue 87、使用者可自定自動跳至下一集
+            if (window['my_netflix_auto_next_movie'] == 'true') {
+                if ($("button[data-uia='next-episode-seamless-button']").length > 0) {                    
+                    appClass.method.smallComment("自動跳下一集...", 3500, false, { 'font-size': '32px' });
+                    setTimeout(function () {
+                        $("button[data-uia='next-episode-seamless-button']").trigger("click"); //執行跳下一集                      
+                    }, 2000);
+                }
+            }
+            
+
 
             $(".my_netflix_controller_class").css({
                 'pointer-events': 'auto',
