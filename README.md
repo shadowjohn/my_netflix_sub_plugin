@@ -375,4 +375,8 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-17)83、熱鍵 F 全螢幕</li>
   <li>(Done 2022-10-17)83、熱鍵 S 略過片頭</li>
   <li>(Done 2022-10-18)84、熱鍵 N 下一集</li>
+  <li>85、熱鍵 S 發現 bug，有時按下後，會回到片頭</li>
+  <li>86、使用者可自定自動跳過片頭</li>
+  <li>87、使用者可自定自動跳至下一集</li>
+  <li>88、當影片播放進入最後 1%，離開全螢幕</li>
 </ul>
