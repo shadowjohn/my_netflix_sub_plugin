@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "2.4",
+        appVersion: "2.5",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -578,7 +578,11 @@ function run_3wa_netflix() {
                                 break;
                             case "keys": //略過片頭
                                 {
-                                    $("button[data-uia='player-skip-intro']").trigger("click");
+                                    //這裡用 jquery 的 trigger 好像會異常
+                                    //2022-11-04 issue 85、熱鍵 S 發現 bug，有時按下後，會回到片頭
+                                    if ($("button[data-uia='player-skip-intro']").length != 0) {
+                                        $("button[data-uia='player-skip-intro']")[0].click();
+                                    }
                                 }
                                 break;
                             case "keyf": //觸發我的全螢幕
@@ -771,7 +775,7 @@ function run_3wa_netflix() {
     $("head").append(`
 <style reqc='s'>   
   .my_netflix_controller_class{ 
-    width: 450px; 
+    width: 480px; 
     padding:10px; 
     text-align:center; 
     position:fixed; 
@@ -956,6 +960,13 @@ function run_3wa_netflix() {
         border-bottom: 1px dashed #008;
         background-color: rgba(255,255,255,0.4);
     }
+    .my_netflix_auto_title_span {
+        font-weight: bold;        
+    }
+    .checkbox_class{
+        width: 35px;
+        height: 35px;
+    }
 </style>`);
 
     //註冊一個調整字幕位置的功能
@@ -969,6 +980,7 @@ function run_3wa_netflix() {
             <li><a href='#subMain_div'>字幕選擇</a></li> \
             <li><a href='#sub1_div'>主要字幕</a></li> \
             <li><a href='#sub2_div'>次要字幕</a></li> \
+            <li><a href='#subSetting_div'>自動功能</a></li> \
             <li><a href='#subMessage_div'>注意事項</a></li> \
         </ul> \
         <span id='subMain_div'> \
@@ -1059,6 +1071,22 @@ function run_3wa_netflix() {
                         </tr> \
                     </table> \
             </span> \
+            <span id='subSetting_div'> \
+                <table style='width:100%;' class='my_netflix_subMessage_table_class'> \
+                    <thead> \
+                        <th colspan='2'> \
+                            自動功能 \
+                        </th> \
+                    </thead> \
+                    <tbody> \
+                        <tr> \
+                            <td field='項次' style='text-align:center; width:50px;'><input type='checkbox' reqc='my3wanetflix_autoSkipIntro' class='checkbox_class'></td> \
+                            <td field='內容' style='padding-left:3px;'> \
+                                <span class='my_netflix_auto_title_span'>自動跳過片頭</span><br>注：啟動後，之後每部影片若有片頭，會自動跳過一次</td> \
+                        </tr> \
+                    </tbody> \
+                </table> \
+            </span> \
             <span id='subMessage_div'> \
                 <table style='width:100%;' class='my_netflix_subMessage_table_class'> \
                     <thead> \
@@ -1075,6 +1103,10 @@ function run_3wa_netflix() {
                         <tr> \
                             <td field='項次'>2</td> \
                             <td field='內容'>(待修正)<br>已知有些改 1080p 或是部分字幕是「圖片型字幕」出字會異常，之後再研究</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>3</td> \
+                            <td field='內容'>(待修正)<br>進度條不太好點的解決方法，滑鼠先移到聲音，再往右移開，就可以使用進度條，暫時找不到解決方法</td> \
                         </tr> \
                      </tbody> \
                     </table> \
@@ -1210,13 +1242,25 @@ function run_3wa_netflix() {
 
             //按到上一頁
             if ($("button[data-uia='control-nav-back']").attr('isDefinedfixOrinURL') != "YES") {
-                $("button[data-uia='econtrol-nav-back']").attr('isDefinedfixOrinURL', "YES");
+                $("button[data-uia='control-nav-back']").attr('isDefinedfixOrinURL', "YES");
                 $("button[data-uia='control-nav-back']").bind("click", function () {
                     appClass.method.fixOrinURL();
                     if (document.fullscreenElement) {
                         //如果回到首頁，仍是全螢幕嗎...
                         //停止全螢幕
                         // Issue 60、全螢幕回上一頁，要停止全螢幕
+                        document.exitFullscreen();
+                    }
+                })
+            }
+            if ($("a[data-uia='postplay-back-to-browse']").attr('isDefinedfixOrinURL') != "YES") {
+                $("a[data-uia='postplay-back-to-browse']").attr('isDefinedfixOrinURL', "YES");
+                $("a[data-uia='postplay-back-to-browse']").bind("click", function () {
+                    appClass.method.fixOrinURL();
+                    if (document.fullscreenElement) {                        
+                        //如果回到首頁，仍是全螢幕嗎...
+                        //停止全螢幕
+                        // Issue 88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕
                         document.exitFullscreen();
                     }
                 })

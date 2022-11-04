@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.5 (2022-11-04)<br>
 	V2.4 (2022-10-19)<br>
 	V2.3 (2022-10-08)<br>
 	V2.2 (2022-10-05)<br>
@@ -106,8 +107,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V2.4 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.4/3wa_netflix.zip <br>
-(V2.3 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.3/3wa_netflix.zip <br>
+(V2.5 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.5/3wa_netflix.zip <br>
+(V2.4 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.5/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -375,8 +376,8 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-10-17)83、熱鍵 F 全螢幕</li>
   <li>(Done 2022-10-17)83、熱鍵 S 略過片頭</li>
   <li>(Done 2022-10-18)84、熱鍵 N 下一集</li>
-  <li>85、熱鍵 S 發現 bug，有時按下後，會回到片頭</li>
+  <li>(Done 2022-11-05)85、熱鍵 S 發現 bug，有時按下後，會回到片頭</li>
   <li>86、使用者可自定自動跳過片頭</li>
   <li>87、使用者可自定自動跳至下一集</li>
-  <li>88、當影片播放進入最後 1%，離開全螢幕</li>
+  <li>(Done 2022-11-05)88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕</li>
 </ul>
