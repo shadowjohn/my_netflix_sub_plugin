@@ -98,6 +98,9 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 <img src="screenshot/V2.4_1.png">
 <p align="center">注意事項、補充說明</p>
 <br>
+<img src="screenshot/V2.5_1.png">
+<p align="center">自動功能</p>
+<br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
 <h2>使用方法：</h2>
@@ -108,7 +111,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 
 (原始檔下載安裝方法)：<br>
 (V2.5 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.5/3wa_netflix.zip <br>
-(V2.4 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.5/3wa_netflix.zip <br>
+(V2.4 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.4/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
