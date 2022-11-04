@@ -1534,7 +1534,7 @@ function run_3wa_netflix() {
     //按到自動-跳過片頭  
     $("input[reqc='my_netflix_auto_skip_intro']").unbind("click").bind("click", function () {
         window['my_netflix_auto_skip_intro'] = $("input[reqc='my_netflix_auto_skip_intro']").prop("checked").toString();
-        console.log(window['my_netflix_auto_skip_intro']);
+        //console.log(window['my_netflix_auto_skip_intro']);
         appClass.method.setMemory('my_netflix_auto_skip_intro', window['my_netflix_auto_skip_intro']);
         //重新註冊字大小
         appClass.method.registerFontSize();
@@ -1542,7 +1542,7 @@ function run_3wa_netflix() {
     //按到自動-跳下一集
     $("input[reqc='my_netflix_auto_next_movie']").unbind("click").bind("click", function () {
         window['my_netflix_auto_next_movie'] = $("input[reqc='my_netflix_auto_next_movie']").prop("checked").toString();
-        console.log(window['my_netflix_auto_next_movie']);
+        //console.log(window['my_netflix_auto_next_movie']);
         appClass.method.setMemory('my_netflix_auto_next_movie', window['my_netflix_auto_next_movie']);
         //重新註冊字大小
         appClass.method.registerFontSize();
