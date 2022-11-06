@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "2.5",
+        appVersion: "2.6",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -649,7 +649,10 @@ function run_3wa_netflix() {
                 //清掉字幕組
                 for (var k in localStorage) {
                     //my_netflix___SUB[movieID][語言]
-                    if (k.indexOf("my_netflix___SUB[" + appClass.method.getMovieID() + "]") == -1) {
+                    // Issue: 89、清字幕 localStorage 不小清清到字幕設定
+                    // 這裡應該要針對 my_netflix___SUB[ 檢查，符合
+                    // 且與本片 MovieID 不同，就移掉，省記憶體
+                    if (k.indexOf("my_netflix___SUB[") == 0 && k.indexOf("my_netflix___SUB[" + appClass.method.getMovieID() + "]") == -1) { //這裡應該不是 -1 才要清
                         localStorage.removeItem(k);
                     }
                 }
