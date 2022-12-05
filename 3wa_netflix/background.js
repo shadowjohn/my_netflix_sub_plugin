@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "2.7",
+        appVersion: "2.8",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -104,22 +104,22 @@ function run_3wa_netflix() {
                             window.URL.createObjectURL = window.my_netflix_URLCREATEOBJECTURL;
                             window.my_netflix_URLCREATEOBJECTURL = null;
                             //移除 img[reqc='fixCURL']、div[reqc='my_netflix_imageSubsB64']
-                            if(document.querySelectorAll("img[reqc='fixCURL']").length!=0)
+                            if(window.document.querySelectorAll("img[reqc='fixCURL']").length!=0)
                             {
-                              document.querySelectorAll("img[reqc='fixCURL']")[0].remove();
+                              window.document.querySelectorAll("img[reqc='fixCURL']")[0].remove();
                             }
-                            if(document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length!=0)
+                            if(window.document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length!=0)
                             {
-                              document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']")[0].remove();
+                              window.document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']")[0].remove();
                             }
                         
                             //順便把 JSON.parse 給懟了
                             //移除 div[reqc='my_netflix_JSON']
                             window.JSON.parse = window.my_netflix_JSONPARSE;
                             window.my_netflix_JSONPARSE = null;
-                            if(document.querySelectorAll("div[reqc='my_netflix_JSON']").length!=0)
+                            if(window.document.querySelectorAll("div[reqc='my_netflix_JSON']").length!=0)
                             {
-                              document.querySelectorAll("div[reqc='my_netflix_JSON']")[0].remove();
+                              window.document.querySelectorAll("div[reqc='my_netflix_JSON']")[0].remove();
                             }
 
                             //換回 xhr
@@ -350,43 +350,52 @@ function run_3wa_netflix() {
                     //console.log("Inject..............URL createObjectURL");
                     $("body").append("<img reqc='fixCURL' style='display:none;position:absolute;z-index:-1;'>");
                     $("img[reqc='fixCURL']").attr("onerror", `
-                    if(document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length==0)
+                    if(window.document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']").length==0)
                     {
-	                    var eDiv = document.createElement('div');
+	                    var eDiv = window.document.createElement('div');
 	                    eDiv.style.cssText = 'position:absolute;width:0%;height:%;left:0px;top:0px;opacity:0;z-index:-100;background:#000;display:none;';
 	                    eDiv.setAttribute('reqc','my_netflix_imageSubsB64');
-	                    document.body.appendChild(eDiv);
+	                    window.document.body.appendChild(eDiv);
 	                    window.my_netflix_URLCREATEOBJECTURL = window.URL.createObjectURL;
 	                    window.URL.createObjectURL = function(bdata){
-	                        var dom = document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
-		                    if(dom.length!=0){
-		                      var reader = new FileReader();
-		                      reader.onload = function() {
-		                        var dom = document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
-			                    if(dom.length!=0)
-                                {
-		                            var dataUrl = reader.result;
-		                            var b64 = dataUrl;
-		                            var m = dom[0].innerHTML.split('|||3WA_BR|||');
-                                    //字幕|||3WA|||時間
-		                            m.push(b64+"|||3WA|||"+new Date().getTime());
+                             try{
+	                            var dom = window.document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
+		                        if(dom.length!=0){
+		                          var reader = new window.FileReader();
+                              
+		                          reader.onload = function() {
+		                            var dom = window.document.querySelectorAll("div[reqc='my_netflix_imageSubsB64']");
+			                        if(dom.length!=0)
+                                    {
+                                   
+                                            //console.log(reader);
+		                                    var dataUrl = reader.result;
+		                                    var b64 = dataUrl;
+		                                    var m = dom[0].innerHTML.split('|||3WA_BR|||');
+                                            //字幕|||3WA|||時間
+		                                    m.push(b64+"|||3WA|||"+new Date().getTime());
                                 
-		                            m = m.slice(-10); /* keep last 10 */
-		                            dom[0].innerHTML = m.join('|||3WA_BR|||');
-                                }
-		                      };
-		                      reader.readAsDataURL(bdata);
-		                    }
+		                                    m = m.slice(-10); /* keep last 10 */
+		                                    dom[0].innerHTML = m.join('|||3WA_BR|||');                                        
+                                    }
+		                          };
+		                          reader.readAsDataURL(bdata);                             
+		                        }
+                            }catch (e) {
+                                //pass 修正 91、修正自動下一集會 crash 的問題
+                            }
 		                    //window.my_netflix_URLCREATEOBJECTURL(bdata);
-                            window.my_netflix_URLCREATEOBJECTURL.apply(this, arguments);
-		                    //return result;
+                            if(typeof(window.my_netflix_URLCREATEOBJECTURL)=="function"){
+                              //這裡少加 return ，難怪會當...Orz
+                              return window.my_netflix_URLCREATEOBJECTURL.apply(this, arguments);
+                            }		                    
 	                    }
 
                         //搞一個 JSON 的 hook~
-                        var eDiv = document.createElement('div');
+                        var eDiv = window.document.createElement('div');
 	                    eDiv.style.cssText = 'position:absolute;width:0%;height:%;left:0px;top:0px;opacity:0;z-index:-100;background:#000;display:none;';
 	                    eDiv.setAttribute('reqc','my_netflix_JSONPARSE');
-	                    document.body.appendChild(eDiv);
+	                    window.document.body.appendChild(eDiv);
 	                    window.my_netflix_JSONPARSE = window.JSON.parse;
                         window.JSON.parse = function(data){
                             //console.log(data); // 一樣寫入 div[reqc='my_netflix_JSONPARSE']
@@ -422,7 +431,7 @@ function run_3wa_netflix() {
                                     {
                                         if(this.response.indexOf("nflxvideo")!=-1){
                                         
-                                            console.log(this.response);
+                                            //console.log(this.response);
                                         }
                                     
                                     }

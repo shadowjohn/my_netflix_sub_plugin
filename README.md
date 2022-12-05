@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V2.8 (2022-12-05)<br>
 	V2.7 (2022-12-03)<br>
 	V2.6 (2022-11-10)<br>
 	V2.5 (2022-11-05)<br>
@@ -403,4 +404,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-11-05)88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕</li>
   <li>(Done 2022-11-06)89、清字幕 localStorage 不小心清到字幕設定</li>
   <li>(Done 2022-12-03)90、六人行「英文 (CC)」 字幕，有全大寫的問題</li>
+  <li>(Done 2022-12-05)91、修正自動下一集會 crash 的問題</li>
 </ul>
