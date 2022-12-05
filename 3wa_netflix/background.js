@@ -1462,8 +1462,11 @@ function run_3wa_netflix() {
                 if ($("button[data-uia='player-skip-intro']").length > 0) {
                     appClass.flag.isSkipIntro = true;
                     appClass.method.smallComment("自動跳過片頭...", 3500, false, { 'font-size': '32px' });
-                    setTimeout(function () {
-                        $("button[data-uia='player-skip-intro']")[0].click(); //執行跳過片頭                        
+                    setTimeout(function () {                        
+                        //Issue 92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題
+                        if ($("button[data-uia='player-skip-intro']").length > 0) {
+                            $("button[data-uia='player-skip-intro']")[0].click(); //執行跳過片頭                        
+                        }
                     }, 2000);
                 }
             }
@@ -1473,7 +1476,9 @@ function run_3wa_netflix() {
                 if ($("button[data-uia='next-episode-seamless-button']").length > 0) {
                     appClass.method.smallComment("自動跳下一集...", 3500, false, { 'font-size': '32px' });
                     setTimeout(function () {
-                        $("button[data-uia='next-episode-seamless-button']").trigger("click"); //執行跳下一集                      
+                        if ($("button[data-uia='next-episode-seamless-button']").length > 0) {
+                            $("button[data-uia='next-episode-seamless-button']").trigger("click"); //執行跳下一集                      
+                        }
                     }, 2000);
                 }
             }
