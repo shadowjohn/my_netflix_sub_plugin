@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.0 (2023-01-29)<br>
 	V2.9 (2023-01-29)<br>
 	V2.8 (2022-12-05)<br>
 	V2.7 (2022-12-03)<br>
@@ -118,7 +119,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V2.9 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.9/3wa_netflix.zip <br>
+(V3.0 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.0/3wa_netflix.zip <br>
 (V2.8 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.8/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
@@ -162,7 +163,10 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2023-01-29) V2.9 版：
+  (2023-01-29) V3.0 版：
+    1、94、修正點音訊沒有變化的問題
+
+    (2023-01-29) V2.9 版：
     1、93、修正下方進度條顯示問題
 
     (2022-11-10) V2.8 版：
@@ -415,4 +419,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-12-05)91、修正自動下一集會 crash 的問題</li>
   <li>(Done 2022-12-05)92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題</li>
   <li>(Done 2023-01-29)93、修正下方進度條顯示問題</li>
+  <li>(Done 2023-01-29)94、修正點音訊沒有變化的問題</li>
 </ul>
