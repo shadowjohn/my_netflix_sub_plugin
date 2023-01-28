@@ -2011,9 +2011,7 @@ function run_3wa_netflix() {
 
 
                 //註冊我的字幕選單裡的聲音被按到，同步原生的選單被按到
-                $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊'] li[data-uia^='audio-item']").unbind("click").click(function (e) {
-                    //修正點音訊沒有變化的問題
-                    $("button[data-uia='control-audio-subtitle']").trigger("click");
+                $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='音訊'] li[data-uia^='audio-item']").unbind("click").click(function (e) {                    
                     //只要按到，就先移除目前所有字幕
                     //清空圖片型字幕
                     $(".image-based-subtitles svg image").remove();
@@ -2057,6 +2055,8 @@ function run_3wa_netflix() {
                     //appClass.flag.mainSubHasData = false;
 
                     //避免穿透
+                    //Issue. 94. 修正點音訊沒有變化的問題                    
+                    $("button[data-uia='control-audio-subtitle']").trigger("click");
                     e.stopPropagation();
                 });
 
