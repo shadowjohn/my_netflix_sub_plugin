@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.0",
+        appVersion: "3.1",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -504,6 +504,10 @@ function run_3wa_netflix() {
                     $("button[data-uia='player-skip-intro']").css({ // 略過簡介
                         'pointer-events': 'auto'
                     });
+
+                    $("button[data-uia='player-skip-recap']").css({ // 前情提要
+                        'pointer-events': 'auto'
+                    });
                     // 修正 issue 40
                     $("button[data-uia='control-nav-back']").css({ // 回上頁按鈕
                         'pointer-events': 'auto'
@@ -602,12 +606,15 @@ function run_3wa_netflix() {
                                     $("button[data-uia='control-next']").trigger("click");
                                 }
                                 break;
-                            case "keys": //略過片頭
+                            case "keys": //略過片頭、前情提要
                                 {
                                     //這裡用 jquery 的 trigger 好像會異常
                                     //2022-11-04 issue 85、熱鍵 S 發現 bug，有時按下後，會回到片頭
                                     if ($("button[data-uia='player-skip-intro']").length != 0) {
                                         $("button[data-uia='player-skip-intro']")[0].click();
+                                    }
+                                    if ($("button[data-uia='player-skip-recap']").length != 0) {
+                                        $("button[data-uia='player-skip-recap']")[0].click();
                                     }
                                 }
                                 break;
@@ -710,7 +717,8 @@ function run_3wa_netflix() {
             inControl: false, //滑鼠是否在下方控制區
             lastSubTime: null, //影片最後抓到字幕的時間
             isCheckSub1: false, //是否已檢查目前進入控制項是主字幕
-            isSkipIntro: false //是否已跳過片頭，一片只會跳過一次
+            isSkipIntro: false, //是否已跳過片頭，一片只會跳過一次
+            isSkipRecap: false //是否已跳過前情提要，一片只會跳過一次
         },
         "doms": {
 
@@ -791,6 +799,7 @@ function run_3wa_netflix() {
         'my_netflix_font_text_shadow_2': { 'default': 5.6, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
         //自動設定
         'my_netflix_auto_skip_intro': { 'default': 'false' }, //自動跳過片頭，預設不啟動
+        'my_netflix_auto_skip_recap': { 'default': 'false' }, //自動跳過前情提要，預設不啟動
         'my_netflix_auto_next_movie': { 'default': 'false' }, //自動切換下一集，預設不啟動
         'my_netflix_auto_fix_english_first_letter_case': { 'default': 'false' } //自動修正英文 CC 字幕，首字大寫，後面都改小寫
     };
@@ -1118,6 +1127,13 @@ function run_3wa_netflix() {
                     <tbody> \
                         <tr> \
                             <td field='項次' style='text-align:center; width:50px;'> \
+                                <input type='checkbox' reqc='my_netflix_auto_skip_recap' class='checkbox_class'> \
+                            </td> \
+                            <td field='內容' style='padding-left:3px;'> \
+                                <span class='my_netflix_auto_title_span'>自動跳過前情提要</span><br>注：啟動後，影片若有跳過前情提要，會自動跳過一次</td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次' style='text-align:center; width:50px;'> \
                                 <input type='checkbox' reqc='my_netflix_auto_skip_intro' class='checkbox_class'> \
                             </td> \
                             <td field='內容' style='padding-left:3px;'> \
@@ -1196,7 +1212,7 @@ function run_3wa_netflix() {
                         </tr> \
                         <tr> \
                             <td field='項次'>(S)kip</td> \
-                            <td field='內容' style='padding-left:15px;'>略過片頭</td> \
+                            <td field='內容' style='padding-left:15px;'>略過片頭、前情提要</td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>(N)ext</td> \
@@ -1211,6 +1227,7 @@ function run_3wa_netflix() {
 
     //設定使用者點到的值
 
+    $("input[reqc='my_netflix_auto_skip_recap']").prop("checked", (window['my_netflix_auto_skip_recap'] == "false") ? false : true);
     $("input[reqc='my_netflix_auto_skip_intro']").prop("checked", (window['my_netflix_auto_skip_intro'] == "false") ? false : true);
     $("input[reqc='my_netflix_auto_next_movie']").prop("checked", (window['my_netflix_auto_next_movie'] == "false") ? false : true);
     $("input[reqc='my_netflix_auto_fix_english_first_letter_case']").prop("checked", (window['my_netflix_auto_fix_english_first_letter_case'] == "false") ? false : true);
@@ -1297,6 +1314,8 @@ function run_3wa_netflix() {
             //非播放頁，視同重選影片了，intro flag 重置
             // Issue: 86、使用者可自定自動跳過片頭
             appClass.flag.isSkipIntro = false;
+
+            appClass.flag.isSkipRecap = false;
         }
         else {
             //appClass.method.getMovieID(); //取得影片 ID
@@ -1471,6 +1490,20 @@ function run_3wa_netflix() {
                 }
             }
 
+            // Issue 96、可以自動「略過前情提要」，如鬼滅之刃-刀匠村篇 11集
+            if (window['my_netflix_auto_skip_recap'] == 'true' && appClass.flag.isSkipRecap == false) {
+                if ($("button[data-uia='player-skip-recap']").length > 0) {
+                    appClass.flag.isSkipRecap = true;
+                    appClass.method.smallComment("自動跳過前情提要...", 3500, false, { 'font-size': '32px' });
+                    setTimeout(function () {
+                        //Issue 92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題
+                        if ($("button[data-uia='player-skip-recap']").length > 0) {
+                            $("button[data-uia='player-skip-recap']")[0].click(); //執行跳過前情提要
+                        }
+                    }, 2000);
+                }
+            }
+
             // Issue 87、使用者可自定自動跳至下一集
             if (window['my_netflix_auto_next_movie'] == 'true') {
                 if ($("button[data-uia='next-episode-seamless-button']").length > 0) {
@@ -1577,6 +1610,15 @@ function run_3wa_netflix() {
         window['my_netflix_auto_skip_intro'] = $("input[reqc='my_netflix_auto_skip_intro']").prop("checked").toString();
         //console.log(window['my_netflix_auto_skip_intro']);
         appClass.method.setMemory('my_netflix_auto_skip_intro', window['my_netflix_auto_skip_intro']);
+        //重新註冊字大小
+        appClass.method.registerFontSize();
+    });
+
+    //按到自動-跳過前情提要  
+    $("input[reqc='my_netflix_auto_skip_recap']").unbind("click").bind("click", function () {
+        window['my_netflix_auto_skip_recap'] = $("input[reqc='my_netflix_auto_skip_recap']").prop("checked").toString();
+        //console.log(window['my_netflix_auto_skip_recap']);
+        appClass.method.setMemory('my_netflix_auto_skip_recap', window['my_netflix_auto_skip_recap']);
         //重新註冊字大小
         appClass.method.registerFontSize();
     });
@@ -1908,6 +1950,9 @@ function run_3wa_netflix() {
 
             //重選影片了，intro flag 重置
             appClass.flag.isSkipIntro = false;
+
+            //前情提要重置
+            appClass.flag.isSkipRecap = false;
 
             //使用最後紀錄到的字幕
             appClass.flag.sub1 = window['my_netflix_sub1'];
