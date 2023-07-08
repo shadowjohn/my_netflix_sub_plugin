@@ -60,7 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
-    V3.1 (2023-07-07)<br>
+    V3.1 (2023-07-08)<br>
 	V3.0 (2023-01-29)<br>
 	V2.9 (2023-01-29)<br>
 	V2.8 (2022-12-05)<br>
