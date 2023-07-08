@@ -651,10 +651,15 @@ function run_3wa_netflix() {
                 $("video").unbind("click").click(function (e) {
                     //Issue 97、片尾時播放終止，點畫面中間會有當掉的問題，如: 柯南159集，觸發原因為: $("video").play();
                     //解決方式：當 video duration 與 currentTime 相同，video 加入 css style.pointerEvents = "none";
+                    if ($("div[data-uia='background-video']").length > 0 &&
+                        $("div[data-uia='background-video'] video").length > 0) {
+                        //$("div[data-uia='background-video'] video")[0].pause();
+                        //然後改成靜音好了
+                        $("div[data-uia='background-video'] video")[0].muted = true;
+                    }
                     if ($("video").length > 0 && $("video")[0].currentTime == $("video")[0].duration) {
-                        //console.log("WTF.....");
                         $("video").css({
-                            'pointerEvents': 'none'
+                            'pointer-events': 'none'
                         });
                         return;
                     }
@@ -669,6 +674,56 @@ function run_3wa_netflix() {
                 });
                 $("video").unbind("dblclick").bind("dblclick", function (e) {
                     $("button[reqc='my3wanetflix_fullscreen_btn']").trigger("click");
+
+                    //Issue 95、看到最後一集片尾會自動跳出，想跳回去看片尾卻沒辦法，如: LiSA Live is Smile Always (From: Takashi_灯)
+                    //console.log("WTF...!!?"); //確實有觸發
+                    //console.log(appClass.method.getMovieID());
+                    //console.log($("div[data-uia='watch-video-player-view-minimized']").length);
+                    //如果有發現 div data-uia='watch-video-player-view-minimized' 仍可進全螢幕
+                    //如果有發現 background-video，把他暫停
+                    if ($("div[data-uia='background-video']").length > 0 &&
+                        $("div[data-uia='background-video'] video").length > 0) {
+                        $("div[data-uia='background-video'] video")[0].pause();
+                        //然後改成靜音好了
+                        $("div[data-uia='background-video'] video")[0].muted = true;
+                    }
+
+                    if ($("div[data-uia='watch-video-player-view-minimized']").length > 0
+                        &&
+                        $("div[data-uia='watch-video-player-view-minimized'] video").length > 0
+                    ) {
+                        //appClass.method.fixOrinURL();
+                        $("div[data-uia='watch-video-player-view-minimized'] video")[0].webkitEnterFullscreen();
+                        //藏掉 track bar
+                        //From : https://stackoverflow.com/questions/42325531/how-to-hide-progress-bar-in-html5-video-player
+                        //不藏使用者點了會當掉
+                        $("div[data-uia='watch-video-player-view-minimized'] video").append(`
+                        <style>
+                            div[data-uia='watch-video-player-view-minimized'] audio::-webkit-media-controls-timeline,
+                            div[data-uia='watch-video-player-view-minimized'] video::-webkit-media-controls-timeline {
+                                display: none;
+                            }
+                        </style>
+                        `); 
+                        
+                        //同樣修正最後一秒後繼續播會當的問題
+                        //$("div[data-uia='watch-video-player-view-minimized'] video").unbind("mouseup");
+                        //$("div[data-uia='watch-video-player-view-minimized'] video").unbind("click");
+                        $("div[data-uia='watch-video-player-view-minimized'] video").unbind("mousedown").mousedown(function (e) {
+                            
+                            if ($("div[data-uia='watch-video-player-view-minimized'] video").length > 0 &&
+                                $("div[data-uia='watch-video-player-view-minimized'] video")[0].currentTime == $("div[data-uia='watch-video-player-view-minimized'] video")[0].duration) {
+                                $("div[data-uia='watch-video-player-view-minimized'] video").css({
+                                    'pointer-events': 'none'
+                                });
+                                //console.log("GGGGGg");
+                                //最後點了離開全螢幕好了
+                                $("div[data-uia='watch-video-player-view-minimized'] video")[0].webkitExitFullscreen();
+                                return false;
+                            }                            
+                            e.stopPropagation();                            
+                        });
+                    }
                 });
                 //$("button[data-uia='control-play-pause-pause']").trigger("click");
                 //});
@@ -686,9 +741,9 @@ function run_3wa_netflix() {
                 //這二行也要註冊到連續使用的 interval
                 $("button[data-uia='control-nav-back']").css({ 'pointer-events': 'auto' }); //回上頁按鈕
                 $("button[data-uia='control-flag']").css({ 'pointer-events': 'auto' }); //問題回報鈕
-                
-                    
-                    
+
+
+
             },
             "cleanXMLSubs": function () {
                 //清掉字幕組
