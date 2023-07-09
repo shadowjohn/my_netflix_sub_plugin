@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+    V3.1 (2023-07-08)<br>
 	V3.0 (2023-01-29)<br>
 	V2.9 (2023-01-29)<br>
 	V2.8 (2022-12-05)<br>
@@ -119,8 +120,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.0 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.0/3wa_netflix.zip <br>
-(V2.8 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V2.8/3wa_netflix.zip <br>
+(V3.1 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.1/3wa_netflix.zip <br>
+(V3.0 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.0/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -163,39 +164,46 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2023-01-29) V3.0 版：
-    1、94、修正點音訊沒有變化的問題
+  (2023-07-08) V3.1 版：
+    1、Issue 96、可以自動「略過前情提要」，如: 鬼滅之刃-刀匠村篇 11集
+    2、Issue 97、片尾時播放終止，點畫面中間會有當掉的問題，如: 柯南159集，觸發原因為: $("video").play();
+       解決方式：當 video duration 與 currentTime 相同，video 加入 css style.pointerEvents = "none";
+    3、Issue 95、看到最後一集片尾會自動跳出，想跳回去看片尾卻沒辦法，如: LiSA Live is Smile Always (From: Takashi_灯)
+       解決方式：可以支援 double click 重回全螢幕，但這時的 track bar 已隱形不能使用，如果要操作似乎會當掉，先隱藏 
+    
+    (2023-01-29) V3.0 版：
+    1、Issue 94、修正點音訊沒有變化的問題
 
     (2023-01-29) V2.9 版：
-    1、93、修正下方進度條顯示問題
+    1、Issue 93、修正下方進度條顯示問題
 
     (2022-11-10) V2.8 版：
-    1、91、修正自動下一集會 crash 的問題
-    2、92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題
+    1、Issue 91、修正自動下一集會 crash 的問題
+    2、Issue 92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題
 
     (2022-11-10) V2.7 版：
-    1、90、六人行「英文 (CC)」 字幕，有全大寫的問題
+    1、Issue 90、六人行「英文 (CC)」 字幕，有全大寫的問題
 
     (2022-11-10) V2.6 版：
-    1、89、清字幕 localStorage 不小心清到字幕設定
+    1、Issue 89、清字幕 localStorage 不小心清到字幕設定
 
     (2022-11-05) V2.5 版：
-    1、85、熱鍵 S 發現 bug，有時按下後，會回到片頭
-    2、86、使用者可自定自動跳過片頭
-    3、87、使用者可自定自動跳至下一集
-    4、88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕
+    1、Issue 85、熱鍵 S 發現 bug，有時按下後，會回到片頭
+    2、Issue 86、使用者可自定自動跳過片頭
+    3、Issue 87、使用者可自定自動跳至下一集
+    4、Issue 88、電影，在片尾時「返回瀏覽」，如果是全螢幕，離開全螢幕
 
     (2022-10-19) V2.4 版：
-    1、76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)
-    2、77、當影片播放進入最後 1%，停止翻譯字幕
-    3、78、當影片暫停時，停止翻譯字幕
-    4、79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發
-    5、80、熱鍵 → 下10秒
-    6、81、熱鍵 ← 上10秒
-    7、82、熱鍵 M 消音、有聲
-    8、83、熱鍵 F 全螢幕
-    9、83、熱鍵 S 略過片頭
-    10、84、熱鍵 N 下一集  
+    1、Issue 76、寬螢幕如果遇到超長字幕，偶爾會透在底下(如：迷霧：第6集 剩 1:30 左右)
+    2、Issue 77、當影片播放進入最後 1%，停止翻譯字幕
+    3、Issue 78、當影片暫停時，停止翻譯字幕
+    4、Issue 79、全螢幕按鈕應避免 Focus ，不然空白鍵會觸發
+    5、Issue 80、熱鍵 → 下10秒
+    6、Issue 81、熱鍵 ← 上10秒
+    7、Issue 82、熱鍵 M 消音、有聲
+    8、Issue 83、熱鍵 F 全螢幕
+    9、Issue 83、熱鍵 S 略過片頭
+    10、Issue 84、熱鍵 N 下一集  
 
     (2022-10-08) V2.3 版：
     1、停用自動顯示進度條(太容易造成影片停住)
@@ -420,4 +428,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2022-12-05)92、自動跳過片頭，才不會發生出現跳過片頭，使用者點了進度條或切頁，數量變 0 的問題</li>
   <li>(Done 2023-01-29)93、修正下方進度條顯示問題</li>
   <li>(Done 2023-01-29)94、修正點音訊沒有變化的問題</li>
+  <li>(Done 2023-07-08)95、看到最後一集片尾會自動跳出，想跳回去看片尾卻沒辦法，如: LiSA Live is Smile Always (From: Takashi_灯)</li>
+  <li>(Done 2023-07-07)96、可以自動「略過前情提要」，如: 鬼滅之刃-刀匠村篇 11集</li>
+  <li>(Done 2023-07-08)97、片尾時播放終止，點畫面中間會有當掉的問題，如: 柯南159集，觸發原因為: $("video").play();</li>
 </ul>
