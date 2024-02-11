@@ -18,7 +18,7 @@ function run_3wa_netflix() {
 
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.2",
+        appVersion: "3.3",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -497,6 +497,19 @@ function run_3wa_netflix() {
                 //Issue 74、影片標題下移、加一點透明度
                 $("head").append("<style>div[data-uia='video-title']{opacity:0.8;position:absolute;bottom:-4%;}</style>")
 
+                //字型-思源黑體
+                $("head").append(`<style>
+                    @font-face {
+                       font-family: 'Noto Sans TC';
+                       /*font-style: normal;
+                       font-weight: 900;*/
+                       src: url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff2) format('woff2'),
+                            url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff) format('woff'),
+                            url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.otf) format('opentype');
+                     }
+                     </style>
+                `);
+
                 //重要，嘗試修正播放捲軸
                 //並提示在捲軸時，無法翻譯
                 //註冊一下 #my3wanetflix_alert_sub_comments
@@ -880,7 +893,67 @@ function run_3wa_netflix() {
         //主要字幕
         'my_netflix_sub1': { 'default': '繁體中文' }, // 最後選的字幕
         'my_netflix_font_family': {
-            'default': 'Netflix Sans', 'sets': ['Netflix Sans', '微軟正黑體', '標楷體', 'Copperplate', 'Arial', 'Helvetica']
+            'default': 'Netflix Sans',  // switch to name
+            'sets': [
+                {
+                    // 1
+                    'Display': 'Netflix Sans',
+                    'Name': 'Netflix Sans'
+                }, {
+                    // 2
+                    'Display': '微軟正黑體',
+                    'Name': 'Microsoft JhengHei'
+                }, {
+                    // 3
+                    'Display': '標楷體',
+                    'Name': 'DFKai-sb'
+                    //'Name': "'標楷體'"
+                }, {
+                    // 4
+                    'Display': '思源黑體',
+                    'Name': 'Noto Sans TC'
+                }, {
+                    // 5
+                    'Display': '源樣黑體',
+                    'Name': '源樣黑體'
+                }, {
+                    // 6
+                    'Display': '源石黑體',
+                    'Name': '源石黑體'
+                }, {
+                    // 7
+                    'Display': '芫荽',
+                    'Name': 'Iansui'
+                }, {
+                    // 8
+                    'Display': '霞鹜文楷',
+                    'Name': 'LXGW WenKai'
+                }, {
+                    // 9
+                    'Display': 'ㄅ字嗨注音標楷',
+                    'Name': 'BpmfZihiKaiStd-Regular'
+                }, {
+                    // 10
+                    'Display': 'ㄅ字嗨注音黑體',
+                    'Name': 'BpmfZihiSans-Regular'
+                }, {
+                    // 11
+                    'Display': 'ㄅ字嗨注音宋體',
+                    'Name': 'BpmfZihiSerif-Regular'
+                }, {
+                    // 12
+                    'Display': 'Copperplate',
+                    'Name': 'Copperplate'
+                }, {
+                    // 13
+                    'Display': 'Arial',
+                    'Name': 'Arial'
+                }, {
+                    // 14
+                    'Display': 'Helvetica',
+                    'Name': 'Helvetica'
+                }
+            ]
         },
         //主要字幕 字型
         'my_netflix_font_color': { 'default': '#fff5f8' }, // 字色
@@ -894,7 +967,82 @@ function run_3wa_netflix() {
         //第二字幕
         'my_netflix_sub2': { 'default': '關閉' }, // 最後選的字幕
         'my_netflix_font_family_2': {
-            'default': 'Netflix Sans', 'sets': ['Netflix Sans', '微軟正黑體', '標楷體', 'Copperplate', 'Arial', 'Helvetica']
+            'default': 'Netflix Sans',
+            'sets': [
+                {
+                    // 1
+                    'Display': 'Netflix Sans',
+                    'Name': 'Netflix Sans'
+                }, {
+                    // 2
+                    'Display': '微軟正黑體',
+                    'Name': '微軟正黑體'
+                }, {
+                    // 3
+                    'Display': '標楷體',
+                    'Name': '標楷體'
+                }, {
+                    // 4
+                    'Display': '思源黑體-標準',
+                    'Name': 'SourceHanSans-Regular'
+                }, {
+                    // 5
+                    'Display': '思源黑體-粗體',
+                    'Name': 'SourceHanSans-Bold'
+                }, {
+                    // 6
+                    'Display': '源樣黑體-標準',
+                    'Name': 'GenYoGothic-R'
+                }, {
+                    // 7
+                    'Display': '源樣黑體-粗體',
+                    'Name': 'GenYoGothic-B'
+                }, {
+                    // 8
+                    'Display': '源石黑體-標準',
+                    'Name': 'GenSekiGothic-R'
+                }, {
+                    // 9
+                    'Display': '源石黑體-粗體',
+                    'Name': 'GenSekiGothic-B'
+                }, {
+                    // 10
+                    'Display': '芫荽-標準',
+                    'Name': 'Iansui-Regular'
+                }, {
+                    // 11
+                    'Display': '霞鹜文楷-標準',
+                    'Name': 'LXGWWenKai-Regular'
+                }, {
+                    // 12
+                    'Display': '霞鹜文楷-粗體',
+                    'Name': 'LXGWWenKai-Bold'
+                }, {
+                    // 13
+                    'Display': '字嗨注音標楷-標準',
+                    'Name': 'BpmfZihiKaiStd-Regular'
+                }, {
+                    // 14
+                    'Display': '字嗨注音黑體-標準',
+                    'Name': 'BpmfZihiSans-Regular'
+                }, {
+                    // 15
+                    'Display': '字嗨注音宋體-標準',
+                    'Name': 'BpmfZihiSerif-Regular'
+                }, {
+                    // 16
+                    'Display': 'Copperplate',
+                    'Name': 'Copperplate'
+                }, {
+                    // 17
+                    'Display': 'Arial',
+                    'Name': 'Arial'
+                }, {
+                    // 18
+                    'Display': 'Helvetica',
+                    'Name': 'Helvetica'
+                }
+            ]
         },
         //第二字幕 字型
         'my_netflix_font_color_2': { 'default': '#fff5f8' }, // 字色
@@ -1080,6 +1228,68 @@ function run_3wa_netflix() {
     text-align: left;
     padding: 2px;
   }
+
+  /* 字型列表 */
+  .my_netflix_Font_table_class{
+    background-color: rgba(255,255,255,0.8);
+  }
+  .my_netflix_Font_table_class .my_netflix_Font_table_class_span_title{
+      text-align: left;
+      font-size: 16px;
+      font-weight: bold;
+  }
+  .my_netflix_Font_table_class th{
+    background-color: orange;
+    font-weight: bold;
+    text-align:center;
+    padding:3px;
+  }
+  .my_netflix_Font_table_class th[field='項次']{
+    width: 40px;
+    border-bottom: 1px solid #00f;
+  }
+  .my_netflix_Font_table_class th[field='字幕名稱']{
+    width: 120px;
+    border-bottom: 1px solid #00f;
+  }
+  .my_netflix_Font_table_class th[field='下載位置']{    
+    width: 80px;
+    border-bottom: 1px solid #00f;
+  }  
+  .my_netflix_Font_table_class th[field='授權說明']{    
+    border-bottom: 1px solid #00f;
+  }  
+  .my_netflix_Font_table_class td[field='項次']{
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .my_netflix_Font_table_class td[field='字幕名稱']{
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .my_netflix_Font_table_class td[field='下載位置']{
+      text-align: center;
+      font-size: 16px;
+  }
+  .my_netflix_Font_table_class td[field='下載位置'] a{    
+    color: #00f;
+    font-size: 16px;
+  }
+  .my_netflix_Font_table_class td[field='授權說明']{
+      text-align: left;
+  }
+  .my_netflix_Font_table_class td[field='授權說明'] a{    
+    color: #00f;
+    font-size: 16px;
+  }
+  
+  .my_netflix_Font_table_class td{
+    border-bottom: 0.5px solid #00f;
+    text-align: left;
+    padding: 2px;
+  }
   /* 新版的右下按鈕 */
   button[reqc='my_control-audio-subtitle']:hover{        
     animation: shake 0.8s;
@@ -1135,6 +1345,7 @@ function run_3wa_netflix() {
             <li><a href='#sub1_div'>主要字幕</a></li> \
             <li><a href='#sub2_div'>次要字幕</a></li> \
             <li><a href='#subSetting_div'>自動功能</a></li> \
+            <li><a href='#subFont_div'>字幕安裝下載</a></li> \
             <li><a href='#subMessage_div'>注意事項</a></li> \
         </ul> \
         <span id='subMain_div'> \
@@ -1271,6 +1482,70 @@ function run_3wa_netflix() {
                     </tbody> \
                 </table> \
             </span> \
+            <span id='subFont_div'> \
+                <div class='my_netflix_Font_table_class_span_title'>注：字幕下載後，按右鍵安裝即可使用，或複製貼到 C:\\Windows\\Fonts\\</div> \
+                <br> \
+                <table style='width:100%;' class='my_netflix_Font_table_class'> \
+                    <thead> \
+                        <tr> \
+                            <th field='項次'>項次</th> \
+                            <th field='字幕名稱'>字幕名稱</th> \
+                            <th field='下載位置'>下載位置</th> \
+                            <th field='授權說明'>授權說明</th> \
+                        </tr> \
+                    </thead> \
+                    <tbody> \
+                        <tr> \
+                            <td field='項次'>1</td> \
+                            <td field='字幕名稱'>思源黑體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/adobe-fonts/source-han-sans/raw/release/OTC/SourceHanSans-Regular.ttc'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/adobe-fonts/source-han-sans/blob/master/LICENSE.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>2</td> \
+                            <td field='字幕名稱'>源樣黑體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/raw/master/ttc/GenYoGothic-R.ttc'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>3</td> \
+                            <td field='字幕名稱'>源石黑體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/raw/master/ttc/GenSekiGothic-R.ttc'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>4</td> \
+                            <td field='字幕名稱'>芫荽</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/iansui/raw/main/Iansui-Regular.ttf'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/iansui/blob/main/OFL.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>5</td> \
+                            <td field='字幕名稱'>霞鹜文楷</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai/raw/main/fonts/TTF/LXGWWenKai-Regular.ttf'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>6</td> \
+                            <td field='字幕名稱'>ㄅ嗨注音標楷</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiKaiStd-Regular.ttf'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>7</td> \
+                            <td field='字幕名稱'>ㄅ嗨注音黑體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSans-Regular.ttf'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
+                        </tr> \
+                        <tr> \
+                            <td field='項次'>8</td> \
+                            <td field='字幕名稱'>ㄅ嗨注音宋體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSerif-Regular.ttf'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
+                        </tr> \
+                    </tbody> \
+                </table> \
+            </span> \
             <span id='subMessage_div'> \
                 <table style='width:100%;' class='my_netflix_subMessage_table_class'> \
                     <thead> \
@@ -1398,7 +1673,7 @@ function run_3wa_netflix() {
     {
         var m = new Array();
         for (var i = 0, max_i = _myNetFlixSettings.my_netflix_font_family.sets.length; i < max_i; i++) {
-            var d = "<option value='" + _myNetFlixSettings.my_netflix_font_family.sets[i] + "'>" + _myNetFlixSettings.my_netflix_font_family.sets[i] + "</option>";
+            var d = "<option value='" + _myNetFlixSettings.my_netflix_font_family.sets[i]['Name'] + "'>" + _myNetFlixSettings.my_netflix_font_family.sets[i]['Display'] + "</option>";
             m.push(d);
         }
         $("select[reqc='my_netflix_font_family_select']").html(m.join(""));
@@ -1406,7 +1681,7 @@ function run_3wa_netflix() {
 
         m = new Array();
         for (var i = 0, max_i = _myNetFlixSettings.my_netflix_font_family_2.sets.length; i < max_i; i++) {
-            var d = "<option value='" + _myNetFlixSettings.my_netflix_font_family_2.sets[i] + "'>" + _myNetFlixSettings.my_netflix_font_family_2.sets[i] + "</option>";
+            var d = "<option value='" + _myNetFlixSettings.my_netflix_font_family_2.sets[i]['Name'] + "'>" + _myNetFlixSettings.my_netflix_font_family_2.sets[i]['Display'] + "</option>";
             m.push(d);
         }
         $("select[reqc='my_netflix_font_family_select_2']").html(m.join(""));
@@ -2110,7 +2385,7 @@ function run_3wa_netflix() {
                 $("#subMain_div").find("div[reqc='我的字幕選單']").css({
                     'position': 'static',
                     'width': '100%'
-                });                
+                });
                 $("#subMain_div").find("div[reqc='我的字幕選單'] *").css({
                     'padding-left': '2px', //縮小間距
                     'padding-top': '2px', //縮小間距
@@ -2137,7 +2412,7 @@ function run_3wa_netflix() {
                     'margin-left': '45px'
                 });
 
-                
+
 
                 //如果 appClass.flag.sub1 是 null 代表還沒設定字幕
                 if (appClass.flag.sub1 == null) {
@@ -2189,19 +2464,19 @@ function run_3wa_netflix() {
                     'font-size': '18px'
                 });
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li div").css({
-                    'font-size':'18px'
-                });                
+                    'font-size': '18px'
+                });
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li div div").css({
                     'font-size': '18px'
                 });
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='次要字幕'] li div").css({
                     'font-size': '18px'
-                });   
+                });
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='次要字幕'] li div div").css({
                     'font-size': '18px'
                 });
 
-                
+
 
 
                 //註冊我的字幕選單裡的聲音被按到，同步原生的選單被按到
@@ -2281,8 +2556,8 @@ function run_3wa_netflix() {
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕']").find("li").find("div").css({
                         'margin-left': '0px'
                     });
-                    
-                    
+
+
                     //只有勾勾要明顯些
                     $(this).find("div").css({
                         'margin-left': '15px'
