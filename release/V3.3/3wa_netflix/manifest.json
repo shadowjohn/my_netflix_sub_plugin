@@ -1,0 +1,22 @@
+{
+  "name": "3waNetflix",
+  "action": {},
+  "manifest_version": 3,
+  "author": "羽山秋人 (https://3wa.tw)",
+  "version": "3.3",
+  "description": "讓 netflix 的字幕稍微調大一點",
+  "content_security_policy": {
+
+  },
+  "host_permissions": [    
+    "https://*.netflix.com/*"
+  ],  
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
