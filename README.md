@@ -113,7 +113,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 <img src="screenshot/V2.7_1.jpg">
 <p align="center">V2.7 版，加入可以修正「英文 (CC)」 字幕，全大寫字幕的問題</p>
 <br>
-<img src="screenshot/V3.3.jpg">
+<img src="screenshot/V3.3_1.jpg">
 <p align="center">V3.3 版，加入更多字型</p>
 <br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
