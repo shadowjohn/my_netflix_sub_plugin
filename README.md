@@ -113,6 +113,9 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 <img src="screenshot/V2.7_1.jpg">
 <p align="center">V2.7 版，加入可以修正「英文 (CC)」 字幕，全大寫字幕的問題</p>
 <br>
+<img src="screenshot/V3.3.jpg">
+<p align="center">V3.3 版，加入更多字型</p>
+<br>
 <a target="_blank" href="https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/2.mp4">使用方法影片</a>
 
 <h2>使用方法：</h2>
@@ -166,7 +169,15 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2023-12-02) V3.2 版：
+  (2024-02-11) V3.3 版：
+    1、Issue 100、增加字型選擇「思源黑體」https://fonts.google.com/noto/specimen/Noto+Sans+TC
+    2、Issue 101、增加字型選擇「源樣黑體」https://github.com/ButTaiwan/genyog-font
+    3、Issue 102、增加字型選擇「源石黑體」https://github.com/ButTaiwan/genseki-font
+    4、Issue 103、增加字型選擇「芫荽」https://github.com/ButTaiwan/iansui
+    5、Issue 104、增加字型選擇「霞鹜文楷」https://github.com/lxgw/LxgwWenKai
+    6、Issue 102、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs
+
+    (2023-12-02) V3.2 版：
     1、Issue 98、(可選擇) 自動移除 CC 字幕 [內容]，句首、句尾「-」號
     2、Issue 99、選單寬度調整，音訊、主要字幕、次要字幕，字體大小修正為 18px
 
@@ -439,10 +450,10 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2023-07-08)97、片尾時播放終止，點畫面中間會有當掉的問題，如: 柯南159集，觸發原因為: $("video").play();</li>
   <li>(Done 2023-12-02)98、(可選擇) 自動移除 CC 字幕 [內容]，句首、句尾「-」號</li>
   <li>(Done 2023-12-02)99、選單寬度調整，音訊、主要字幕、次要字幕，字體大小修正為 18px</li>
-  <li>100、增加字型選擇「思源黑體」https://github.com/adobe-fonts/source-han-sans</li>
-  <li>101、增加字型選擇「源樣黑體」https://github.com/ButTaiwan/genyog-font</li>
-  <li>102、增加字型選擇「源石黑體」https://github.com/ButTaiwan/genseki-font</li>
-  <li>103、增加字型選擇「芫荽」https://github.com/ButTaiwan/iansui</li>
-  <li>104、增加字型選擇「霞鹜文楷」https://github.com/lxgw/LxgwWenKai</li>
-  <li>105、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs</li>
+  <li>(Done 2024-02-11)100、增加字型選擇「思源黑體」https://fonts.google.com/noto/specimen/Noto+Sans+TC</li>
+  <li>(Done 2024-02-11)101、增加字型選擇「源樣黑體」https://github.com/ButTaiwan/genyog-font</li>
+  <li>(Done 2024-02-11)102、增加字型選擇「源石黑體」https://github.com/ButTaiwan/genseki-font</li>
+  <li>(Done 2024-02-11)103、增加字型選擇「芫荽」https://github.com/ButTaiwan/iansui</li>
+  <li>(Done 2024-02-11)104、增加字型選擇「霞鹜文楷」https://github.com/lxgw/LxgwWenKai</li>
+  <li>(Done 2024-02-11)105、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs</li>
 </ul>

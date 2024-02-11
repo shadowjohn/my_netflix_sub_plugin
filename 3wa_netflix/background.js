@@ -497,18 +497,7 @@ function run_3wa_netflix() {
                 //Issue 74、影片標題下移、加一點透明度
                 $("head").append("<style>div[data-uia='video-title']{opacity:0.8;position:absolute;bottom:-4%;}</style>")
 
-                //字型-思源黑體
-                $("head").append(`<style>
-                    @font-face {
-                       font-family: 'Noto Sans TC';
-                       /*font-style: normal;
-                       font-weight: 900;*/
-                       src: url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff2) format('woff2'),
-                            url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff) format('woff'),
-                            url(//fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.otf) format('opentype');
-                     }
-                     </style>
-                `);
+                
 
                 //重要，嘗試修正播放捲軸
                 //並提示在捲軸時，無法翻譯
@@ -915,11 +904,11 @@ function run_3wa_netflix() {
                 }, {
                     // 5
                     'Display': '源樣黑體',
-                    'Name': '源樣黑體'
+                    'Name': 'GenYoGothic TW,GenYoGothic JP'
                 }, {
                     // 6
                     'Display': '源石黑體',
-                    'Name': '源石黑體'
+                    'Name': 'GenSekiGothic TW,GenSekiGothic JP'
                 }, {
                     // 7
                     'Display': '芫荽',
@@ -931,15 +920,15 @@ function run_3wa_netflix() {
                 }, {
                     // 9
                     'Display': 'ㄅ字嗨注音標楷',
-                    'Name': 'BpmfZihiKaiStd-Regular'
+                    'Name': 'Bpmf Zihi KaiStd'
                 }, {
                     // 10
                     'Display': 'ㄅ字嗨注音黑體',
-                    'Name': 'BpmfZihiSans-Regular'
+                    'Name': "Bpmf Zihi Sans"
                 }, {
                     // 11
                     'Display': 'ㄅ字嗨注音宋體',
-                    'Name': 'BpmfZihiSerif-Regular'
+                    'Name': "Bpmf Zihi Serif"
                 }, {
                     // 12
                     'Display': 'Copperplate',
@@ -964,8 +953,8 @@ function run_3wa_netflix() {
         'my_netflix_fontspace': { 'default': 12.5, 'min': -50, 'max': 50, 'step': 0.1 }, //文字間距
         'my_netflix_font_text_shadow': { 'default': 10, 'min': 0, 'max': 50, 'step': 0.1 }, //字框粗細
 
-        //第二字幕
-        'my_netflix_sub2': { 'default': '關閉' }, // 最後選的字幕
+        //第二字幕 字型
+        'my_netflix_sub2': { 'default': '關閉' }, // 最後選的字型
         'my_netflix_font_family_2': {
             'default': 'Netflix Sans',
             'sets': [
@@ -976,69 +965,54 @@ function run_3wa_netflix() {
                 }, {
                     // 2
                     'Display': '微軟正黑體',
-                    'Name': '微軟正黑體'
+                    'Name': 'Microsoft JhengHei'
                 }, {
                     // 3
                     'Display': '標楷體',
-                    'Name': '標楷體'
+                    'Name': 'DFKai-sb'
+                    //'Name': "'標楷體'"
                 }, {
                     // 4
-                    'Display': '思源黑體-標準',
-                    'Name': 'SourceHanSans-Regular'
+                    'Display': '思源黑體',
+                    'Name': 'Noto Sans TC'
                 }, {
                     // 5
-                    'Display': '思源黑體-粗體',
-                    'Name': 'SourceHanSans-Bold'
+                    'Display': '源樣黑體',
+                    'Name': 'GenYoGothic TW,GenYoGothic JP'
                 }, {
                     // 6
-                    'Display': '源樣黑體-標準',
-                    'Name': 'GenYoGothic-R'
+                    'Display': '源石黑體',
+                    'Name': 'GenSekiGothic TW,GenSekiGothic JP'
                 }, {
                     // 7
-                    'Display': '源樣黑體-粗體',
-                    'Name': 'GenYoGothic-B'
+                    'Display': '芫荽',
+                    'Name': 'Iansui'
                 }, {
                     // 8
-                    'Display': '源石黑體-標準',
-                    'Name': 'GenSekiGothic-R'
+                    'Display': '霞鹜文楷',
+                    'Name': 'LXGW WenKai'
                 }, {
                     // 9
-                    'Display': '源石黑體-粗體',
-                    'Name': 'GenSekiGothic-B'
+                    'Display': 'ㄅ字嗨注音標楷',
+                    'Name': 'Bpmf Zihi KaiStd'
                 }, {
                     // 10
-                    'Display': '芫荽-標準',
-                    'Name': 'Iansui-Regular'
+                    'Display': 'ㄅ字嗨注音黑體',
+                    'Name': "Bpmf Zihi Sans"
                 }, {
                     // 11
-                    'Display': '霞鹜文楷-標準',
-                    'Name': 'LXGWWenKai-Regular'
+                    'Display': 'ㄅ字嗨注音宋體',
+                    'Name': "Bpmf Zihi Serif"
                 }, {
                     // 12
-                    'Display': '霞鹜文楷-粗體',
-                    'Name': 'LXGWWenKai-Bold'
-                }, {
-                    // 13
-                    'Display': '字嗨注音標楷-標準',
-                    'Name': 'BpmfZihiKaiStd-Regular'
-                }, {
-                    // 14
-                    'Display': '字嗨注音黑體-標準',
-                    'Name': 'BpmfZihiSans-Regular'
-                }, {
-                    // 15
-                    'Display': '字嗨注音宋體-標準',
-                    'Name': 'BpmfZihiSerif-Regular'
-                }, {
-                    // 16
                     'Display': 'Copperplate',
                     'Name': 'Copperplate'
                 }, {
-                    // 17
+                    // 13
                     'Display': 'Arial',
                     'Name': 'Arial'
                 }, {
-                    // 18
+                    // 14
                     'Display': 'Helvetica',
                     'Name': 'Helvetica'
                 }
@@ -1233,8 +1207,9 @@ function run_3wa_netflix() {
   .my_netflix_Font_table_class{
     background-color: rgba(255,255,255,0.8);
   }
-  .my_netflix_Font_table_class .my_netflix_Font_table_class_span_title{
+  .my_netflix_Font_table_class_span_title{
       text-align: left;
+      word-break: break-word;
       font-size: 16px;
       font-weight: bold;
   }
@@ -1248,7 +1223,7 @@ function run_3wa_netflix() {
     width: 40px;
     border-bottom: 1px solid #00f;
   }
-  .my_netflix_Font_table_class th[field='字幕名稱']{
+  .my_netflix_Font_table_class th[field='字型名稱']{
     width: 120px;
     border-bottom: 1px solid #00f;
   }
@@ -1264,7 +1239,7 @@ function run_3wa_netflix() {
     font-weight: bold;
     font-size: 16px;
   }
-  .my_netflix_Font_table_class td[field='字幕名稱']{
+  .my_netflix_Font_table_class td[field='字型名稱']{
     text-align: center;
     font-weight: bold;
     font-size: 16px;
@@ -1345,7 +1320,7 @@ function run_3wa_netflix() {
             <li><a href='#sub1_div'>主要字幕</a></li> \
             <li><a href='#sub2_div'>次要字幕</a></li> \
             <li><a href='#subSetting_div'>自動功能</a></li> \
-            <li><a href='#subFont_div'>字幕安裝下載</a></li> \
+            <li><a href='#subFont_div'>字幕下載</a></li> \
             <li><a href='#subMessage_div'>注意事項</a></li> \
         </ul> \
         <span id='subMain_div'> \
@@ -1483,13 +1458,16 @@ function run_3wa_netflix() {
                 </table> \
             </span> \
             <span id='subFont_div'> \
-                <div class='my_netflix_Font_table_class_span_title'>注：字幕下載後，按右鍵安裝即可使用，或複製貼到 C:\\Windows\\Fonts\\</div> \
+                <div class='my_netflix_Font_table_class_span_title'>注：字型下載後，字型檔「按右鍵安裝」<br> \
+                如使用 brave 瀏覽器，Brave Shields 要關掉，額外安裝的字幕才能正常使用<br> \
+                家裡有小朋友可以推薦用ㄅ字嗨注音黑體 \
+                </div > \
                 <br> \
                 <table style='width:100%;' class='my_netflix_Font_table_class'> \
                     <thead> \
                         <tr> \
                             <th field='項次'>項次</th> \
-                            <th field='字幕名稱'>字幕名稱</th> \
+                            <th field='字型名稱'>字型名稱</th> \
                             <th field='下載位置'>下載位置</th> \
                             <th field='授權說明'>授權說明</th> \
                         </tr> \
@@ -1497,49 +1475,49 @@ function run_3wa_netflix() {
                     <tbody> \
                         <tr> \
                             <td field='項次'>1</td> \
-                            <td field='字幕名稱'>思源黑體</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/adobe-fonts/source-han-sans/raw/release/OTC/SourceHanSans-Regular.ttc'>下載</a></td> \
-                            <td field='授權說明'><a target='_blank' href='https://github.com/adobe-fonts/source-han-sans/blob/master/LICENSE.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
+                            <td field='字型名稱'>思源黑體</td> \
+                            <td field='下載位置'><a target='_blank' href='https://fonts.google.com/noto/specimen/Noto+Sans+TC'>下載</a></td> \
+                            <td field='授權說明'><a target='_blank' href='https://fonts.google.com/noto/specimen/Noto+Sans+TC/about'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>2</td> \
-                            <td field='字幕名稱'>源樣黑體</td> \
+                            <td field='字型名稱'>源樣黑體</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/raw/master/ttc/GenYoGothic-R.ttc'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>3</td> \
-                            <td field='字幕名稱'>源石黑體</td> \
+                            <td field='字型名稱'>源石黑體</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/raw/master/ttc/GenSekiGothic-R.ttc'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>4</td> \
-                            <td field='字幕名稱'>芫荽</td> \
+                            <td field='字型名稱'>芫荽</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/iansui/raw/main/Iansui-Regular.ttf'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/iansui/blob/main/OFL.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>5</td> \
-                            <td field='字幕名稱'>霞鹜文楷</td> \
+                            <td field='字型名稱'>霞鹜文楷</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai/raw/main/fonts/TTF/LXGWWenKai-Regular.ttf'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>6</td> \
-                            <td field='字幕名稱'>ㄅ嗨注音標楷</td> \
+                            <td field='字型名稱'>ㄅ字嗨注音標楷</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiKaiStd-Regular.ttf'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>7</td> \
-                            <td field='字幕名稱'>ㄅ嗨注音黑體</td> \
+                            <td field='字型名稱'>ㄅ字嗨注音黑體</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSans-Regular.ttf'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>8</td> \
-                            <td field='字幕名稱'>ㄅ嗨注音宋體</td> \
+                            <td field='字型名稱'>ㄅ字嗨注音宋體</td> \
                             <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSerif-Regular.ttf'>下載</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
