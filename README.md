@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+    V3.4 (2024-04-16)<br>
     V3.3 (2024-02-11)<br>
     V3.2 (2023-12-02)<br>
     V3.1 (2023-07-08)<br>
@@ -125,8 +126,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.3 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.3/3wa_netflix.zip <br>
-(V3.2 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.2/3wa_netflix.zip <br>
+(V3.4 雙字幕 Beta) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.4/3wa_netflix.zip <br>
+(V3.3 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.3/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -169,7 +170,10 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2024-02-11) V3.3 版：
+  (2024-04-16) V3.4 版：
+    1、Issue 106、雙字幕同步問題修正
+
+    (2024-02-11) V3.3 版：
     1、Issue 100、增加字型選擇「思源黑體」https://fonts.google.com/noto/specimen/Noto+Sans+TC
     2、Issue 101、增加字型選擇「源樣黑體」https://github.com/ButTaiwan/genyog-font
     3、Issue 102、增加字型選擇「源石黑體」https://github.com/ButTaiwan/genseki-font
@@ -456,4 +460,5 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2024-02-11)103、增加字型選擇「芫荽」https://github.com/ButTaiwan/iansui</li>
   <li>(Done 2024-02-11)104、增加字型選擇「霞鹜文楷」https://github.com/lxgw/LxgwWenKai</li>
   <li>(Done 2024-02-11)105、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs</li>
+  <li>(Done 2024-04-16)106、雙字幕同步問題修正</li>
 </ul>
