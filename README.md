@@ -462,3 +462,4 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2024-02-11)105、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs</li>
   <li>(Done 2024-04-16)106、雙字幕同步問題修正</li>
 </ul>
+  
