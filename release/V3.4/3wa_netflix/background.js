@@ -3376,4 +3376,4 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         function: run_3wa_netflix
     });
 });
-*/ 
+*/
