@@ -18,7 +18,17 @@ function run_3wa_netflix() {
 
     // by pass prevent lock login
     setInterval(function(){
-        $("div[data-no-focus-lock='true']").hide();
+        //$("div[data-no-focus-lock='true']:").hide();
+        if ($("div[data-no-focus-lock='true']").is(":visible")) {
+            $("div[data-no-focus-lock='true']").hide();
+            // 如果是播放頁
+            if (strpos(window.location.href, "watch") !== false) {
+                // 顯示進度條
+                //setTimeout(function () {
+                    $("video").attr("controls", "true");
+                //}, 3000);
+            }
+        }
     },1000);
 
     var appClass = {
