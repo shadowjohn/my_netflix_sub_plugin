@@ -7,7 +7,7 @@ netflix 字幕放大、雙字幕顯示 extension
 萬念俱灰下，只好自己練功...<br>
 <br>
 <h2>程式開發：</h2>
-	此程式是 chrome、brave、edge extension 擴充程式，使用 javascript 開發。<br>
+	此程式是 chrome、brave、edge、firefox extension 擴充程式，使用 javascript 開發。<br>
 netflix 的字幕通常藏在 html tag SVG image ，新的字幕載入，就等同載一個新的 image tag<br>
 字幕 image 是圖片，所以要調整字幕變大，最簡單的方法就是加載 css<br>
 讓字幕有新的影像寬度100%，新高度，如 120px、130px(依單、雙行字調整)<br>
@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+    V3.6.0 (2025-06-25)<br>
     V3.5 (2025-05-17)<br>
     V3.4 (2025-04-29)<br>
     V3.3 (2024-02-11)<br>
@@ -127,8 +128,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.5 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.5/3wa_netflix.zip <br>
-(V3.3 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.3/3wa_netflix.zip <br>
+(V3.6.0 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
+(V3.5 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.5/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -171,7 +172,11 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2025-05-17) V3.5 版：
+  (2025-06-25) V3.6.0 版：
+    1、Issue 108、擴充 firefox 版
+    2、Issue 109、補上 icons 3wanetflix_logo.png 圖片 </li>
+
+    (2025-05-17) V3.5 版：
     1、Issue 106、Sawa Natsu 網友許願希望字體大小 3 可以再增加，最大值改到 8
     2、Issue 107、007 PP 反應雙字幕功能失效，發現紀錄字幕到 localStorage 時，裡面有夾些斷行	
 
@@ -467,5 +472,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2024-02-11)105、增加字型選擇「字嗨注音標楷、字嗨注音黑體、字嗨注音宋體」https://github.com/ButTaiwan/bpmfvs</li> 
   <li>(Done 2025-05-17)106、Sawa Natsu 網友許願希望字體大小 3 可以再增加，最大值改到 8</li>
   <li>(Done 2025-05-17)107、007 PP 反應雙字幕功能失效，發現紀錄字幕到 localStorage 時，裡面有夾些斷行</li>
+  <li>(Done 2025-06-25)108、擴充 firefox 版</li>
+  <li>(Done 2025-06-25)109、補上 icons 3wanetflix_logo.png 圖片 </li>
 </ul>
   
