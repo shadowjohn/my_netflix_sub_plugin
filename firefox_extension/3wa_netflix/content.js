@@ -16,10 +16,26 @@ function run_3wa_netflix() {
     function strpos(haystack, needle, offset) { var i = (haystack + '').indexOf(needle, (offset || 0)); return i === -1 ? false : i; }
     function substr(str, start, len) { var i = 0, allBMP = true, es = 0, el = 0, se = 0, ret = ''; str += ''; var end = str.length; this.php_js = this.php_js || {}; this.php_js.ini = this.php_js.ini || {}; switch ((this.php_js.ini['unicode.semantics'] && this.php_js.ini['unicode.semantics'].local_value.toLowerCase())) { case 'on': for (i = 0; i < str.length; i++) { if (/[\uD800-\uDBFF]/.test(str.charAt(i)) && /[\uDC00-\uDFFF]/.test(str.charAt(i + 1))) { allBMP = false; break; } } if (!allBMP) { if (start < 0) { for (i = end - 1, es = (start += end); i >= es; i--) { if (/[\uDC00-\uDFFF]/.test(str.charAt(i)) && /[\uD800-\uDBFF]/.test(str.charAt(i - 1))) { start--; es--; } } } else { var surrogatePairs = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g; while ((surrogatePairs.exec(str)) != null) { var li = surrogatePairs.lastIndex; if (li - 2 < start) { start++; } else { break; } } } if (start >= end || start < 0) { return false; } if (len < 0) { for (i = end - 1, el = (end += len); i >= el; i--) { if (/[\uDC00-\uDFFF]/.test(str.charAt(i)) && /[\uD800-\uDBFF]/.test(str.charAt(i - 1))) { end--; el--; } } if (start > end) { return false; } return str.slice(start, end); } else { se = start + len; for (i = start; i < se; i++) { ret += str.charAt(i); if (/[\uD800-\uDBFF]/.test(str.charAt(i)) && /[\uDC00-\uDFFF]/.test(str.charAt(i + 1))) { se++; } } return ret; } break; } case 'off': default: if (start < 0) { start += end; } end = typeof len === 'undefined' ? end : (len < 0 ? len + end : len + start); return start >= str.length || start < 0 || start > end ? !1 : str.slice(start, end); } return undefined; }
     function strlen(string) { var str = string + ''; var i = 0, chr = '', lgth = 0; if (!this.php_js || !this.php_js.ini || !this.php_js.ini['unicode.semantics'] || this.php_js.ini['unicode.semantics'].local_value.toLowerCase() !== 'on') { return string.length; } var getWholeChar = function (str, i) { var code = str.charCodeAt(i); var next = '', prev = ''; if (0xD800 <= code && code <= 0xDBFF) { if (str.length <= (i + 1)) { throw 'High surrogate without following low surrogate'; } next = str.charCodeAt(i + 1); if (0xDC00 > next || next > 0xDFFF) { throw 'High surrogate without following low surrogate'; } return str.charAt(i) + str.charAt(i + 1); } else if (0xDC00 <= code && code <= 0xDFFF) { if (i === 0) { throw 'Low surrogate without preceding high surrogate'; } prev = str.charCodeAt(i - 1); if (0xD800 > prev || prev > 0xDBFF) { throw 'Low surrogate without preceding high surrogate'; } return false; } return str.charAt(i); }; for (i = 0, lgth = 0; i < str.length; i++) { if ((chr = getWholeChar(str, i)) === false) { continue; } lgth++; } return lgth; }
-
+    function strip_tags(str, allowed_tags) {
+        var wtfkey = '', allowed = false; var matches = []; var allowed_array = []; var allowed_tag = ''; var i = 0; var k = ''; var html = ''; var replacer = function (search, replace, str) { return str.split(search).join(replace); }; if (allowed_tags) { allowed_array = allowed_tags.match(/([a-zA-Z0-9]+)/gi); }
+        str += ''; matches = str.match(/(<\/?[\S][^>]*>)/gi); for (wtfkey in matches) {
+            if (isNaN(wtfkey)) { continue; }
+            html = matches[wtfkey].toString(); allowed = false; for (k in allowed_array) {
+                allowed_tag = allowed_array[k]; i = -1; if (i != 0) { i = html.toLowerCase().indexOf('<' + allowed_tag + '>'); }
+                if (i != 0) { i = html.toLowerCase().indexOf('<' + allowed_tag + ' '); }
+                if (i != 0) { i = html.toLowerCase().indexOf('</' + allowed_tag); }
+                if (i == 0) { allowed = true; break; }
+            }
+            if (!allowed) { str = replacer(html, "", str); }
+        }
+        return str;
+    }
+    function br2nl(varTest) {
+        return varTest.replace(/<br>/g, "\n").replace(/<br \/>/g, "\n");
+    }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.0",
+        appVersion: "3.6.1",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -108,8 +124,9 @@ function run_3wa_netflix() {
                     //console.log(s + "," + e + "," + nowVideoDT);
 
                     if (nowVideoDT >= s && nowVideoDT <= e) {
-
-                        var txt = $(m[i]).text();
+                        //console.log($(m[i]));
+                        // Issue. 110 律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
+                        var txt = br2nl(strip_tags($(m[i]).html(),"br"));
                         //console.log(txt);
                         return txt;
                     }
@@ -736,7 +753,9 @@ function run_3wa_netflix() {
                         $("div[data-uia='watch-video-player-view-minimized'] video").length > 0
                     ) {
                         //appClass.method.fixOrinURL();
-                        $("div[data-uia='watch-video-player-view-minimized'] video")[0].webkitEnterFullscreen();
+                        //$("div[data-uia='watch-video-player-view-minimized'] video")[0].webkitEnterFullscreen();
+                        // Issue 111、片尾小視窗點二下可全螢幕的問題
+                        $("div[data-uia='watch-video-player-view-minimized'] video")[0].webkitRequestFullscreen();
                         //藏掉 track bar
                         //From : https://stackoverflow.com/questions/42325531/how-to-hide-progress-bar-in-html5-video-player
                         //不藏使用者點了會當掉
@@ -2809,6 +2828,7 @@ function run_3wa_netflix() {
                 var dt = $("video")[0].currentTime;
                 var txt = appClass.method.xmlSubParse(localStorage.getItem("my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"), dt);
                 //console.log(txt);
+                // Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
                 window['lastWord_b'] = txt;
             }
             else {
@@ -3043,7 +3063,6 @@ function run_3wa_netflix() {
 
                         m[i] = m[i].replace("\"", "“"); //Fix character injection
                         //m[i] = m[i].replace("'", "“"); //Fix character injection                        
-
                         m[i] = "<p reqc='my3waSubDivSpan_2' data-text=\"" + m[i] + "\"></p>"; //sub2 文字在此
 
                         if ($.inArray(m[i], mm_subs) == -1) {
@@ -3102,7 +3121,7 @@ function run_3wa_netflix() {
                                 justify-content:center;
                                 width:100%;
                                 /* 修正雙行字高度 */
-                                margin-top:0px;
+                                /* margin-top:0px; */
                                 margin-bottom:0px;
                             }
                             div[reqc='my3waSubDiv'] p[reqc='my3waSubDivSpan_2']::before,
