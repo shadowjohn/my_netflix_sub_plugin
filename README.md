@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+    V3.6.1 (2025-12-21)<br>
     V3.6.0 (2025-06-25)<br>
     V3.5 (2025-05-17)<br>
     V3.4 (2025-04-29)<br>
@@ -128,8 +129,8 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.6.0 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
-(V3.5 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.5/3wa_netflix.zip <br>
+(V3.6.1 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.1/3wa_netflix.zip <br>
+(V3.6.0 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
 
@@ -172,9 +173,13 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2025-06-25) V3.6.0 版：
+  (2025-12-21) V3.6.1 版：    
+    1、Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
+    2、Issue 111、片尾小視窗點二下可全螢幕的問題
+
+    (2025-06-25) V3.6.0 版：
     1、Issue 108、擴充 firefox 版
-    2、Issue 109、補上 icons 3wanetflix_logo.png 圖片 </li>
+    2、Issue 109、補上 icons 3wanetflix_logo.png 圖片
 
     (2025-05-17) V3.5 版：
     1、Issue 106、Sawa Natsu 網友許願希望字體大小 3 可以再增加，最大值改到 8
@@ -474,5 +479,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2025-05-17)107、007 PP 反應雙字幕功能失效，發現紀錄字幕到 localStorage 時，裡面有夾些斷行</li>
   <li>(Done 2025-06-25)108、擴充 firefox 版</li>
   <li>(Done 2025-06-25)109、補上 icons 3wanetflix_logo.png 圖片 </li>
+  <li>(Done 2025-12-21)110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題</li>
+  <li>(Done 2025-12-21)111、片尾小視窗全螢幕的問題</li>
 </ul>
   
