@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+    V3.6.2 (2026-03-29)<br>
     V3.6.1 (2025-12-21)<br>
     V3.6.0 (2025-06-25)<br>
     V3.5 (2025-05-17)<br>
@@ -173,7 +174,11 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2025-12-21) V3.6.1 版：    
+  (2026-03-29) V3.6.2 版:
+    1、Issue 112、嘗試維修雙字幕版 ISSUE
+    2、Issue 113、使用者希望能有個紀錄字幕歷史的對照表, 方便查閱與學習的畫面
+
+    (2025-12-21) V3.6.1 版：    
     1、Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
     2、Issue 111、片尾小視窗點二下可全螢幕的問題
 
@@ -481,5 +486,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2025-06-25)109、補上 icons 3wanetflix_logo.png 圖片 </li>
   <li>(Done 2025-12-21)110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題</li>
   <li>(Done 2025-12-21)111、片尾小視窗全螢幕的問題</li>
+  <li>(Done 2026-03-29)112、嘗試維修雙字幕的 Issue</li>
+  <li>113、使用者希望能有個紀錄字幕歷史的對照表, 方便查閱與學習的畫面</li>
 </ul>
   

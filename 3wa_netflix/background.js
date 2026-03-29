@@ -35,7 +35,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.1",
+        appVersion: "3.6.2",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -140,6 +140,59 @@ function run_3wa_netflix() {
                 else {
                     return data;
                 }
+            },
+            getVideoDom: function () {
+                if ($("video").length == 0) return null;
+                return $("video")[0];
+            },
+            getVideoCurrentTime: function () {
+                var videoDom = appClass.method.getVideoDom();
+                if (videoDom == null) return null;
+                return videoDom.currentTime;
+            },
+            getSubtitleCacheKey: function (movieID, subtitleName) {
+                if (movieID == null || subtitleName == null || subtitleName == "") return null;
+                return "my_netflix___SUB[" + movieID + "][" + subtitleName + "]";
+            },
+            readCurrentTextSubtitle: function () {
+                var _m = new Array();
+                for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
+                    $(".player-timedtext-text-container").eq(i).html($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__")).text();
+                    var _sm = $(".player-timedtext-text-container").eq(i).text().split("__3WA__N__");
+                    for (var j = 0, max_j = _sm.length; j < max_j; j++) {
+                        _m.push(_sm[j]);
+                    }
+                }
+                return _m.join("\n");
+            },
+            readCurrentImageSubtitle: function () {
+                var _m = new Array();
+                if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
+                    var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
+                    for (var i = mb64.length - 1; i >= 0; i--) {
+                        var d = mb64[i].split("|||3WA|||");
+                        if (d.length < 2) continue;
+                        if (new Date().getTime() - parseInt(d[1]) <= 2000) {
+                            var appendImg = d[0];
+                            if ($.inArray(appendImg, _m) == -1) {
+                                _m.push(appendImg);
+                            }
+                            if (_m.length >= 2) break;
+                        }
+                    }
+                }
+                return _m.join("\n");
+            },
+            resetSub2CaptureState: function () {
+                appClass.flag.subtitleSyncState = 'idle';
+                appClass.flag.subtitleCaptureToken = 0;
+                appClass.flag.subtitleCaptureVideoTime = null;
+                appClass.flag.subtitleCaptureDeadline = null;
+                appClass.flag.subtitleCaptureRequestedAt = null;
+            },
+            restoreMainSubtitleFromFallback: function () {
+                if (appClass.flag.sub1 == null || appClass.flag.sub1 == "關閉") return;
+                $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
             },
             loadScript: function (src) {
                 return new Promise(function (resolve, reject) {
@@ -847,7 +900,12 @@ function run_3wa_netflix() {
             lastSubTime: null, //影片最後抓到字幕的時間
             isCheckSub1: false, //是否已檢查目前進入控制項是主字幕
             isSkipIntro: false, //是否已跳過片頭，一片只會跳過一次
-            isSkipRecap: false //是否已跳過前情提要，一片只會跳過一次
+            isSkipRecap: false, //是否已跳過前情提要，一片只會跳過一次
+            subtitleSyncState: 'idle',
+            subtitleCaptureToken: 0,
+            subtitleCaptureVideoTime: null,
+            subtitleCaptureDeadline: null,
+            subtitleCaptureRequestedAt: null
         },
         "doms": {
 
@@ -2358,7 +2416,8 @@ function run_3wa_netflix() {
 
             //使用最後紀錄到的字幕
             appClass.flag.sub1 = window['my_netflix_sub1'].trim();
-            appClass.flag.sub2 = (window['my_netflix_sub1'] == "關閉") ? null : window['my_netflix_sub1'].trim();
+            appClass.flag.sub2 = (window['my_netflix_sub2'] == "關閉" || window['my_netflix_sub2'] == null) ? null : window['my_netflix_sub2'].trim();
+            appClass.method.resetSub2CaptureState();
         }
         if (appClass.flag.mainSubHasData == false) {
             $("#subMain_div").empty();
@@ -2568,6 +2627,7 @@ function run_3wa_netflix() {
 
                     //存 memory sub1
                     appClass.method.setMemory('my_netflix_sub1', appClass.flag.sub1.trim());
+                    appClass.method.resetSub2CaptureState();
 
                     //避免穿透
                     e.stopPropagation();
@@ -2610,6 +2670,7 @@ function run_3wa_netflix() {
 
                     //存 memory sub2
                     appClass.method.setMemory('my_netflix_sub2', appClass.flag.sub2.trim());
+                    appClass.method.resetSub2CaptureState();
 
                     //存 第二字幕按壓時間
                     appClass.method.setMemory('my_netflix_sub2_Click_DT', new Date().getTime());
@@ -2750,157 +2811,104 @@ function run_3wa_netflix() {
             return;
         }
 
+        var baseVideoTime = appClass.method.getVideoCurrentTime();
+        if (baseVideoTime == null) {
+            return;
+        }
 
+        var isFallbackCapturing = (appClass.flag.subtitleSyncState == 'fallback_dom_capture');
+        if (!isFallbackCapturing) {
+            $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
 
-        $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
-
-
-        appClass.flag.isSubGet = false;
-        //window['lastWord_a'] = "";
-        //window['lastWord_b'] = "";
-        //window['lastImage_a'] = new Array();
-        //window['lastImage_b'] = new Array();
-        setTimeout(function () {
-            //window['lastWord_a'] = $(".player-timedtext-text-container").text();
-            //console.log("window['lastWord_a']: " + window['lastWord_a']);
-            //這裡的 $(".player-timedtext-text-container") 有可能是多行...
-            //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
-            var _m = new Array();
-            for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
-                //斷行會變 \n
-                //console.log($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__"));
-                $(".player-timedtext-text-container").eq(i).html($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__")).text();
-                var _sm = $(".player-timedtext-text-container").eq(i).text().split("__3WA__N__");
-                for (var j = 0, max_j = _sm.length; j < max_j; j++) {
-                    _m.push(_sm[j]);
-                }
-            }
-            //人民仍需要斷行!?            
-            window['lastWord_a'] = _m.join("\n");
+            appClass.flag.isSubGet = false;
+            window['lastWord_a'] = appClass.method.readCurrentTextSubtitle();
             if (window['lastWord_a'] != "") {
                 appClass.flag.isSub1Image = false;
-                //試看看移除字幕...
-                //$(".player-timedtext-text-container").remove();
             }
-            //if ($(".image-based-subtitles svg image").length > 0) {
-            //圖片型字幕
-            /*_m = new Array();
-            for (var i = 0, max_i = $(".image-based-subtitles svg image").length; i < max_i; i++) {
-                //_m.push($(".player-timedtext-text-container").eq(i).clone());
-                _m.push($(".image-based-subtitles svg image").eq(i).attr('href'));
-            }
-            window['lastImage_a'] = _m.join("\n");
-            */
-            _m = new Array();
-            if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
 
-                var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
-                for (var i = mb64.length - 1; i >= 0; i--) {
-                    var d = mb64[i].split("|||3WA|||");
-                    //b64 , 時間
-                    if (new Date().getTime() - parseInt(d[1]) <= 2000) {
-                        var appendImg = d[0];
-                        if ($.inArray(appendImg, _m[i]) == -1) {
-                            _m.push(appendImg);
-                        }
-                        if (_m.length >= 2) break; //最多二組字
-                    }
-                }
-                window['lastImage_a'] = _m.join("\n");
-                if (window['lastImage_a'] != "") {
-                    appClass.flag.isSub1Image = true;
-                    //移除圖片字幕
-                    $(".image-based-subtitles svg image").remove();
-                }
-
+            window['lastImage_a'] = appClass.method.readCurrentImageSubtitle();
+            if (window['lastImage_a'] != "") {
+                appClass.flag.isSub1Image = true;
+                $(".image-based-subtitles svg image").remove();
             }
-            //}
-        }, 50)
-        //一、二字幕不要一樣
-        // console.log(appClass.flag);
+            else if (window['lastWord_a'] != "") {
+                appClass.flag.isSub1Image = false;
+            }
+        }
+
         if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉" && appClass.flag.sub1 != appClass.flag.sub2) {
+            var movieIDNow = appClass.method.getMovieID();
+            var sub2CacheKey = appClass.method.getSubtitleCacheKey(movieIDNow, appClass.flag.sub2);
+            var sub2CachedXml = (sub2CacheKey == null) ? null : localStorage[sub2CacheKey];
 
-            //如果第二字幕已在 memory my_netflix___SUB[movieID][字幕] 直接解晰
-            if (localStorage["my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"] != null) {
-                //直接從 XML 解內容
-                //此時有可能回上頁，沒有 $("video")
-                if ($("video").length == 0) return;
-                var dt = $("video")[0].currentTime;
-                var txt = appClass.method.xmlSubParse(localStorage.getItem("my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"), dt);
-                //console.log(txt);
-                // Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
-                window['lastWord_b'] = txt;
+            if (sub2CachedXml != null) {
+                window['lastWord_b'] = appClass.method.xmlSubParse(sub2CachedXml, baseVideoTime);
+                window['lastImage_b'] = "";
+                appClass.flag.isSub2Image = false;
+                if (appClass.flag.subtitleSyncState != 'idle') {
+                    appClass.method.restoreMainSubtitleFromFallback();
+                    appClass.method.resetSub2CaptureState();
+                }
+                appClass.flag.isSubGet = true;
             }
             else {
-                //原來 2.1 版點不停的流程
-                setTimeout(function () {
-                    $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
-                    setTimeout(function () {
-                        if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉") {
-                            //window['lastWord_b'] = $(".player-timedtext-text-container").text();
-                            //console.log("window['lastWord_b']: " + window['lastWord_b']);
-                            //這裡的 $(".player-timedtext-text-container") 有可能是多行...
-                            //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
-                            var _m = new Array();
-                            for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
-                                _m.push($(".player-timedtext-text-container").eq(i).text());
-                            }
-                            window['lastWord_b'] = _m.join(" ");
-                            if (window['lastWord_b'] != "") {
-                                appClass.flag.isSub1Image = false;
-                                //移除字幕
-                                $(".player-timedtext-text-container").remove();
-                            }
-                            //if ($(".image-based-subtitles svg image").length > 0) {
-                            //圖片型字幕
-                            //想法是，只抓 2秒內 $("div[reqc='my_netflix_imageSubsB64']").html() 最後二組不同的字
-                            _m = new Array();
-                            if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
+                if (appClass.flag.subtitleSyncState == 'idle') {
+                    appClass.flag.subtitleSyncState = 'warming_sub2_cache';
+                    appClass.flag.subtitleCaptureRequestedAt = Date.now();
+                }
 
-                                var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
-                                for (var i = mb64.length - 1; i >= 0; i--) {
-                                    var d = mb64[i].split("|||3WA|||");
-                                    //b64 , 時間
-                                    if (new Date().getTime() - parseInt(d[1]) <= 2000) {
-                                        var appendImg = d[0];
-                                        if ($.inArray(appendImg, _m[i]) == -1) {
-                                            _m.push(appendImg);
-                                        }
-                                        if (_m.length >= 2) break; //最多二組字
-                                    }
-                                }
-                                window['lastImage_b'] = _m.join("\n");
-                                if (window['lastImage_b'] != "") {
-                                    appClass.flag.isSub2Image = true;
-                                    $(".image-based-subtitles svg image").remove();
-                                }
+                if (appClass.flag.subtitleSyncState == 'warming_sub2_cache') {
+                    if (Date.now() - appClass.flag.subtitleCaptureRequestedAt >= 250) {
+                        appClass.flag.subtitleSyncState = 'fallback_dom_capture';
+                        appClass.flag.subtitleCaptureToken += 1;
+                        appClass.flag.subtitleCaptureVideoTime = baseVideoTime;
+                        appClass.flag.subtitleCaptureRequestedAt = Date.now();
+                        appClass.flag.subtitleCaptureDeadline = Date.now() + 500;
+                        $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
+                    }
+                    appClass.flag.isSubGet = true;
+                }
+                else if (appClass.flag.subtitleSyncState == 'fallback_dom_capture') {
+                    var isCaptureExpired = Date.now() > appClass.flag.subtitleCaptureDeadline;
+                    var isCaptureOutdated = appClass.flag.subtitleCaptureVideoTime == null || Math.abs(baseVideoTime - appClass.flag.subtitleCaptureVideoTime) > 0.35;
+                    if (isCaptureExpired || isCaptureOutdated) {
+                        appClass.method.restoreMainSubtitleFromFallback();
+                        appClass.method.resetSub2CaptureState();
+                        window['lastWord_b'] = "";
+                        window['lastImage_b'] = "";
+                        appClass.flag.isSub2Image = false;
+                        appClass.flag.isSubGet = true;
+                    }
+                    else {
+                        var fallbackText = appClass.method.readCurrentTextSubtitle();
+                        var fallbackImage = appClass.method.readCurrentImageSubtitle();
+                        if (fallbackText != "" || fallbackImage != "") {
+                            window['lastWord_b'] = fallbackText;
+                            window['lastImage_b'] = fallbackImage;
+                            appClass.flag.isSub2Image = (fallbackText == "" && fallbackImage != "");
+                            if (fallbackImage != "") {
+                                $(".image-based-subtitles svg image").remove();
                             }
-
-                            //window['lastImage_b'] = _m.join("\n");
-                            //}
-                        }
-                        else {
-                            //沒設定字幕
-                            window['lastWord_b'] = "";
-                            window['lastImage_b'] = "";
+                            appClass.method.restoreMainSubtitleFromFallback();
+                            appClass.method.resetSub2CaptureState();
                         }
                         appClass.flag.isSubGet = true;
-                    }, 50);
-
-                }, 100);
+                    }
+                }
+                else {
+                    appClass.flag.isSubGet = true;
+                }
             }
         }
         else {
+            appClass.method.resetSub2CaptureState();
             appClass.flag.isSubGet = true;
             window['lastWord_b'] = "";
             window['lastImage_b'] = new Array();
+            appClass.flag.isSub2Image = false;
         }
 
-        //console.log(appClass.flag.sub1 + " , " + appClass.flag.sub2);
-        //setTimeout(function () {
-        //}, 300);
-
-    }, 600);
+    }, 150);
 
     //字幕獨立變化
     clearInterval(appClass.interval.subtitleUIInterval);
