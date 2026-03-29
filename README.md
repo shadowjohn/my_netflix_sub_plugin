@@ -178,6 +178,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
     1、Issue 112、嘗試維修雙字幕版 ISSUE
     2、Issue 113、使用者希望能有個紀錄字幕歷史的對照表, 方便查閱與學習的畫面
     3、Issue 114、自動功能可以選擇開關紀錄字幕歷史的功能，避免 CPU 浪費
+    <img src="screenshot/V3.6.2_2.png">
 
     (2025-12-21) V3.6.1 版：    
     1、Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
