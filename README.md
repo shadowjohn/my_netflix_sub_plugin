@@ -96,6 +96,14 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	jQuery 3.7.1<br>
 
 <br><br>
+<h2>Firefox 轉換與發版工具</h2>
+	這個專案除了 Chrome / Chromium 主線外，也維護 Firefox 版本。<br>
+	為了加速雙版本發版流程，專案內提供了 <code>chrome2firefox.php</code> 與 <code>run_zip.php</code> 兩支工具腳本。<br>
+	其中 <code>chrome2firefox.php</code> 並不是單純複製檔案，而是把 Chrome Manifest V3 與 Firefox 相容格式的差異整理成固定規則，自動完成 manifest 轉換、background / content script 輸出與目錄同步。<br>
+	這套腳本是建立在實際比對 Chrome / Firefox extension 差異後整理出來的流程，因此可以在維持開發速度的同時，降低手動轉版與打包時出錯的機率。<br>
+	若要進行 release 打包，可直接使用 <code>run_zip.php</code> 讀取目前版本號，自動建立 release 資料夾、輸出 Firefox 版本，並分別產出 Chrome / Firefox zip。<br>
+
+<br><br>
 <img src="screenshot/V1.9_0.png">
 <p align="center">執行前</p>
 <br>
@@ -175,9 +183,9 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <h2>版本說明：</h2>
 <pre>
   (2026-03-29) V3.6.2 版:
-    1、Issue 112、嘗試維修雙字幕版 ISSUE
-    2、Issue 113、使用者希望能有個紀錄字幕歷史的對照表, 方便查閱與學習的畫面
-    3、Issue 114、自動功能可以選擇開關紀錄字幕歷史的功能，避免 CPU 浪費
+    1、Issue 112、調整雙字幕同步邏輯，降低主字幕 / 次字幕偶發不同步的情況。
+    2、Issue 113、新增右側「歷史字幕 / Subtitle History」浮動視窗，可在播放時查看字幕歷史，方便查閱與學習。
+    3、Issue 114、在「自動功能」中新增歷史字幕功能開關，預設啟用；關閉後不顯示右側字幕區，也不再持續收集字幕內容，以避免額外 CPU 負擔。
     <img src="screenshot/V3.6.2_2.png">
 
     (2025-12-21) V3.6.1 版：    
@@ -488,8 +496,8 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2025-06-25)109、補上 icons 3wanetflix_logo.png 圖片 </li>
   <li>(Done 2025-12-21)110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題</li>
   <li>(Done 2025-12-21)111、片尾小視窗全螢幕的問題</li>
-  <li>(Done 2026-03-29)112、嘗試維修雙字幕的 Issue</li>
-  <li>(Done 2026-03-29)113、使用者希望能有個紀錄字幕歷史的對照表, 方便查閱與學習的畫面</li>
-  <li>(Done 2026-03-29)114、自動功能可以選擇開關紀錄字幕歷史的功能，避免 CPU 浪費</li>
+  <li>(Done 2026-03-29)112、調整雙字幕同步邏輯，降低主字幕 / 次字幕偶發不同步的情況</li>
+  <li>(Done 2026-03-29)113、新增右側「歷史字幕 / Subtitle History」浮動視窗，方便查閱與學習</li>
+  <li>(Done 2026-03-29)114、在自動功能中新增歷史字幕開關，關閉後不顯示也不再持續收集字幕內容</li>
 </ul>
   

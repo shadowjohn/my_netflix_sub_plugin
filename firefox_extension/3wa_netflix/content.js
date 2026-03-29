@@ -888,23 +888,16 @@ function run_3wa_netflix() {
                                         //console.log(this.response);
                                         //如果第二字幕按壓的時間在 2 秒內，就存下來
                                         var movieID = window.localStorage.getItem("movieID");
-                                        if(window.localStorage.getItem("my_netflix_sub1_Click_DT")!=null)
-                                        {
-                                            if(new Date().getTime()-parseInt(window.localStorage.getItem("my_netflix_sub1_Click_DT")) < 2000){
-                                                var subTitle1 = window.localStorage.getItem("my_netflix_sub1");
-                                                if(movieID!=null && subTitle1!=null && subTitle1!=""){
-                                                    window.localStorage.setItem("my_netflix___SUB["+movieID+"]["+subTitle1+"]", this.response);
-                                                }
+                                        var pendingTarget = window.localStorage.getItem("my_netflix_pending_xml_capture_target");
+                                        var pendingLang = window.localStorage.getItem("my_netflix_pending_xml_capture_lang");
+                                        var pendingClickDT = window.localStorage.getItem("my_netflix_pending_xml_capture_dt");
+                                        if (movieID != null && pendingTarget != null && pendingLang != null && pendingLang != "" && pendingClickDT != null) {
+                                            if (new Date().getTime() - parseInt(pendingClickDT) < 2000) {
+                                                window.localStorage.setItem("my_netflix___SUB[" + movieID + "][" + pendingLang + "]", this.response);
                                             }
-                                        }
-                                        if(window.localStorage.getItem("my_netflix_sub2_Click_DT")!=null)
-                                        {
-                                            if(new Date().getTime()-parseInt(window.localStorage.getItem("my_netflix_sub2_Click_DT")) < 2000){
-                                                var subTitle = window.localStorage.getItem("my_netflix_sub2");
-                                                if(movieID!=null && subTitle!=null && subTitle!=""){
-                                                    window.localStorage.setItem("my_netflix___SUB["+movieID+"]["+subTitle+"]", this.response);
-                                                }
-                                            }
+                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_target");
+                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_lang");
+                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_dt");
                                         }
                                     }         
                                     if(this.response!=null && typeof(this.response.indexOf)=="function")
@@ -3223,7 +3216,7 @@ function run_3wa_netflix() {
                 //註冊主要字幕被點到
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li").unbind("click").click(function (e) {
                     var data_uiaName = $(this).attr('data-uia');
-                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName + "']").trigger("click");
+                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName.replace("-selected", "") + "']").trigger("click");
                     //然後重建字幕選單
                     //$("#subMain_div").empty();
                     //appClass.flag.mainSubHasData = false;
@@ -3257,6 +3250,9 @@ function run_3wa_netflix() {
                     //存 memory sub1
                     appClass.method.setMemory('my_netflix_sub1', appClass.flag.sub1.trim());
                     appClass.method.setMemory('my_netflix_sub1_Click_DT', new Date().getTime());
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub1');
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub1.trim());
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
                     appClass.method.resetSub2CaptureState();
                     appClass.data.sidebarMovieID = null;
                     appClass.data.sidebarHtml = null;
@@ -3312,6 +3308,9 @@ function run_3wa_netflix() {
 
                     //存 第二字幕按壓時間
                     appClass.method.setMemory('my_netflix_sub2_Click_DT', new Date().getTime());
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub2');
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub2.trim());
+                    appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
                     delete appClass.data.subtitleEntriesCache[appClass.method.getMovieID() + "||" + appClass.flag.sub2.trim() + "||xml"];
                     //避免穿透
                     e.stopPropagation();
@@ -3470,6 +3469,9 @@ function run_3wa_netflix() {
                 (appClass.data.mainSubtitleCaptureRequestedAt == null || Date.now() - appClass.data.mainSubtitleCaptureRequestedAt > 2500)) {
                 appClass.data.mainSubtitleCaptureRequestedAt = Date.now();
                 appClass.method.setMemory('my_netflix_sub1_Click_DT', new Date().getTime());
+                appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub1');
+                appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub1.trim());
+                appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
                 $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
             }
             else if (mainCachedXml == null) {
@@ -3525,6 +3527,9 @@ function run_3wa_netflix() {
                         appClass.flag.subtitleCaptureVideoTime = baseVideoTime;
                         appClass.flag.subtitleCaptureRequestedAt = Date.now();
                         appClass.flag.subtitleCaptureDeadline = Date.now() + 500;
+                        appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub2');
+                        appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub2.trim());
+                        appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
                         $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
                     }
                     appClass.flag.isSubGet = true;
