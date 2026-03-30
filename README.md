@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.3 (2026-03-30)<br>
     V3.6.2 (2026-03-29)<br>
     V3.6.1 (2025-12-21)<br>
     V3.6.0 (2025-06-25)<br>
@@ -182,7 +183,10 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2026-03-29) V3.6.2 版:
+  (2026-03-30) V3.6.3 版:
+    1、Issue 115、3.6.2 改版有人反應切換字幕會異常，先退回 3.6.1 版
+	
+    (2026-03-29) V3.6.2 版:
     1、Issue 112、調整雙字幕同步邏輯，降低主字幕 / 次字幕偶發不同步的情況。
     2、Issue 113、新增右側「歷史字幕 / Subtitle History」浮動視窗，可在播放時查看字幕歷史，方便查閱與學習。
     3、Issue 114、在「自動功能」中新增歷史字幕功能開關，預設啟用；關閉後不顯示右側字幕區，也不再持續收集字幕內容，以避免額外 CPU 負擔。
@@ -499,5 +503,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-03-29)112、調整雙字幕同步邏輯，降低主字幕 / 次字幕偶發不同步的情況</li>
   <li>(Done 2026-03-29)113、新增右側「歷史字幕 / Subtitle History」浮動視窗，方便查閱與學習</li>
   <li>(Done 2026-03-29)114、在自動功能中新增歷史字幕開關，關閉後不顯示也不再持續收集字幕內容</li>
+  <li>(Done 2026-03-30)115、3.6.2 改版有人反應切換字幕會異常，先退回 3.6.1 版</li>
 </ul>
   

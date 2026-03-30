@@ -2,10 +2,9 @@
 
 //新版，啟動後自動載入
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const tabUrl = (tab && typeof tab.url === "string") ? tab.url : "";
     if (
         changeInfo.status === "complete" &&
-        (tabUrl.includes("www.netflix.com") || tabUrl.includes("netflix.com"))
+        (tab.url.includes("www.netflix.com") || tab.url.includes("netflix.com"))
     ) {
         // 嘗試用 scripting API（Chrome Manifest V3 專用）
         if (chrome.scripting && chrome.scripting.executeScript) {

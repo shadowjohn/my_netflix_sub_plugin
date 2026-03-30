@@ -35,7 +35,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.2",
+        appVersion: "3.6.3",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -140,417 +140,6 @@ function run_3wa_netflix() {
                 else {
                     return data;
                 }
-            },
-            getVideoDom: function () {
-                if ($("video").length == 0) return null;
-                return $("video")[0];
-            },
-            getVideoCurrentTime: function () {
-                var videoDom = appClass.method.getVideoDom();
-                if (videoDom == null) return null;
-                return videoDom.currentTime;
-            },
-            getSubtitleCacheKey: function (movieID, subtitleName) {
-                if (movieID == null || subtitleName == null || subtitleName == "") return null;
-                return "my_netflix___SUB[" + movieID + "][" + subtitleName + "]";
-            },
-            parseSubtitleTimeToMs: function (rawValue) {
-                if (rawValue == null) return null;
-                rawValue = (rawValue + "").trim();
-                if (rawValue == "") return null;
-                if (/^\d+$/.test(rawValue)) {
-                    return Math.floor(parseInt(rawValue, 10) / 10000);
-                }
-                var timeMatch = rawValue.match(/^(?:(\d+):)?(\d+):(\d+)(?:\.(\d+))?$/);
-                if (timeMatch != null) {
-                    var hour = parseInt(timeMatch[1] || "0", 10);
-                    var minute = parseInt(timeMatch[2] || "0", 10);
-                    var second = parseInt(timeMatch[3] || "0", 10);
-                    var ms = parseInt((timeMatch[4] || "0").padEnd(3, '0').substring(0, 3), 10);
-                    return (((hour * 60) + minute) * 60 + second) * 1000 + ms;
-                }
-                return null;
-            },
-            formatSubtitleTime: function (ms) {
-                if (ms == null || isNaN(ms)) return "00:00:00,000";
-                var totalMs = Math.max(0, parseInt(ms, 10));
-                var hour = Math.floor(totalMs / 3600000);
-                totalMs -= hour * 3600000;
-                var minute = Math.floor(totalMs / 60000);
-                totalMs -= minute * 60000;
-                var second = Math.floor(totalMs / 1000);
-                totalMs -= second * 1000;
-                return hour.toString().padStart(2, '0') + ":" + minute.toString().padStart(2, '0') + ":" + second.toString().padStart(2, '0') + "," + totalMs.toString().padStart(3, '0');
-            },
-            isIgnorableSubtitleText: function (text) {
-                if (text == null) return false;
-                var normalizedText = appClass.method.trim(text).replace(/\s+/g, " ").trim();
-                if (normalizedText == "") return false;
-                return /^\[[^\]]+\]$/.test(normalizedText);
-            },
-            stripBracketedSubtitleText: function (text) {
-                if (text == null) return text;
-                var cleanedText = (text + "").replace(/\[[^\]]+\]/g, "");
-                cleanedText = cleanedText.replace(/[ \t]+\n/g, "\n").replace(/\n[ \t]+/g, "\n");
-                cleanedText = cleanedText.replace(/[ \t]{2,}/g, " ");
-                cleanedText = appClass.method.trim(cleanedText);
-                return cleanedText;
-            },
-            parseSubtitleXmlToEntries: function (xmlSource, lang) {
-                if (xmlSource == null || xmlSource == "") return new Array();
-                var entries = new Array();
-                try {
-                    var xmlDoc = $.parseXML(xmlSource);
-                    $(xmlDoc).find("[begin][end]").each(function () {
-                        var beginMs = appClass.method.parseSubtitleTimeToMs($(this).attr("begin"));
-                        var endMs = appClass.method.parseSubtitleTimeToMs($(this).attr("end"));
-                        if (beginMs == null || endMs == null || endMs < beginMs) return;
-                        var txt = br2nl(strip_tags($(this).html(), "br"));
-                        txt = appClass.method.stripBracketedSubtitleText(txt);
-                        if (appClass.method.isIgnorableSubtitleText(txt)) return;
-                        if (txt == null || txt == "") return;
-                        entries.push({
-                            startMs: beginMs,
-                            endMs: endMs,
-                            text: txt,
-                            lang: lang,
-                            source: 'xml'
-                        });
-                    });
-                }
-                catch (e) {
-                    return new Array();
-                }
-                entries.sort(function (a, b) {
-                    return a.startMs - b.startMs;
-                });
-                return entries;
-            },
-            getSubtitleEntries: function (movieID, lang, preferredSource) {
-                if (movieID == null || lang == null || lang == "" || lang == "關閉") return null;
-                var cacheKey = movieID + "||" + lang + "||" + (preferredSource || "xml");
-                if (appClass.data.subtitleEntriesCache[cacheKey] != null) {
-                    return appClass.data.subtitleEntriesCache[cacheKey];
-                }
-                var rawXmlKey = appClass.method.getSubtitleCacheKey(movieID, lang);
-                if (rawXmlKey != null && localStorage[rawXmlKey] != null) {
-                    var entries = appClass.method.parseSubtitleXmlToEntries(localStorage[rawXmlKey], lang);
-                    appClass.data.subtitleEntriesCache[cacheKey] = entries;
-                    return entries;
-                }
-                if (preferredSource == 'dom_fallback') {
-                    return null;
-                }
-                return null;
-            },
-            getLiveSubtitleEntries: function (movieID, lang) {
-                if (movieID == null || lang == null || lang == "") return new Array();
-                var liveKey = movieID + "||" + lang;
-                if (appClass.data.liveSubtitleEntries[liveKey] == null) {
-                    appClass.data.liveSubtitleEntries[liveKey] = new Array();
-                }
-                return appClass.data.liveSubtitleEntries[liveKey];
-            },
-            pushLiveSubtitleEntry: function (movieID, lang, text, currentTimeMs) {
-                if (movieID == null || lang == null || text == null) return;
-                text = appClass.method.stripBracketedSubtitleText(text);
-                if (appClass.method.isIgnorableSubtitleText(text)) return;
-                if (text == null || text == "") return;
-                var entries = appClass.method.getLiveSubtitleEntries(movieID, lang);
-                var normalizedText = text.replace(/\s+/g, " ").trim();
-                for (var all_i = entries.length - 1; all_i >= 0; all_i--) {
-                    var existingEntry = entries[all_i];
-                    var normalizedExistingText = (existingEntry.text || "").replace(/\s+/g, " ").trim();
-                    if (normalizedExistingText != normalizedText) continue;
-                    var isNearExistingTime =
-                        Math.abs(currentTimeMs - existingEntry.startMs) <= 4000 ||
-                        Math.abs(currentTimeMs - existingEntry.endMs) <= 4000 ||
-                        (currentTimeMs >= existingEntry.startMs - 1200 && currentTimeMs <= existingEntry.endMs + 1200);
-                    if (isNearExistingTime) {
-                        existingEntry.startMs = Math.min(existingEntry.startMs, currentTimeMs);
-                        existingEntry.endMs = Math.max(existingEntry.endMs, currentTimeMs + 900);
-                        return;
-                    }
-                }
-                if (entries.length > 0) {
-                    var lastEntry = entries[entries.length - 1];
-                    var normalizedLastText = (lastEntry.text || "").replace(/\s+/g, " ").trim();
-                    if (normalizedLastText == normalizedText && Math.abs(currentTimeMs - lastEntry.endMs) <= 4000) {
-                        lastEntry.endMs = Math.max(lastEntry.endMs, currentTimeMs + 900);
-                        return;
-                    }
-                }
-                for (var i = entries.length - 2, min_i = Math.max(0, entries.length - 6); i >= min_i; i--) {
-                    var recentEntry = entries[i];
-                    var normalizedRecentText = (recentEntry.text || "").replace(/\s+/g, " ").trim();
-                    if (normalizedRecentText == normalizedText && Math.abs(currentTimeMs - recentEntry.endMs) <= 4000) {
-                        recentEntry.endMs = Math.max(recentEntry.endMs, currentTimeMs + 900);
-                        if (i != entries.length - 1) {
-                            entries.push(entries.splice(i, 1)[0]);
-                        }
-                        return;
-                    }
-                }
-                entries.push({
-                    startMs: currentTimeMs,
-                    endMs: currentTimeMs + 1800,
-                    text: text,
-                    lang: lang,
-                    source: 'dom_fallback'
-                });
-                if (entries.length > 1500) {
-                    entries.splice(0, entries.length - 1500);
-                }
-            },
-            buildSidebarRows: function (mainEntries, subEntries) {
-                var rows = new Array();
-                var usedSubIndex = {};
-                var mainList = mainEntries || new Array();
-                var subList = subEntries || new Array();
-
-                for (var i = 0, max_i = mainList.length; i < max_i; i++) {
-                    var mainEntry = mainList[i];
-                    var row = {
-                        startMs: mainEntry.startMs,
-                        endMs: mainEntry.endMs,
-                        mainText: mainEntry.text,
-                        subText: null
-                    };
-                    var bestSubIndex = -1;
-                    for (var j = 0, max_j = subList.length; j < max_j; j++) {
-                        if (usedSubIndex[j] === true) continue;
-                        var subEntry = subList[j];
-                        var overlapMs = Math.min(mainEntry.endMs, subEntry.endMs) - Math.max(mainEntry.startMs, subEntry.startMs);
-                        var startGapMs = Math.abs(mainEntry.startMs - subEntry.startMs);
-                        if (overlapMs > 0 || startGapMs <= 800) {
-                            bestSubIndex = j;
-                            break;
-                        }
-                    }
-                    if (bestSubIndex != -1) {
-                        usedSubIndex[bestSubIndex] = true;
-                        row.startMs = Math.min(row.startMs, subList[bestSubIndex].startMs);
-                        row.endMs = Math.max(row.endMs, subList[bestSubIndex].endMs);
-                        row.subText = subList[bestSubIndex].text;
-                    }
-                    rows.push(row);
-                }
-
-                for (var k = 0, max_k = subList.length; k < max_k; k++) {
-                    if (usedSubIndex[k] === true) continue;
-                    rows.push({
-                        startMs: subList[k].startMs,
-                        endMs: subList[k].endMs,
-                        mainText: null,
-                        subText: subList[k].text
-                    });
-                }
-
-                rows.sort(function (a, b) {
-                    return a.startMs - b.startMs;
-                });
-                return rows;
-            },
-            findActiveSidebarRow: function (rows, currentTimeMs) {
-                if (rows == null || rows.length == 0) return -1;
-                for (var i = 0, max_i = rows.length; i < max_i; i++) {
-                    var nextStartMs = (i + 1 < max_i) ? rows[i + 1].startMs : null;
-                    if (currentTimeMs >= rows[i].startMs && (nextStartMs == null || currentTimeMs < nextStartMs)) {
-                        return i;
-                    }
-                }
-                for (var j = rows.length - 1; j >= 0; j--) {
-                    if (rows[j].startMs <= currentTimeMs) {
-                        return j;
-                    }
-                }
-                return 0;
-            },
-            normalizeSubtitleCompareText: function (text) {
-                if (text == null) return "";
-                return appClass.method.trim(text).replace(/\s+/g, " ").trim();
-            },
-            findSidebarRowByText: function (rows, mainText, subText) {
-                if (rows == null || rows.length == 0) return -1;
-                var normalizedMainText = appClass.method.normalizeSubtitleCompareText(mainText);
-                var normalizedSubText = appClass.method.normalizeSubtitleCompareText(subText);
-                if (normalizedMainText == "" && normalizedSubText == "") return -1;
-                for (var i = rows.length - 1; i >= 0; i--) {
-                    var rowMainText = appClass.method.normalizeSubtitleCompareText(rows[i].mainText);
-                    var rowSubText = appClass.method.normalizeSubtitleCompareText(rows[i].subText);
-                    if (normalizedMainText != "" && rowMainText == normalizedMainText) return i;
-                    if (normalizedSubText != "" && rowSubText == normalizedSubText) return i;
-                }
-                return -1;
-            },
-            buildSidebarHtml: function (rows) {
-                var html = new Array();
-                for (var i = 0, max_i = rows.length; i < max_i; i++) {
-                    var row = rows[i];
-                    html.push("<div reqc='my_netflix_history_row' data-row-index='" + i + "'>");
-                    html.push("<div reqc='my_netflix_history_time'>" + appClass.method.formatSubtitleTime(row.startMs) + " --> " + appClass.method.formatSubtitleTime(row.endMs) + "</div>");
-                    if (row.mainText != null && row.mainText != "") {
-                        html.push("<div reqc='my_netflix_history_text_main'></div>");
-                    }
-                    if (row.subText != null && row.subText != "") {
-                        html.push("<div reqc='my_netflix_history_text_sub'></div>");
-                    }
-                    html.push("</div>");
-                }
-                return html.join("");
-            },
-            refreshSidebarRows: function () {
-                var movieID = appClass.method.getMovieID();
-                if (movieID == null) return;
-                var mainEntries = appClass.method.getSubtitleEntries(movieID, appClass.flag.sub1, 'xml');
-                var subEntries = appClass.method.getSubtitleEntries(movieID, appClass.flag.sub2, 'xml');
-                if (mainEntries == null || mainEntries.length == 0) {
-                    mainEntries = appClass.method.getLiveSubtitleEntries(movieID, appClass.flag.sub1);
-                }
-                if (subEntries == null || subEntries.length == 0) {
-                    subEntries = appClass.method.getLiveSubtitleEntries(movieID, appClass.flag.sub2);
-                }
-                var rows = appClass.method.buildSidebarRows(mainEntries, subEntries);
-                appClass.data.sidebarRows = rows;
-                appClass.data.sidebarMovieID = movieID;
-                appClass.data.sidebarMainLang = appClass.flag.sub1;
-                appClass.data.sidebarSubLang = appClass.flag.sub2;
-            },
-            showSidebarPanel: function (seconds) {
-                if (window['my_netflix_auto_history_sidebar'] == 'false') return;
-                var sidebar = $("div[reqc='my_netflix_history_sidebar']");
-                if (sidebar.length == 0) return;
-                appClass.data.sidebarDismissedAt = null;
-                appClass.data.sidebarHoverReady = false;
-                sidebar.addClass("my_netflix_history_sidebar_show");
-                if (appClass.data.sidebarPinned !== true) {
-                    appClass.data.sidebarVisibleUntil = Date.now() + ((seconds || 3) * 1000);
-                }
-            },
-            scheduleSidebarHide: function (seconds) {
-                if (appClass.data.sidebarPinned === true || appClass.data.sidebarHovering === true) return;
-                appClass.data.sidebarVisibleUntil = Date.now() + ((seconds || 3) * 1000);
-            },
-            hideSidebarPanelNow: function () {
-                var sidebar = $("div[reqc='my_netflix_history_sidebar']");
-                appClass.data.sidebarVisibleUntil = 0;
-                appClass.data.sidebarDismissedAt = Date.now();
-                appClass.data.sidebarHoverReady = false;
-                appClass.data.sidebarHovering = false;
-                appClass.data.sidebarEdgeHot = true;
-                if (sidebar.length > 0) {
-                    sidebar.removeClass("my_netflix_history_sidebar_show");
-                }
-            },
-            updateSidebarUI: function () {
-                var sidebar = $("div[reqc='my_netflix_history_sidebar']");
-                if (sidebar.length == 0) return;
-                if (window['my_netflix_auto_history_sidebar'] == 'false') {
-                    sidebar.removeClass("my_netflix_history_sidebar_show").hide();
-                    return;
-                }
-                if ($("video").length == 0) {
-                    sidebar.hide();
-                    return;
-                }
-                if (appClass.data.sidebarMovieID != appClass.method.getMovieID() ||
-                    appClass.data.sidebarMainLang != appClass.flag.sub1 ||
-                    appClass.data.sidebarSubLang != appClass.flag.sub2 ||
-                    appClass.data.sidebarRows == null ||
-                    appClass.data.sidebarRows.length == 0) {
-                    appClass.method.refreshSidebarRows();
-                    appClass.data.sidebarHtml = null;
-                }
-                if (appClass.data.sidebarRows == null || appClass.data.sidebarRows.length == 0) {
-                    sidebar.show();
-                    sidebar.find("div[reqc='my_netflix_history_sidebar_body']").html("<div reqc='my_netflix_history_empty'>Waiting for subtitle timeline...<br>Try playing a bit longer or switch subtitles once.</div>");
-                }
-                else {
-                    sidebar.show();
-                    var body = sidebar.find("div[reqc='my_netflix_history_sidebar_body']");
-                    var newHtml = appClass.method.buildSidebarHtml(appClass.data.sidebarRows);
-                    if (appClass.data.sidebarHtml != newHtml) {
-                        appClass.data.sidebarHtml = newHtml;
-                        body.html(newHtml);
-                        var rowDoms = body.find("div[reqc='my_netflix_history_row']");
-                        for (var i = 0, max_i = rowDoms.length; i < max_i; i++) {
-                            var row = appClass.data.sidebarRows[i];
-                            if (row.mainText != null && row.mainText != "") {
-                                rowDoms.eq(i).find("div[reqc='my_netflix_history_text_main']").text(row.mainText);
-                            }
-                            if (row.subText != null && row.subText != "") {
-                                rowDoms.eq(i).find("div[reqc='my_netflix_history_text_sub']").text(row.subText);
-                            }
-                        }
-                    }
-                    var currentTimeMs = Math.floor($("video")[0].currentTime * 1000);
-                    var activeIndex = appClass.method.findActiveSidebarRow(appClass.data.sidebarRows, currentTimeMs);
-                    var activeTextIndex = appClass.method.findSidebarRowByText(appClass.data.sidebarRows, window['lastWord_a'], window['lastWord_b']);
-                    if (activeTextIndex != -1) {
-                        activeIndex = activeTextIndex;
-                    }
-                    if (activeIndex != appClass.data.sidebarActiveIndex) {
-                        appClass.data.sidebarActiveIndex = activeIndex;
-                        body.find("div[reqc='my_netflix_history_row']").removeClass("my_netflix_history_row_active");
-                        var activeDom = body.find("div[reqc='my_netflix_history_row'][data-row-index='" + activeIndex + "']");
-                        activeDom.addClass("my_netflix_history_row_active");
-                        if (Date.now() >= appClass.data.sidebarUserScrollUntil && activeDom.length != 0) {
-                            var targetOffset = body.height() * 0.48;
-                            var nextScrollTop = body.scrollTop() + activeDom.position().top - targetOffset + (activeDom.outerHeight() / 2);
-                            if (nextScrollTop < 0) nextScrollTop = 0;
-                            body.stop(true).animate({ scrollTop: nextScrollTop }, 160);
-                        }
-                    }
-                }
-                if (appClass.data.sidebarPinned === true || appClass.data.sidebarHovering === true) {
-                    sidebar.addClass("my_netflix_history_sidebar_show");
-                }
-                else if (appClass.data.sidebarVisibleUntil != null && Date.now() < appClass.data.sidebarVisibleUntil) {
-                    sidebar.addClass("my_netflix_history_sidebar_show");
-                }
-                else {
-                    sidebar.removeClass("my_netflix_history_sidebar_show");
-                }
-            },
-            readCurrentTextSubtitle: function () {
-                var _m = new Array();
-                for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
-                    $(".player-timedtext-text-container").eq(i).html($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__")).text();
-                    var _sm = $(".player-timedtext-text-container").eq(i).text().split("__3WA__N__");
-                    for (var j = 0, max_j = _sm.length; j < max_j; j++) {
-                        _m.push(_sm[j]);
-                    }
-                }
-                return _m.join("\n");
-            },
-            readCurrentImageSubtitle: function () {
-                var _m = new Array();
-                if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
-                    var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
-                    for (var i = mb64.length - 1; i >= 0; i--) {
-                        var d = mb64[i].split("|||3WA|||");
-                        if (d.length < 2) continue;
-                        if (new Date().getTime() - parseInt(d[1]) <= 2000) {
-                            var appendImg = d[0];
-                            if ($.inArray(appendImg, _m) == -1) {
-                                _m.push(appendImg);
-                            }
-                            if (_m.length >= 2) break;
-                        }
-                    }
-                }
-                return _m.join("\n");
-            },
-            resetSub2CaptureState: function () {
-                appClass.flag.subtitleSyncState = 'idle';
-                appClass.flag.subtitleCaptureToken = 0;
-                appClass.flag.subtitleCaptureVideoTime = null;
-                appClass.flag.subtitleCaptureDeadline = null;
-                appClass.flag.subtitleCaptureRequestedAt = null;
-            },
-            restoreMainSubtitleFromFallback: function () {
-                if (appClass.flag.sub1 == null || appClass.flag.sub1 == "關閉") return;
-                $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
             },
             loadScript: function (src) {
                 return new Promise(function (resolve, reject) {
@@ -882,25 +471,21 @@ function run_3wa_netflix() {
                                     //console.log('request completed!');
                                     //console.log(this.readyState); //will always be 4 (ajax is completed successfully)
                                     //console.log(this); //whatever the response was
-                                    if(this.responseType=='' && typeof(this.response)=="string" && this.response.indexOf('tts:fontSize')!=-1)
+                                    if(this.responseType=='' && this.response.indexOf('tts:fontSize')!=-1)
                                     {
                                         //發現字幕了
                                         //console.log(this.response);
                                         //如果第二字幕按壓的時間在 2 秒內，就存下來
-                                        var movieID = window.localStorage.getItem("movieID");
-                                        var pendingTarget = window.localStorage.getItem("my_netflix_pending_xml_capture_target");
-                                        var pendingLang = window.localStorage.getItem("my_netflix_pending_xml_capture_lang");
-                                        var pendingClickDT = window.localStorage.getItem("my_netflix_pending_xml_capture_dt");
-                                        if (movieID != null && pendingTarget != null && pendingLang != null && pendingLang != "" && pendingClickDT != null) {
-                                            if (new Date().getTime() - parseInt(pendingClickDT) < 2000) {
-                                                window.localStorage.setItem("my_netflix___SUB[" + movieID + "][" + pendingLang + "]", this.response);
+                                        if(window.localStorage.getItem("my_netflix_sub2_Click_DT")!=null)
+                                        {
+                                            if(new Date().getTime()-parseInt(window.localStorage.getItem("my_netflix_sub2_Click_DT")) < 2000){
+                                                var movieID = window.localStorage.getItem("movieID");
+                                                var subTitle = window.localStorage.getItem("my_netflix_sub2");
+                                                window.localStorage.setItem("my_netflix___SUB["+movieID+"]["+subTitle+"]", this.response);
                                             }
-                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_target");
-                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_lang");
-                                            window.localStorage.removeItem("my_netflix_pending_xml_capture_dt");
                                         }
                                     }         
-                                    if(this.response!=null && typeof(this.response.indexOf)=="function")
+                                    if(typeof(this.response.indexOf)=="function")
                                     {
                                         if(this.response.indexOf("nflxvideo")!=-1){
                                         
@@ -1262,33 +847,10 @@ function run_3wa_netflix() {
             lastSubTime: null, //影片最後抓到字幕的時間
             isCheckSub1: false, //是否已檢查目前進入控制項是主字幕
             isSkipIntro: false, //是否已跳過片頭，一片只會跳過一次
-            isSkipRecap: false, //是否已跳過前情提要，一片只會跳過一次
-            subtitleSyncState: 'idle',
-            subtitleCaptureToken: 0,
-            subtitleCaptureVideoTime: null,
-            subtitleCaptureDeadline: null,
-            subtitleCaptureRequestedAt: null
+            isSkipRecap: false //是否已跳過前情提要，一片只會跳過一次
         },
         "doms": {
 
-        },
-        "data": {
-            subtitleEntriesCache: {},
-            liveSubtitleEntries: {},
-            sidebarRows: [],
-            sidebarMovieID: null,
-            sidebarMainLang: null,
-            sidebarSubLang: null,
-            sidebarHtml: null,
-            sidebarActiveIndex: null,
-            sidebarUserScrollUntil: 0,
-            sidebarPinned: false,
-            sidebarVisibleUntil: 0,
-            sidebarDismissedAt: null,
-            sidebarHoverReady: true,
-            sidebarHovering: false,
-            sidebarEdgeHot: false,
-            mainSubtitleCaptureRequestedAt: null
         }
     };
 
@@ -1489,8 +1051,7 @@ function run_3wa_netflix() {
         'my_netflix_auto_skip_recap': { 'default': 'false' }, //自動跳過前情提要，預設不啟動
         'my_netflix_auto_next_movie': { 'default': 'false' }, //自動切換下一集，預設不啟動
         'my_netflix_auto_fix_english_first_letter_case': { 'default': 'false' }, //自動修正英文 CC 字幕，首字大寫，後面都改小寫
-        'my_netflix_auto_fix_cc': { 'default': 'false' }, //(可選擇) 自動移除 CC 字幕 [內容]，句首、句尾「-」號
-        'my_netflix_auto_history_sidebar': { 'default': 'true' } //歷史字幕 Sidebar
+        'my_netflix_auto_fix_cc': { 'default': 'false' } //(可選擇) 自動移除 CC 字幕 [內容]，句首、句尾「-」號
     };
 
     for (var k in _myNetFlixSettings) {
@@ -1770,165 +1331,6 @@ function run_3wa_netflix() {
         width: 35px;
         height: 35px;
     }
-    div[reqc='my_netflix_history_sidebar']{
-        position: fixed;
-        top: 10px;
-        right: 0;
-        bottom: 14%;
-        width: 360px;
-        z-index: 2147483640;
-        display: none;
-        color: #fff;
-        background: linear-gradient(180deg, rgba(6,18,44,0.94) 0%, rgba(5,13,34,0.96) 100%);
-        border: 1px solid rgba(74, 198, 255, 0.72);
-        border-radius: 18px 0 0 18px;
-        box-shadow: 0 0 0 1px rgba(90,220,255,0.16) inset, 0 0 24px rgba(53,129,255,0.22), 0 22px 52px rgba(0,0,0,0.42);
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        pointer-events: auto;
-        user-select: text;
-        -webkit-user-select: text;
-        transform: translateX(calc(100% - 22px));
-        opacity: 0.07;
-        transition: transform 0.24s ease, opacity 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
-    }
-    div[reqc='my_netflix_history_sidebar'].my_netflix_history_sidebar_show{
-        transform: translateX(0);
-        opacity: 1;
-        box-shadow: 0 0 0 1px rgba(90,220,255,0.22) inset, 0 0 32px rgba(53,129,255,0.28), 0 24px 56px rgba(0,0,0,0.44);
-    }
-    div[reqc='my_netflix_history_sidebar']:not(.my_netflix_history_sidebar_show){
-        border-color: rgba(74, 198, 255, 0.22);
-        box-shadow: 0 0 0 1px rgba(90,220,255,0.05) inset, 0 0 10px rgba(53,129,255,0.08);
-    }
-    div[reqc='my_netflix_history_sidebar']::before{
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background:
-            radial-gradient(circle at top right, rgba(73,191,255,0.16), transparent 34%),
-            linear-gradient(180deg, rgba(99,232,255,0.06), transparent 28%);
-    }
-    div[reqc='my_netflix_history_sidebar_header']{
-        padding: 14px 14px 10px 16px;
-        font-size: 15px;
-        font-weight: bold;
-        letter-spacing: 1.1px;
-        text-transform: uppercase;
-        color: #8fe7ff;
-        border-bottom: 1px solid rgba(100,211,255,0.18);
-        background: linear-gradient(180deg, rgba(74,175,255,0.14), rgba(255,255,255,0.03));
-        text-shadow: 0 0 12px rgba(79,198,255,0.35);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-    }
-    div[reqc='my_netflix_history_sidebar_title']{
-        flex: 1;
-        min-width: 0;
-    }
-    div[reqc='my_netflix_history_sidebar_actions']{
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    button[reqc='my_netflix_history_pin'],
-    button[reqc='my_netflix_history_close']{
-        width: 28px;
-        height: 28px;
-        border-radius: 999px;
-        border: 1px solid rgba(117,223,255,0.42);
-        background: rgba(12,34,72,0.72);
-        color: #95e9ff;
-        cursor: pointer;
-        font-size: 14px;
-        line-height: 1;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 12px rgba(53,129,255,0.16);
-    }
-    button[reqc='my_netflix_history_pin'][data-pinned='YES']{
-        background: linear-gradient(180deg, rgba(36,125,255,0.72), rgba(45,203,255,0.42));
-        color: #fff;
-        border-color: rgba(149,240,255,0.88);
-    }
-    div[reqc='my_netflix_history_sidebar_body']{
-        height: calc(100% - 48px);
-        overflow-y: auto;
-        padding: 18px 12px 42vh 12px;
-        box-sizing: border-box;
-        scroll-behavior: smooth;
-        user-select: text;
-        -webkit-user-select: text;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(101,225,255,0.82) rgba(7,22,52,0.55);
-    }
-    div[reqc='my_netflix_history_sidebar_body']::-webkit-scrollbar{
-        width: 12px;
-    }
-    div[reqc='my_netflix_history_sidebar_body']::-webkit-scrollbar-track{
-        background: linear-gradient(180deg, rgba(5,18,42,0.42), rgba(7,26,60,0.68));
-        border-left: 1px solid rgba(78,171,255,0.12);
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.24);
-        border-radius: 999px;
-    }
-    div[reqc='my_netflix_history_sidebar_body']::-webkit-scrollbar-thumb{
-        background: linear-gradient(180deg, rgba(122,240,255,0.96), rgba(53,128,255,0.92));
-        border: 2px solid rgba(6,18,44,0.72);
-        border-radius: 999px;
-        box-shadow: 0 0 14px rgba(61,170,255,0.32), inset 0 0 8px rgba(255,255,255,0.2);
-    }
-    div[reqc='my_netflix_history_sidebar_body']::-webkit-scrollbar-thumb:hover{
-        background: linear-gradient(180deg, rgba(160,248,255,1), rgba(78,160,255,1));
-        box-shadow: 0 0 18px rgba(86,198,255,0.42), inset 0 0 10px rgba(255,255,255,0.28);
-    }
-    div[reqc='my_netflix_history_sidebar_body']::-webkit-scrollbar-corner{
-        background: transparent;
-    }
-    div[reqc='my_netflix_history_row']{
-        padding: 10px 12px;
-        margin-bottom: 10px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
-        border: 1px solid rgba(113,196,255,0.08);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-        transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-    div[reqc='my_netflix_history_row'].my_netflix_history_row_active{
-        background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
-        border-color: rgba(113,196,255,0.08);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-    div[reqc='my_netflix_history_time']{
-        color: rgba(151,227,255,0.72);
-        font-size: 11px;
-        margin-bottom: 6px;
-        font-family: Consolas, Monaco, monospace;
-    }
-    div[reqc='my_netflix_history_text_main']{
-        font-size: 16px;
-        line-height: 1.5;
-        color: #ffffff;
-        user-select: text;
-        -webkit-user-select: text;
-    }
-    div[reqc='my_netflix_history_text_sub']{
-        font-size: 14px;
-        line-height: 1.5;
-        color: rgba(198,232,255,0.9);
-        margin-top: 7px;
-        user-select: text;
-        -webkit-user-select: text;
-    }
-    div[reqc='my_netflix_history_empty']{
-        padding: 18px 14px;
-        color: rgba(169,224,255,0.78);
-        font-size: 13px;
-        line-height: 1.5;
-        text-align: center;
-    }
 </style>`);
 
     //註冊一個調整字幕位置的功能
@@ -2077,13 +1479,6 @@ function run_3wa_netflix() {
                             <td field='內容' style='padding-left:3px;'> \
                                 <span class='my_netflix_auto_title_span'>自動移除 CC 字幕 [內容]，句首、句尾「-」號</td> \
                         </tr> \
-                        <tr> \
-                            <td field='項次' style='text-align:center; width:50px;'> \
-                                <input type='checkbox' reqc='my_netflix_auto_history_sidebar' class='checkbox_class'> \
-                            </td> \
-                            <td field='內容' style='padding-left:3px;'> \
-                                <span class='my_netflix_auto_title_span'>歷史字幕 / Subtitle History</span><br>控制右側歷史字幕面板是否啟用。關閉後不會顯示，也不再收集字幕內容。</td> \
-                        </tr> \
                     </tbody> \
                 </table> \
             </span> \
@@ -2222,57 +1617,6 @@ function run_3wa_netflix() {
          </span><!--thetabs--> \
     </div> \
     ");
-    $("div[reqc='my_netflix_history_sidebar']").remove();
-    $("body").append("<div reqc='my_netflix_history_sidebar'><div reqc='my_netflix_history_sidebar_header'><div reqc='my_netflix_history_sidebar_title'>歷史字幕 / Subtitle History</div><div reqc='my_netflix_history_sidebar_actions'><button reqc='my_netflix_history_pin' type='button' title='Pin sidebar'>◎</button><button reqc='my_netflix_history_close' type='button' title='Hide sidebar'>×</button></div></div><div reqc='my_netflix_history_sidebar_body'></div></div>");
-    $("div[reqc='my_netflix_history_sidebar_body']").unbind("scroll").bind("scroll", function () {
-        appClass.data.sidebarUserScrollUntil = Date.now() + 3000;
-    });
-    $("div[reqc='my_netflix_history_sidebar']").unbind("mouseenter").bind("mouseenter", function () {
-        appClass.data.sidebarHovering = true;
-        appClass.method.showSidebarPanel(3);
-    }).unbind("mouseleave").bind("mouseleave", function () {
-        appClass.data.sidebarHovering = false;
-        appClass.method.scheduleSidebarHide(3);
-    });
-    $("button[reqc='my_netflix_history_pin']").attr("data-pinned", "NO").unbind("click").bind("click", function (e) {
-        appClass.data.sidebarPinned = !appClass.data.sidebarPinned;
-        $(this).attr("data-pinned", appClass.data.sidebarPinned ? "YES" : "NO");
-        if (appClass.data.sidebarPinned) {
-            appClass.method.showSidebarPanel(9999);
-        }
-        else {
-            appClass.method.scheduleSidebarHide(3);
-        }
-        e.stopPropagation();
-    });
-    $("button[reqc='my_netflix_history_close']").unbind("click").bind("click", function (e) {
-        appClass.data.sidebarPinned = false;
-        $("button[reqc='my_netflix_history_pin']").attr("data-pinned", "NO");
-        appClass.method.hideSidebarPanelNow();
-        e.stopPropagation();
-    });
-    $(window).off("mousemove.my_netflix_history_sidebar").on("mousemove.my_netflix_history_sidebar", function (e) {
-        if ($("video").length == 0) return;
-        if (window['my_netflix_auto_history_sidebar'] == 'false') return;
-        if (e.clientX < ($(window).width() - 64)) {
-            appClass.data.sidebarHoverReady = true;
-            appClass.data.sidebarEdgeHot = false;
-            return;
-        }
-        if (appClass.data.sidebarDismissedAt != null && Date.now() - appClass.data.sidebarDismissedAt < 2000) {
-            return;
-        }
-        if (appClass.data.sidebarHoverReady !== true) {
-            return;
-        }
-        if (appClass.data.sidebarEdgeHot === true) {
-            return;
-        }
-        if (e.clientX >= ($(window).width() - 42)) {
-            appClass.data.sidebarEdgeHot = true;
-            appClass.method.showSidebarPanel(3);
-        }
-    });
 
     //設定使用者點到的值
 
@@ -2281,7 +1625,6 @@ function run_3wa_netflix() {
     $("input[reqc='my_netflix_auto_next_movie']").prop("checked", (window['my_netflix_auto_next_movie'] == "false") ? false : true);
     $("input[reqc='my_netflix_auto_fix_english_first_letter_case']").prop("checked", (window['my_netflix_auto_fix_english_first_letter_case'] == "false") ? false : true);
     $("input[reqc='my_netflix_auto_fix_cc']").prop("checked", (window['my_netflix_auto_fix_cc'] == "false") ? false : true);
-    $("input[reqc='my_netflix_auto_history_sidebar']").prop("checked", (window['my_netflix_auto_history_sidebar'] == "false") ? false : true);
 
     //按到 x_close 的效果
     $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
@@ -2699,22 +2042,6 @@ function run_3wa_netflix() {
         appClass.method.registerFontSize();
     });
 
-    $("input[reqc='my_netflix_auto_history_sidebar']").unbind("click").bind("click", function () {
-        window['my_netflix_auto_history_sidebar'] = $("input[reqc='my_netflix_auto_history_sidebar']").prop("checked").toString();
-        appClass.method.setMemory('my_netflix_auto_history_sidebar', window['my_netflix_auto_history_sidebar']);
-        if (window['my_netflix_auto_history_sidebar'] == 'false') {
-            appClass.data.sidebarVisibleUntil = 0;
-            appClass.data.sidebarPinned = false;
-            appClass.data.sidebarHovering = false;
-            appClass.data.sidebarRows = [];
-            appClass.data.sidebarHtml = null;
-            $("div[reqc='my_netflix_history_sidebar']").removeClass("my_netflix_history_sidebar_show").hide();
-        }
-        else {
-            appClass.method.showSidebarPanel(3);
-        }
-    });
-
 
     //主要 字體大小
     $("input[reqc='my_netflix_fontsize_input']").unbind("input").bind("input", function () {
@@ -3031,15 +2358,7 @@ function run_3wa_netflix() {
 
             //使用最後紀錄到的字幕
             appClass.flag.sub1 = window['my_netflix_sub1'].trim();
-            appClass.flag.sub2 = (window['my_netflix_sub2'] == "關閉" || window['my_netflix_sub2'] == null) ? null : window['my_netflix_sub2'].trim();
-            appClass.method.resetSub2CaptureState();
-            appClass.data.subtitleEntriesCache = {};
-            appClass.data.liveSubtitleEntries = {};
-            appClass.data.sidebarRows = [];
-            appClass.data.sidebarMovieID = null;
-            appClass.data.sidebarHtml = null;
-            appClass.data.sidebarActiveIndex = null;
-            appClass.data.mainSubtitleCaptureRequestedAt = null;
+            appClass.flag.sub2 = (window['my_netflix_sub1'] == "關閉") ? null : window['my_netflix_sub1'].trim();
         }
         if (appClass.flag.mainSubHasData == false) {
             $("#subMain_div").empty();
@@ -3216,7 +2535,7 @@ function run_3wa_netflix() {
                 //註冊主要字幕被點到
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li").unbind("click").click(function (e) {
                     var data_uiaName = $(this).attr('data-uia');
-                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName.replace("-selected", "") + "']").trigger("click");
+                    $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName + "']").trigger("click");
                     //然後重建字幕選單
                     //$("#subMain_div").empty();
                     //appClass.flag.mainSubHasData = false;
@@ -3249,16 +2568,6 @@ function run_3wa_netflix() {
 
                     //存 memory sub1
                     appClass.method.setMemory('my_netflix_sub1', appClass.flag.sub1.trim());
-                    appClass.method.setMemory('my_netflix_sub1_Click_DT', new Date().getTime());
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub1');
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub1.trim());
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
-                    appClass.method.resetSub2CaptureState();
-                    appClass.data.sidebarMovieID = null;
-                    appClass.data.sidebarHtml = null;
-                    appClass.data.sidebarActiveIndex = null;
-                    appClass.data.mainSubtitleCaptureRequestedAt = null;
-                    delete appClass.data.subtitleEntriesCache[appClass.method.getMovieID() + "||" + appClass.flag.sub1.trim() + "||xml"];
 
                     //避免穿透
                     e.stopPropagation();
@@ -3301,17 +2610,9 @@ function run_3wa_netflix() {
 
                     //存 memory sub2
                     appClass.method.setMemory('my_netflix_sub2', appClass.flag.sub2.trim());
-                    appClass.method.resetSub2CaptureState();
-                    appClass.data.sidebarMovieID = null;
-                    appClass.data.sidebarHtml = null;
-                    appClass.data.sidebarActiveIndex = null;
 
                     //存 第二字幕按壓時間
                     appClass.method.setMemory('my_netflix_sub2_Click_DT', new Date().getTime());
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub2');
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub2.trim());
-                    appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
-                    delete appClass.data.subtitleEntriesCache[appClass.method.getMovieID() + "||" + appClass.flag.sub2.trim() + "||xml"];
                     //避免穿透
                     e.stopPropagation();
                 });
@@ -3449,132 +2750,157 @@ function run_3wa_netflix() {
             return;
         }
 
-        var baseVideoTime = appClass.method.getVideoCurrentTime();
-        if (baseVideoTime == null) {
-            return;
-        }
 
-        var isFallbackCapturing = (appClass.flag.subtitleSyncState == 'fallback_dom_capture');
-        if (!isFallbackCapturing) {
-            var mainCacheKey = appClass.method.getSubtitleCacheKey(movieID, appClass.flag.sub1);
-            var mainCachedXml = (mainCacheKey == null) ? null : localStorage[mainCacheKey];
-            if (mainCachedXml != null) {
-                window['lastWord_a'] = appClass.method.xmlSubParse(mainCachedXml, baseVideoTime);
-                window['lastImage_a'] = "";
-                appClass.flag.isSub1Image = false;
-                appClass.flag.isSubGet = true;
-                appClass.data.mainSubtitleCaptureRequestedAt = null;
+
+        $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
+
+
+        appClass.flag.isSubGet = false;
+        //window['lastWord_a'] = "";
+        //window['lastWord_b'] = "";
+        //window['lastImage_a'] = new Array();
+        //window['lastImage_b'] = new Array();
+        setTimeout(function () {
+            //window['lastWord_a'] = $(".player-timedtext-text-container").text();
+            //console.log("window['lastWord_a']: " + window['lastWord_a']);
+            //這裡的 $(".player-timedtext-text-container") 有可能是多行...
+            //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
+            var _m = new Array();
+            for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
+                //斷行會變 \n
+                //console.log($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__"));
+                $(".player-timedtext-text-container").eq(i).html($(".player-timedtext-text-container").eq(i).html().replace("<br>", "__3WA__N__")).text();
+                var _sm = $(".player-timedtext-text-container").eq(i).text().split("__3WA__N__");
+                for (var j = 0, max_j = _sm.length; j < max_j; j++) {
+                    _m.push(_sm[j]);
+                }
             }
-            else if (appClass.flag.sub1 != null && appClass.flag.sub1 != "" &&
-                (appClass.data.mainSubtitleCaptureRequestedAt == null || Date.now() - appClass.data.mainSubtitleCaptureRequestedAt > 2500)) {
-                appClass.data.mainSubtitleCaptureRequestedAt = Date.now();
-                appClass.method.setMemory('my_netflix_sub1_Click_DT', new Date().getTime());
-                appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub1');
-                appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub1.trim());
-                appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
-                $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
-            }
-            else if (mainCachedXml == null) {
-                $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
-            }
-            appClass.flag.isSubGet = false;
-            window['lastWord_a'] = appClass.method.readCurrentTextSubtitle();
+            //人民仍需要斷行!?            
+            window['lastWord_a'] = _m.join("\n");
             if (window['lastWord_a'] != "") {
                 appClass.flag.isSub1Image = false;
+                //試看看移除字幕...
+                //$(".player-timedtext-text-container").remove();
             }
+            //if ($(".image-based-subtitles svg image").length > 0) {
+            //圖片型字幕
+            /*_m = new Array();
+            for (var i = 0, max_i = $(".image-based-subtitles svg image").length; i < max_i; i++) {
+                //_m.push($(".player-timedtext-text-container").eq(i).clone());
+                _m.push($(".image-based-subtitles svg image").eq(i).attr('href'));
+            }
+            window['lastImage_a'] = _m.join("\n");
+            */
+            _m = new Array();
+            if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
 
-            window['lastImage_a'] = appClass.method.readCurrentImageSubtitle();
-            if (window['lastImage_a'] != "") {
-                appClass.flag.isSub1Image = true;
-                $(".image-based-subtitles svg image").remove();
-            }
-            else if (window['lastWord_a'] != "") {
-                appClass.flag.isSub1Image = false;
-            }
-            if (mainCachedXml != null) {
-                window['lastWord_a'] = appClass.method.xmlSubParse(mainCachedXml, baseVideoTime);
-                window['lastImage_a'] = "";
-                appClass.flag.isSub1Image = false;
-                appClass.flag.isSubGet = true;
-            }
-        }
-
-        if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉" && appClass.flag.sub1 != appClass.flag.sub2) {
-            var movieIDNow = appClass.method.getMovieID();
-            var sub2CacheKey = appClass.method.getSubtitleCacheKey(movieIDNow, appClass.flag.sub2);
-            var sub2CachedXml = (sub2CacheKey == null) ? null : localStorage[sub2CacheKey];
-
-            if (sub2CachedXml != null) {
-                window['lastWord_b'] = appClass.method.xmlSubParse(sub2CachedXml, baseVideoTime);
-                window['lastImage_b'] = "";
-                appClass.flag.isSub2Image = false;
-                if (appClass.flag.subtitleSyncState != 'idle') {
-                    appClass.method.restoreMainSubtitleFromFallback();
-                    appClass.method.resetSub2CaptureState();
+                var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
+                for (var i = mb64.length - 1; i >= 0; i--) {
+                    var d = mb64[i].split("|||3WA|||");
+                    //b64 , 時間
+                    if (new Date().getTime() - parseInt(d[1]) <= 2000) {
+                        var appendImg = d[0];
+                        if ($.inArray(appendImg, _m[i]) == -1) {
+                            _m.push(appendImg);
+                        }
+                        if (_m.length >= 2) break; //最多二組字
+                    }
                 }
-                appClass.flag.isSubGet = true;
+                window['lastImage_a'] = _m.join("\n");
+                if (window['lastImage_a'] != "") {
+                    appClass.flag.isSub1Image = true;
+                    //移除圖片字幕
+                    $(".image-based-subtitles svg image").remove();
+                }
+
+            }
+            //}
+        }, 50)
+        //一、二字幕不要一樣
+        // console.log(appClass.flag);
+        if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉" && appClass.flag.sub1 != appClass.flag.sub2) {
+
+            //如果第二字幕已在 memory my_netflix___SUB[movieID][字幕] 直接解晰
+            if (localStorage["my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"] != null) {
+                //直接從 XML 解內容
+                //此時有可能回上頁，沒有 $("video")
+                if ($("video").length == 0) return;
+                var dt = $("video")[0].currentTime;
+                var txt = appClass.method.xmlSubParse(localStorage.getItem("my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"), dt);
+                //console.log(txt);
+                // Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
+                window['lastWord_b'] = txt;
             }
             else {
-                if (appClass.flag.subtitleSyncState == 'idle') {
-                    appClass.flag.subtitleSyncState = 'warming_sub2_cache';
-                    appClass.flag.subtitleCaptureRequestedAt = Date.now();
-                }
-
-                if (appClass.flag.subtitleSyncState == 'warming_sub2_cache') {
-                    if (Date.now() - appClass.flag.subtitleCaptureRequestedAt >= 250) {
-                        appClass.flag.subtitleSyncState = 'fallback_dom_capture';
-                        appClass.flag.subtitleCaptureToken += 1;
-                        appClass.flag.subtitleCaptureVideoTime = baseVideoTime;
-                        appClass.flag.subtitleCaptureRequestedAt = Date.now();
-                        appClass.flag.subtitleCaptureDeadline = Date.now() + 500;
-                        appClass.method.setMemory('my_netflix_pending_xml_capture_target', 'sub2');
-                        appClass.method.setMemory('my_netflix_pending_xml_capture_lang', appClass.flag.sub2.trim());
-                        appClass.method.setMemory('my_netflix_pending_xml_capture_dt', new Date().getTime());
-                        $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
-                    }
-                    appClass.flag.isSubGet = true;
-                }
-                else if (appClass.flag.subtitleSyncState == 'fallback_dom_capture') {
-                    var isCaptureExpired = Date.now() > appClass.flag.subtitleCaptureDeadline;
-                    var isCaptureOutdated = appClass.flag.subtitleCaptureVideoTime == null || Math.abs(baseVideoTime - appClass.flag.subtitleCaptureVideoTime) > 0.35;
-                    if (isCaptureExpired || isCaptureOutdated) {
-                        appClass.method.restoreMainSubtitleFromFallback();
-                        appClass.method.resetSub2CaptureState();
-                        window['lastWord_b'] = "";
-                        window['lastImage_b'] = "";
-                        appClass.flag.isSub2Image = false;
-                        appClass.flag.isSubGet = true;
-                    }
-                    else {
-                        var fallbackText = appClass.method.readCurrentTextSubtitle();
-                        var fallbackImage = appClass.method.readCurrentImageSubtitle();
-                        if (fallbackText != "" || fallbackImage != "") {
-                            window['lastWord_b'] = fallbackText;
-                            window['lastImage_b'] = fallbackImage;
-                            appClass.flag.isSub2Image = (fallbackText == "" && fallbackImage != "");
-                            if (fallbackImage != "") {
-                                $(".image-based-subtitles svg image").remove();
+                //原來 2.1 版點不停的流程
+                setTimeout(function () {
+                    $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
+                    setTimeout(function () {
+                        if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉") {
+                            //window['lastWord_b'] = $(".player-timedtext-text-container").text();
+                            //console.log("window['lastWord_b']: " + window['lastWord_b']);
+                            //這裡的 $(".player-timedtext-text-container") 有可能是多行...
+                            //Issue (Done 2022-09-25)50、英文字幕，二行字會黏在一起
+                            var _m = new Array();
+                            for (var i = 0, max_i = $(".player-timedtext-text-container").length; i < max_i; i++) {
+                                _m.push($(".player-timedtext-text-container").eq(i).text());
                             }
-                            appClass.method.restoreMainSubtitleFromFallback();
-                            appClass.method.resetSub2CaptureState();
+                            window['lastWord_b'] = _m.join(" ");
+                            if (window['lastWord_b'] != "") {
+                                appClass.flag.isSub1Image = false;
+                                //移除字幕
+                                $(".player-timedtext-text-container").remove();
+                            }
+                            //if ($(".image-based-subtitles svg image").length > 0) {
+                            //圖片型字幕
+                            //想法是，只抓 2秒內 $("div[reqc='my_netflix_imageSubsB64']").html() 最後二組不同的字
+                            _m = new Array();
+                            if ($(".image-based-subtitles svg image").length > 0 && $("div[reqc='my_netflix_imageSubsB64']").length == 1) {
+
+                                var mb64 = $("div[reqc='my_netflix_imageSubsB64']").html().split("|||3WA_BR|||");
+                                for (var i = mb64.length - 1; i >= 0; i--) {
+                                    var d = mb64[i].split("|||3WA|||");
+                                    //b64 , 時間
+                                    if (new Date().getTime() - parseInt(d[1]) <= 2000) {
+                                        var appendImg = d[0];
+                                        if ($.inArray(appendImg, _m[i]) == -1) {
+                                            _m.push(appendImg);
+                                        }
+                                        if (_m.length >= 2) break; //最多二組字
+                                    }
+                                }
+                                window['lastImage_b'] = _m.join("\n");
+                                if (window['lastImage_b'] != "") {
+                                    appClass.flag.isSub2Image = true;
+                                    $(".image-based-subtitles svg image").remove();
+                                }
+                            }
+
+                            //window['lastImage_b'] = _m.join("\n");
+                            //}
+                        }
+                        else {
+                            //沒設定字幕
+                            window['lastWord_b'] = "";
+                            window['lastImage_b'] = "";
                         }
                         appClass.flag.isSubGet = true;
-                    }
-                }
-                else {
-                    appClass.flag.isSubGet = true;
-                }
+                    }, 50);
+
+                }, 100);
             }
         }
         else {
-            appClass.method.resetSub2CaptureState();
             appClass.flag.isSubGet = true;
             window['lastWord_b'] = "";
             window['lastImage_b'] = new Array();
-            appClass.flag.isSub2Image = false;
         }
 
-    }, 150);
+        //console.log(appClass.flag.sub1 + " , " + appClass.flag.sub2);
+        //setTimeout(function () {
+        //}, 300);
+
+    }, 600);
 
     //字幕獨立變化
     clearInterval(appClass.interval.subtitleUIInterval);
@@ -3595,7 +2921,6 @@ function run_3wa_netflix() {
         //$("div[data-uia='timeline']").closest("div").closest("div").closest("div").stop().show();
 
         var my3waSubDiv = $("div[reqc='my3waSubDiv']");
-        appClass.method.updateSidebarUI();
         //每 50ms 更新字幕的位置
         //$("image").attr('x',window['my_netflix_y_position']);
 
@@ -3647,28 +2972,6 @@ function run_3wa_netflix() {
 
             window['lastWord_a'] = appClass.method.trim(window['lastWord_a']);
             window['lastWord_b'] = appClass.method.trim(window['lastWord_b']);
-            if (window['my_netflix_auto_history_sidebar'] == 'false') {
-                appClass.data.sidebarRows = [];
-                appClass.data.sidebarHtml = null;
-            }
-            else {
-                var sidebarMovieID = appClass.method.getMovieID();
-                var sidebarCurrentTimeMs = Math.floor(($("video").length > 0 ? $("video")[0].currentTime : 0) * 1000);
-                if (window['lastWord_a'] != null && window['lastWord_a'] != "" && appClass.flag.sub1 != null) {
-                    appClass.method.pushLiveSubtitleEntry(sidebarMovieID, appClass.flag.sub1, window['lastWord_a'], sidebarCurrentTimeMs);
-                }
-                if (window['lastWord_b'] != null && window['lastWord_b'] != "" && appClass.flag.sub2 != null) {
-                    appClass.method.pushLiveSubtitleEntry(sidebarMovieID, appClass.flag.sub2, window['lastWord_b'], sidebarCurrentTimeMs);
-                }
-                appClass.data.sidebarRows = appClass.method.buildSidebarRows(
-                    appClass.method.getSubtitleEntries(sidebarMovieID, appClass.flag.sub1, 'xml') || appClass.method.getLiveSubtitleEntries(sidebarMovieID, appClass.flag.sub1),
-                    appClass.method.getSubtitleEntries(sidebarMovieID, appClass.flag.sub2, 'xml') || appClass.method.getLiveSubtitleEntries(sidebarMovieID, appClass.flag.sub2)
-                );
-                appClass.data.sidebarMovieID = sidebarMovieID;
-                appClass.data.sidebarMainLang = appClass.flag.sub1;
-                appClass.data.sidebarSubLang = appClass.flag.sub2;
-                appClass.data.sidebarHtml = null;
-            }
             window['lastWord_c'] = window['lastWord_a'];
             window['lastWord_c'] += (window['lastWord_b'] == null || window['lastWord_b'] == "") ? "" : "\n" + window['lastWord_b'];
             window['lastWord_c'] = appClass.method.trim(window['lastWord_c']);
@@ -4075,10 +3378,9 @@ function run_3wa_netflix() {
 
 //新版，啟動後自動載入
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const tabUrl = (tab && typeof tab.url === "string") ? tab.url : "";
     if (
         changeInfo.status === "complete" &&
-        (tabUrl.includes("www.netflix.com") || tabUrl.includes("netflix.com"))
+        (tab.url.includes("www.netflix.com") || tab.url.includes("netflix.com"))
     ) {
         // 嘗試用 scripting API（Chrome Manifest V3 專用）
         if (chrome.scripting && chrome.scripting.executeScript) {
