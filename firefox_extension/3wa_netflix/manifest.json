@@ -26,6 +26,7 @@
                 "https://*.netflix.com/*"
             ],
             "js": [
+                "libs/jquery-3.7.1.min.js",
                 "content.js"
             ],
             "run_at": "document_idle"

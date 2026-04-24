@@ -504,5 +504,8 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-03-29)113、新增右側「歷史字幕 / Subtitle History」浮動視窗，方便查閱與學習</li>
   <li>(Done 2026-03-29)114、在自動功能中新增歷史字幕開關，關閉後不顯示也不再持續收集字幕內容</li>
   <li>(Done 2026-03-30)115、3.6.2 改版有人反應切換字幕會異常，先退回 3.6.1 版</li>
+  <li>(Done 2026-04-25)116、3.6.4 修正字型下載網址</li>
+  <li>(Done 2026-04-25)117、3.6.4 修正 html, body 有時會出現捲捲抖動的問題</li>
+  <li>(Done 2026-04-25)118、3.6.4 將 jquery 拆出，至 lib</li>
 </ul>
   

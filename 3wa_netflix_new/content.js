@@ -31,7 +31,7 @@
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.3",
+        appVersion: "3.6.4",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -509,7 +509,10 @@
 
                 //影片標題下移
                 //Issue 74、影片標題下移、加一點透明度
-                $("head").append("<style>div[data-uia='video-title']{opacity:0.8;position:absolute;bottom:-4%;}</style>")
+                $("head").append("<style>div[data-uia='video-title']{opacity:0.8;position:absolute;bottom:-4%;}</style>");
+
+                //Issue 117、改版後 html, body 有時會出現捲捲抖動的問題
+                $("head").append("<style>html, body{overflow: hidden !important;}</style>");
 
 
 
