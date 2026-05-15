@@ -35,7 +35,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.3",
+        appVersion: "3.6.5",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -115,21 +115,51 @@ function run_3wa_netflix() {
                 return substr($s, $start + strlen($s_begin), $end);
             },
             xmlSubParse: function (xmlSource, nowVideoDT) {
-                nowVideoDT *= 1000000 * 10; //奇妙
-                var m = $($.parseXML(xmlSource)).find("div").html().split("\n");
-                for (var i = 0, max_i = m.length; i < max_i; i++) {
-                    var s = parseInt($(m[i]).attr('begin'));
-                    var e = parseInt($(m[i]).attr('end'));
+                var core = window.myNetflixSubtitleCore;
+                if (core != null && typeof (core.parseSubtitleXml) == "function" && typeof (core.findCueText) == "function") {
+                    try {
+                        if (appClass.flag.subtitleCueCache == null) {
+                            appClass.flag.subtitleCueCache = {};
+                        }
 
-                    //console.log(s + "," + e + "," + nowVideoDT);
+                        var cacheKey = null;
+                        if (typeof (xmlSource) == "string") {
+                            // 用長度與頭尾片段當快取鍵，避免每次字幕刷新都掃整份 XML。
+                            cacheKey = "xml:" + xmlSource.length + ":" + xmlSource.substr(0, 96) + ":" + xmlSource.substr(Math.max(0, xmlSource.length - 96));
+                        }
 
-                    if (nowVideoDT >= s && nowVideoDT <= e) {
-                        //console.log($(m[i]));
-                        // Issue. 110 律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
-                        var txt = br2nl(strip_tags($(m[i]).html(),"br"));
-                        //console.log(txt);
-                        return txt;
+                        if (cacheKey != null && appClass.flag.subtitleCueCache[cacheKey] == null) {
+                            appClass.flag.subtitleCueCache[cacheKey] = core.parseSubtitleXml(xmlSource);
+                        }
+
+                        var cues = cacheKey == null ? core.parseSubtitleXml(xmlSource) : appClass.flag.subtitleCueCache[cacheKey];
+                        return core.findCueText(cues, nowVideoDT);
                     }
+                    catch (e) {
+                        // 新解析器失敗時保留舊流程，避免單一格式打掛整個字幕。
+                    }
+                }
+
+                try {
+                    nowVideoDT *= 1000000 * 10; //奇妙
+                    var m = $($.parseXML(xmlSource)).find("div").html().split("\n");
+                    for (var i = 0, max_i = m.length; i < max_i; i++) {
+                        var s = parseInt($(m[i]).attr('begin'));
+                        var e = parseInt($(m[i]).attr('end'));
+
+                        //console.log(s + "," + e + "," + nowVideoDT);
+
+                        if (nowVideoDT >= s && nowVideoDT <= e) {
+                            //console.log($(m[i]));
+                            // Issue. 110 律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
+                            var txt = br2nl(strip_tags($(m[i]).html(),"br"));
+                            //console.log(txt);
+                            return txt;
+                        }
+                    }
+                }
+                catch (e) {
+                    return null;
                 }
                 return null;
             },
@@ -239,6 +269,90 @@ function run_3wa_netflix() {
             getMemory: function (wtfkey) {
                 return localStorage.getItem(wtfkey);
             }, // 取出 ram
+            getSubtitleStorageKey: function (movieID, subTitle) {
+                var core = window.myNetflixSubtitleCore;
+                if (core != null && typeof (core.createStorageKey) == "function") {
+                    return core.createStorageKey(movieID, subTitle);
+                }
+
+                if (movieID == null || subTitle == null) return null;
+                movieID = String(movieID).trim();
+                subTitle = String(subTitle).trim();
+                if (movieID == "" || subTitle == "") return null;
+                return "my_netflix___SUB[" + movieID + "][" + subTitle + "]";
+            },
+            setSubtitleCapturePending: function (subKind, subTitle) {
+                if (subKind == null || subTitle == null) return;
+                subTitle = String(subTitle).trim();
+                if (subTitle == "" || subTitle == "關閉") return;
+
+                // page-hook 攔到 XML 時無法直接知道使用者 UI 選項，先記錄最近一次切換字幕。
+                var nowDT = new Date().getTime();
+                appClass.method.setMemory("my_netflix_" + subKind + "_Click_DT", nowDT);
+                appClass.method.setMemory("my_netflix_" + subKind + "_Capture_Label", subTitle);
+            },
+            getPendingSubtitleName: function (payload) {
+                var nowDT = new Date().getTime();
+                if (payload != null && payload.capturedAt != null && !isNaN(parseInt(payload.capturedAt))) {
+                    nowDT = parseInt(payload.capturedAt);
+                }
+
+                var captureWindowMS = 8000;
+                var result = null;
+                var latestDT = 0;
+                var subKinds = ["sub1", "sub2"];
+
+                for (var i = 0, max_i = subKinds.length; i < max_i; i++) {
+                    var subKind = subKinds[i];
+                    var clickDT = parseInt(appClass.method.getMemory("my_netflix_" + subKind + "_Click_DT"));
+                    var subTitle = appClass.method.getMemory("my_netflix_" + subKind + "_Capture_Label") || appClass.method.getMemory("my_netflix_" + subKind);
+                    if (isNaN(clickDT) || subTitle == null) continue;
+                    if (nowDT - clickDT < 0 || nowDT - clickDT > captureWindowMS) continue;
+                    if (clickDT >= latestDT) {
+                        latestDT = clickDT;
+                        result = String(subTitle).trim();
+                    }
+                }
+
+                if (result != null && result != "" && result != "關閉") return result;
+                if (payload != null && payload.language != null && String(payload.language).trim() != "") return String(payload.language).trim();
+                return null;
+            },
+            handleSubtitleXmlMessage: function (payload) {
+                if (payload == null || typeof (payload.xml) != "string") return;
+
+                var core = window.myNetflixSubtitleCore;
+                if (core != null && typeof (core.isSubtitleXml) == "function" && core.isSubtitleXml(payload.xml) == false) return;
+
+                var movieID = payload.movieId || appClass.method.getMovieID() || appClass.method.getMemory("movieID");
+                var subTitle = appClass.method.getPendingSubtitleName(payload);
+                var storageKey = appClass.method.getSubtitleStorageKey(movieID, subTitle);
+                if (storageKey == null) return;
+
+                appClass.method.setMemory(storageKey, payload.xml);
+                appClass.method.setMemory(storageKey + "[META]", JSON.stringify({
+                    source: payload.source || "",
+                    url: payload.url || "",
+                    language: payload.language || "",
+                    trackId: payload.trackId || "",
+                    capturedAt: payload.capturedAt || new Date().getTime()
+                }));
+
+                // 同一字幕可能重新抓到不同 XML，直接清 cue cache 最穩。
+                appClass.flag.subtitleCueCache = {};
+            },
+            registerSubtitleMessageBridge: function () {
+                if (window.__myNetflixSubtitleMessageBridge === true) return;
+                window.__myNetflixSubtitleMessageBridge = true;
+
+                window.addEventListener("message", function (event) {
+                    if (event.source !== window) return;
+                    if (event.data == null) return;
+                    if (event.data.type !== "MY_NETFLIX_SUBTITLE_XML") return;
+                    if (event.data.from !== "3waNetflix-page-hook") return;
+                    appClass.method.handleSubtitleXmlMessage(event.data.payload);
+                });
+            },
             smallComment: function (message, seconds, is_need_motion, cssOptions) {
                 //畫面的1/15	
                 if ($("#mysmallComment").length == 0) {
@@ -837,6 +951,7 @@ function run_3wa_netflix() {
                 Y: null
             },
             mainSubHasData: false, //是否已產字幕列表
+            subtitleCueCache: {}, //字幕 XML 解析後的 cue 快取
             sub1: null, //第一字幕
             sub2: null,  //第二字幕
             isSub1Image: false, //第一字幕是否圖片
@@ -884,6 +999,8 @@ function run_3wa_netflix() {
         console.log("only run on netflix url...");
         //return; //只有在 netflix 才有效        
     }
+
+    appClass.method.registerSubtitleMessageBridge();
 
     // bind ui   
     clearInterval(appClass.interval.uiInterval);
@@ -1483,7 +1600,7 @@ function run_3wa_netflix() {
                 </table> \
             </span> \
             <span id='subFont_div'> \
-                <div class='my_netflix_Font_table_class_span_title'>注：字型下載後，字型檔「按右鍵安裝」<br> \
+                <div class='my_netflix_Font_table_class_span_title'>注：字型下載後，如為 ZIP 請先解壓縮，再開啟 .ttf / .otf 字型檔安裝<br> \
                 如使用 brave 瀏覽器，Brave Shields 要關掉，額外安裝的字幕才能正常使用<br> \
                 家裡有小朋友可以推薦用ㄅ字嗨注音黑體 \
                 </div > \
@@ -1507,43 +1624,43 @@ function run_3wa_netflix() {
                         <tr> \
                             <td field='項次'>2</td> \
                             <td field='字型名稱'>源樣黑體</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/raw/master/ttc/GenYoGothic-R.ttc'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/releases/download/v2.100/GenYoGothic2TW-otf.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genyog-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>3</td> \
                             <td field='字型名稱'>源石黑體</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/raw/master/ttc/GenSekiGothic-R.ttc'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/releases/download/v2.100/GenSekiGothic2TW-otf.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/genseki-font/blob/master/SIL_Open_Font_License_1.1.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>4</td> \
                             <td field='字型名稱'>芫荽</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/iansui/raw/main/Iansui-Regular.ttf'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/iansui/releases/download/v1.020/iansui.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/iansui/blob/main/OFL.txt'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>5</td> \
                             <td field='字型名稱'>霞鹜文楷</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai/raw/main/fonts/TTF/LXGWWenKai-Regular.ttf'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai/releases/download/v1.522/LXGWWenKaiMono-Regular.ttf'>下載 TTF</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/lxgw/LxgwWenKai'>SIL OPEN FONT LICENSE Version 1.1</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>6</td> \
                             <td field='字型名稱'>ㄅ字嗨注音標楷</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiKaiStd-Regular.ttf'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/releases/download/v1.500/BpmfZihiKaiStd.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>7</td> \
                             <td field='字型名稱'>ㄅ字嗨注音黑體</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSans-Regular.ttf'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/releases/download/v1.500/BpmfZihiSans.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
                         <tr> \
                             <td field='項次'>8</td> \
                             <td field='字型名稱'>ㄅ字嗨注音宋體</td> \
-                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/raw/master/outputs/BpmfZihiSerif-Regular.ttf'>下載</a></td> \
+                            <td field='下載位置'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/releases/download/v1.500/BpmfZihiSerif.zip'>下載 ZIP</a></td> \
                             <td field='授權說明'><a target='_blank' href='https://github.com/ButTaiwan/bpmfvs/blob/master/LICENSE-2.0.txt'>Apache License Version 2.0</a></td> \
                         </tr> \
                     </tbody> \
@@ -2347,6 +2464,7 @@ function run_3wa_netflix() {
         if ($("#subMain_div").attr('movieID') != movieID) {
             appClass.flag.mainSubHasData = false;
             //重選影片了，字幕重生
+            appClass.flag.subtitleCueCache = {};
             appClass.flag.sub1 = null;
             appClass.flag.sub2 = null;
 
@@ -2535,6 +2653,8 @@ function run_3wa_netflix() {
                 //註冊主要字幕被點到
                 $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li").unbind("click").click(function (e) {
                     var data_uiaName = $(this).attr('data-uia');
+                    appClass.flag.sub1 = $(this).text();
+                    appClass.method.setSubtitleCapturePending("sub1", appClass.flag.sub1.trim());
                     $("div[reqc='原本的字幕選單'] li[data-uia='" + data_uiaName + "']").trigger("click");
                     //然後重建字幕選單
                     //$("#subMain_div").empty();
@@ -2544,8 +2664,6 @@ function run_3wa_netflix() {
                     $(".image-based-subtitles svg image").remove();
                     $(".player-timedtext-text-container").remove();
                     $("div[reqc='my_netflix_imageSubsB64']").empty();
-
-                    appClass.flag.sub1 = $(this).text();
 
                     //移除這裡範圍所有的 svg
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕']").find("li svg").remove();
@@ -2597,6 +2715,7 @@ function run_3wa_netflix() {
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] svg").clone().prependTo($(this).find("div"));
                     $(this).find("div").find("div").attr('class', set_class);
                     appClass.flag.sub2 = $(this).text().trim();
+                    appClass.method.setSubtitleCapturePending("sub2", appClass.flag.sub2);
 
                     //只有勾勾要明顯些
                     $("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='次要字幕'] div div").css({
@@ -2611,8 +2730,6 @@ function run_3wa_netflix() {
                     //存 memory sub2
                     appClass.method.setMemory('my_netflix_sub2', appClass.flag.sub2.trim());
 
-                    //存 第二字幕按壓時間
-                    appClass.method.setMemory('my_netflix_sub2_Click_DT', new Date().getTime());
                     //避免穿透
                     e.stopPropagation();
                 });
@@ -2717,13 +2834,17 @@ function run_3wa_netflix() {
             //console.log("點了..." + $("button[data-uia='control-audio-subtitle']").length);
             //$("button[data-uia='control-audio-subtitle']").trigger("click");  
             // Issue. 93、修正下方進度條顯示問題
+            var currentMovieID = appClass.method.getMovieID();
+            var memorySub2 = appClass.method.getMemory("my_netflix_sub2");
+            var memorySub2Key = appClass.method.getSubtitleStorageKey(currentMovieID, memorySub2 == null ? null : memorySub2.trim());
             if ($("#subMain_div").find("div[reqc='我的字幕選單'] div[reqc='主要字幕'] li").length == 0) {
                 $("button[data-uia='control-audio-subtitle']").trigger("click");
                 //console.log(" li = 0 ");               
             }
             else if (
                 appClass.flag.sub2 != "關閉" &&
-                appClass.method.getMemory("my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.method.getMemory("my_netflix_sub2").trim() + "]") == null
+                memorySub2Key != null &&
+                appClass.method.getMemory(memorySub2Key) == null
             ) {
                 //console.log(" li = 00 ");
                 $("button[data-uia='control-audio-subtitle']").trigger("click");
@@ -2750,17 +2871,30 @@ function run_3wa_netflix() {
             return;
         }
 
-
-
-        $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
-
-
         appClass.flag.isSubGet = false;
+        var useSub1Xml = false;
+        var sub1Key = appClass.method.getSubtitleStorageKey(appClass.method.getMovieID(), appClass.flag.sub1);
+        var sub1XmlSource = sub1Key == null ? null : appClass.method.getMemory(sub1Key);
+
+        if (sub1XmlSource != null && appClass.flag.sub1 != "關閉" && $("video").length != 0) {
+            // 主字幕也優先用攔到的 XML，避免每輪都去切 Netflix 原生字幕。
+            window['lastWord_a'] = appClass.method.xmlSubParse(sub1XmlSource, $("video")[0].currentTime) || "";
+            window['lastImage_a'] = new Array();
+            appClass.flag.isSub1Image = false;
+            appClass.flag.isSubGet = true;
+            useSub1Xml = true;
+        }
+        else {
+            appClass.method.setSubtitleCapturePending("sub1", appClass.flag.sub1);
+            $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub1 + "']").trigger("click");
+        }
+
         //window['lastWord_a'] = "";
         //window['lastWord_b'] = "";
         //window['lastImage_a'] = new Array();
         //window['lastImage_b'] = new Array();
         setTimeout(function () {
+            if (useSub1Xml == true) return;
             //window['lastWord_a'] = $(".player-timedtext-text-container").text();
             //console.log("window['lastWord_a']: " + window['lastWord_a']);
             //這裡的 $(".player-timedtext-text-container") 有可能是多行...
@@ -2821,19 +2955,24 @@ function run_3wa_netflix() {
         if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉" && appClass.flag.sub1 != appClass.flag.sub2) {
 
             //如果第二字幕已在 memory my_netflix___SUB[movieID][字幕] 直接解晰
-            if (localStorage["my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"] != null) {
+            var sub2Key = appClass.method.getSubtitleStorageKey(appClass.method.getMovieID(), appClass.flag.sub2);
+            if (sub2Key != null && localStorage[sub2Key] != null) {
                 //直接從 XML 解內容
                 //此時有可能回上頁，沒有 $("video")
                 if ($("video").length == 0) return;
                 var dt = $("video")[0].currentTime;
-                var txt = appClass.method.xmlSubParse(localStorage.getItem("my_netflix___SUB[" + appClass.method.getMovieID() + "][" + appClass.flag.sub2 + "]"), dt);
+                var txt = appClass.method.xmlSubParse(localStorage.getItem(sub2Key), dt);
                 //console.log(txt);
                 // Issue 110、律政伊人"第1季第4集02:20的對白，如果原英文字幕是2行字，設定為第2字幕時會變為一行字但中間沒有空格隔開的問題
-                window['lastWord_b'] = txt;
+                window['lastWord_b'] = txt || "";
+                window['lastImage_b'] = new Array();
+                appClass.flag.isSub2Image = false;
+                appClass.flag.isSubGet = true;
             }
             else {
                 //原來 2.1 版點不停的流程
                 setTimeout(function () {
+                    appClass.method.setSubtitleCapturePending("sub2", appClass.flag.sub2);
                     $("div[data-uia='selector-audio-subtitle'][reqc='原本的字幕選單'] li[data-uia='subtitle-item-" + appClass.flag.sub2 + "']").trigger("click");
                     setTimeout(function () {
                         if (appClass.flag.sub2 != null && appClass.flag.sub2 != "關閉") {
@@ -3376,24 +3515,87 @@ function run_3wa_netflix() {
 
 // 程式碼結束~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!!
 
+function is3waNetflixUrl(url) {
+    return typeof (url) == "string" && (url.indexOf("www.netflix.com") != -1 || url.indexOf("netflix.com") != -1);
+}
+
+function execute3waNetflixScript(options) {
+    try {
+        var result = chrome.scripting.executeScript(options);
+        if (result != null && typeof (result.then) == "function") {
+            return result.catch(function () { });
+        }
+    }
+    catch (e) {
+        // 補注入失敗不影響使用者原本頁面。
+    }
+
+    return Promise.resolve();
+}
+
+function inject3waNetflixToTab(tabId) {
+    if (tabId == null) return;
+
+    // extension reload 後，已開啟的 Netflix tab 不會自動重新跑 manifest content_scripts。
+    // 這裡主動補注入，讓開發時不用每次都手動 F5；早期字幕請求仍以 document_start 版本最完整。
+    if (chrome.scripting && chrome.scripting.executeScript) {
+        execute3waNetflixScript({
+            target: { tabId: tabId },
+            files: ["subtitle-core.js"]
+        }).then(function () {
+            return execute3waNetflixScript({
+                target: { tabId: tabId },
+                func: run_3wa_netflix
+            });
+        }).then(function () {
+            return execute3waNetflixScript({
+                target: { tabId: tabId },
+                files: ["page-hook.js"],
+                world: "MAIN"
+            });
+        });
+    }
+    else if (chrome.tabs && chrome.tabs.executeScript) {
+        chrome.tabs.executeScript(tabId, {
+            file: "content.js"
+        });
+    }
+}
+
+function inject3waNetflixToExistingTabs() {
+    if (chrome.tabs == null || typeof (chrome.tabs.query) != "function") return;
+
+    chrome.tabs.query({
+        url: [
+            "https://www.netflix.com/*",
+            "https://netflix.com/*"
+        ]
+    }, function (tabs) {
+        if (chrome.runtime.lastError) return;
+        for (var i = 0, max_i = tabs.length; i < max_i; i++) {
+            inject3waNetflixToTab(tabs[i].id);
+        }
+    });
+}
+
+if (chrome.runtime && chrome.runtime.onInstalled) {
+    chrome.runtime.onInstalled.addListener(function () {
+        inject3waNetflixToExistingTabs();
+    });
+}
+
+if (chrome.runtime && chrome.runtime.onStartup) {
+    chrome.runtime.onStartup.addListener(function () {
+        inject3waNetflixToExistingTabs();
+    });
+}
+
 //新版，啟動後自動載入
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (
         changeInfo.status === "complete" &&
-        (tab.url.includes("www.netflix.com") || tab.url.includes("netflix.com"))
+        is3waNetflixUrl(tab.url)
     ) {
-        // 嘗試用 scripting API（Chrome Manifest V3 專用）
-        if (chrome.scripting && chrome.scripting.executeScript) {
-            chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                func: run_3wa_netflix
-            });
-        }
-        // 否則退回 V2 傳統注入方式（Firefox 支援）
-        else if (chrome.tabs && chrome.tabs.executeScript) {
-            chrome.tabs.executeScript(tabId, {
-                file: "content.js"
-            });
-        }
+        inject3waNetflixToTab(tab.id);
     }
 });
