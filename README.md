@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.5 (2026-05-16)<br>
 	V3.6.3 (2026-03-30)<br>
     V3.6.2 (2026-03-29)<br>
     V3.6.1 (2025-12-21)<br>
@@ -183,7 +184,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2026-03-30) V3.6.5 版:
+  (2026-05-16) V3.6.5 版:
 	1、Issue 119、修正雙字幕同步問題
 	
 	(2026-03-30) V3.6.3 版:
