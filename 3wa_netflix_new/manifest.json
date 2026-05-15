@@ -3,16 +3,14 @@
   "action": {},
   "manifest_version": 3,
   "author": "羽山秋人 (https://3wa.tw)",
-  "version": "3.6.5",
+  "version": "3.6.4",
   "description": "讓 netflix 的字幕稍微調大一點",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "content_security_policy": {
-
-  },
+  "content_security_policy": {},
   "host_permissions": [
     "https://*.netflix.com/*"
   ],
@@ -20,29 +18,15 @@
     "scripting",
     "activeTab"
   ],
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
   "content_scripts": [
     {
       "js": [
-        "subtitle-core.js"
+        "libs/jquery-3.7.1.min.js",
+        "content.js"
       ],
       "matches": [
         "https://www.netflix.com/*"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "js": [
-        "page-hook.js"
-      ],
-      "matches": [
-        "https://www.netflix.com/*"
-      ],
-      "run_at": "document_start",
-      "world": "MAIN"
+      ]
     }
   ]
 }
