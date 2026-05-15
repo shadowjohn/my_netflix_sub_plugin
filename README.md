@@ -183,7 +183,15 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
-  (2026-03-30) V3.6.3 版:
+  (2026-03-30) V3.6.5 版:
+	1、Issue 119、修正雙字幕同步問題
+	
+	(2026-03-30) V3.6.3 版:
+    1、Issue 116、修正字型下載網址
+	2、Issue 117、修正 html, body 有時會出現捲捲抖動的問題
+	3、Issue 118、 將 jquery 拆出，至 lib
+	
+    (2026-03-30) V3.6.3 版:
     1、Issue 115、3.6.2 改版有人反應切換字幕會異常，先退回 3.6.1 版
 	
     (2026-03-29) V3.6.2 版:
@@ -507,5 +515,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-04-25)116、3.6.4 修正字型下載網址</li>
   <li>(Done 2026-04-25)117、3.6.4 修正 html, body 有時會出現捲捲抖動的問題</li>
   <li>(Done 2026-04-25)118、3.6.4 將 jquery 拆出，至 lib</li>
+  <li>(Done 2026-05-16)118、3.6.5 修正雙字幕同步問題</li>
 </ul>
   
