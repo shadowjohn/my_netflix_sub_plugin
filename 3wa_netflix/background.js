@@ -262,6 +262,7 @@ function run_3wa_netflix() {
             }, //取畫面大小
             showControllerUI: function () {
                 if (location.href.indexOf("netflix.com/watch/") == -1) return;
+                appClass.flag.isControllerUIClosed = false;
                 clearTimeout(appClass.interval.waitControlUIHideShowInterval);
                 $(".my_netflix_controller_class").stop().css({
                     'opacity': 1,
@@ -271,19 +272,18 @@ function run_3wa_netflix() {
                 });
             },
             hideControllerUI: function () {
+                appClass.flag.isControllerUIClosed = true;
                 clearTimeout(appClass.interval.waitControlUIHideShowInterval);
-                $(".my_netflix_controller_class").stop().animate({
-                    'opacity': 0,
-                    'pointer-events': 'auto'
-                }, 100, function () {
-                    $(".my_netflix_controller_class").css({
-                        'z-index': -100,
-                        'display': 'none'
-                    });
+                $(".my_netflix_controller_class").stop(true, true).css({
+                    'opacity': 0.01,
+                    'display': 'inline',
+                    'pointer-events': 'none',
+                    'z-index': -100
                 });
             },
             setMemory: function (wtfkey, value) {
                 localStorage.setItem(wtfkey, value);
+                appClass.method.saveActiveFavoriteProfileBySettingKey(wtfkey);
             }, // 設定 ram
             getMemory: function (wtfkey) {
                 return localStorage.getItem(wtfkey);
@@ -333,6 +333,26 @@ function run_3wa_netflix() {
                 if (isNaN(index) || index < 1 || index > 3) return null;
                 return "my_netflix_favorite_" + kind + "_" + index + "_" + suffix;
             },
+            getFavoriteActiveStorageKey: function (kind) {
+                kind = (kind == "secondary") ? "secondary" : "main";
+                return "my_netflix_favorite_" + kind + "_active";
+            },
+            getActiveFavoriteProfileIndex: function (kind) {
+                var index = parseInt(appClass.method.getMemory(appClass.method.getFavoriteActiveStorageKey(kind)), 10);
+                if (isNaN(index) || index < 1 || index > 3) index = 1;
+                return index;
+            },
+            setActiveFavoriteProfileIndex: function (kind, index) {
+                index = parseInt(index, 10);
+                if (isNaN(index) || index < 1 || index > 3) index = 1;
+                appClass.method.setMemory(appClass.method.getFavoriteActiveStorageKey(kind), index);
+                appClass.method.syncFavoriteProfileUI();
+            },
+            getProfileKindBySettingKey: function (key) {
+                if (appClass.method.getProfileKeys("main").indexOf(key) != -1) return "main";
+                if (appClass.method.getProfileKeys("secondary").indexOf(key) != -1) return "secondary";
+                return null;
+            },
             collectFavoriteSettings: function (kind) {
                 var keys = appClass.method.getProfileKeys(kind);
                 var settings = {};
@@ -370,15 +390,38 @@ function run_3wa_netflix() {
 
                 return appClass.method.createFavoriteProfile(kind, name, settings);
             },
-            saveFavoriteProfile: function (kind, index) {
-                var nameInput = $("input[reqc='my_netflix_favorite_name'][data-kind='" + kind + "'][data-index='" + index + "']");
-                var name = appClass.method.sanitizeFavoriteName(nameInput.val());
+            saveActiveFavoriteProfileBySettingKey: function (key) {
+                if (appClass.flag == null || appClass.flag.isFavoriteProfileReady != true) return;
+                if (appClass.flag.isApplyingFavoriteProfile == true) return;
+                var kind = appClass.method.getProfileKindBySettingKey(key);
+                if (kind == null) return;
+                appClass.method.saveActiveFavoriteProfile(kind, null, true);
+            },
+            saveActiveFavoriteProfile: function (kind, index, isSilent) {
+                kind = (kind == "secondary") ? "secondary" : "main";
+                index = parseInt(index, 10);
+                if (isNaN(index) || index < 1 || index > 3) {
+                    index = appClass.method.getActiveFavoriteProfileIndex(kind);
+                }
+                var name = appClass.method.getFavoriteProfile(kind, index).name;
                 var profile = appClass.method.createFavoriteProfile(kind, name, appClass.method.collectFavoriteSettings(kind));
 
                 appClass.method.setMemory(appClass.method.getFavoriteStorageKey(kind, index, "name"), profile.name);
                 appClass.method.setMemory(appClass.method.getFavoriteStorageKey(kind, index, "data"), JSON.stringify(profile.settings));
-                nameInput.val(profile.name);
-                appClass.method.smallComment("已儲存「" + profile.name + "」", 1200, false, { "font-size": "26px" });
+                appClass.method.syncFavoriteProfileUI();
+                appClass.method.exportFavoriteProfiles(true);
+                if (isSilent != true) {
+                    appClass.method.smallComment("已儲存「" + profile.name + "」", 1200, false, { "font-size": "26px" });
+                }
+                return profile;
+            },
+            ensureActiveFavoriteProfile: function (kind) {
+                kind = (kind == "secondary") ? "secondary" : "main";
+                var index = appClass.method.getActiveFavoriteProfileIndex(kind);
+                var profile = appClass.method.getFavoriteProfile(kind, index);
+                if (profile.settings == null || Object.keys(profile.settings).length == 0) {
+                    appClass.method.saveActiveFavoriteProfile(kind, index, true);
+                }
             },
             setSettingValue: function (key, value) {
                 if (_myNetFlixSettings[key] != null && typeof (_myNetFlixSettings[key]['min']) != 'undefined') {
@@ -489,8 +532,14 @@ function run_3wa_netflix() {
                     return;
                 }
 
-                for (var key in profile.settings) {
-                    appClass.method.setSettingValue(key, profile.settings[key]);
+                appClass.flag.isApplyingFavoriteProfile = true;
+                try {
+                    for (var key in profile.settings) {
+                        appClass.method.setSettingValue(key, profile.settings[key]);
+                    }
+                }
+                finally {
+                    appClass.flag.isApplyingFavoriteProfile = false;
                 }
 
                 appClass.method.syncSettingsForm();
@@ -501,6 +550,20 @@ function run_3wa_netflix() {
                     appClass.method.selectSubtitleFromMenu("main", profile.settings.my_netflix_sub1);
                 }
                 appClass.method.smallComment("已套用「" + profile.name + "」", 1200, false, { "font-size": "26px" });
+            },
+            switchFavoriteProfile: function (kind, index) {
+                kind = (kind == "secondary") ? "secondary" : "main";
+                index = parseInt(index, 10);
+                if (isNaN(index) || index < 1 || index > 3) index = 1;
+
+                appClass.method.setActiveFavoriteProfileIndex(kind, index);
+                var profile = appClass.method.getFavoriteProfile(kind, index);
+                if (profile.settings == null || Object.keys(profile.settings).length == 0) {
+                    profile = appClass.method.saveActiveFavoriteProfile(kind, index, true);
+                }
+                appClass.method.applyFavoriteProfile(kind, index);
+                appClass.method.syncFavoriteProfileUI();
+                appClass.method.exportFavoriteProfiles(true);
             },
             collectFavoritePayload: function () {
                 var payload = {
@@ -523,14 +586,16 @@ function run_3wa_netflix() {
                     appClass.method.setMemory(appClass.method.getFavoriteStorageKey("secondary", i, "data"), JSON.stringify(secondaryProfile.settings || {}));
                 }
             },
-            exportFavoriteProfiles: function () {
+            exportFavoriteProfiles: function (isSilent) {
                 var core = appClass.method.getSettingsCore();
                 var payload = appClass.method.collectFavoritePayload();
                 var jsonText = core != null && typeof (core.exportFavoriteProfiles) == "function" ?
                     core.exportFavoriteProfiles(payload) :
                     JSON.stringify(payload, null, 2);
                 $("textarea[reqc='my_netflix_favorite_json']").val(jsonText);
-                appClass.method.smallComment("已產生匯出 JSON", 1200, false, { "font-size": "26px" });
+                if (isSilent != true) {
+                    appClass.method.smallComment("已產生匯出 JSON", 1200, false, { "font-size": "26px" });
+                }
             },
             importFavoriteProfiles: function () {
                 var core = appClass.method.getSettingsCore();
@@ -542,6 +607,7 @@ function run_3wa_netflix() {
                         JSON.parse(jsonText);
                     appClass.method.writeFavoritePayload(payload);
                     appClass.method.syncFavoriteProfileUI();
+                    appClass.method.exportFavoriteProfiles(true);
                     appClass.method.smallComment("已匯入並覆蓋六組設定檔", 1500, false, { "font-size": "26px" });
                 }
                 catch (e) {
@@ -549,38 +615,70 @@ function run_3wa_netflix() {
                 }
             },
             syncFavoriteProfileUI: function () {
-                $("input[reqc='my_netflix_favorite_name']").each(function () {
+                $("button[reqc='my_netflix_profile_tab']").each(function () {
                     var kind = $(this).attr("data-kind");
                     var index = parseInt($(this).attr("data-index"), 10);
-                    $(this).val(appClass.method.getFavoriteProfile(kind, index).name);
+                    var profile = appClass.method.getFavoriteProfile(kind, index);
+                    $(this).text(profile.name);
+                    $(this).toggleClass("my_netflix_profile_tab_active", index == appClass.method.getActiveFavoriteProfileIndex(kind));
+                });
+            },
+            startFavoriteProfileNameEdit: function (buttonDom) {
+                var button = $(buttonDom);
+                var kind = button.attr("data-kind");
+                var index = parseInt(button.attr("data-index"), 10);
+                var profile = appClass.method.getFavoriteProfile(kind, index);
+                var input = $("<input type='text' reqc='my_netflix_profile_name_input' maxlength='10' autocomplete='off'>").val(profile.name);
+                button.hide().after(input);
+                input.focus().select();
+
+                var isDone = false;
+                var finishEdit = function (isCancel) {
+                    if (isDone == true) return;
+                    isDone = true;
+                    var newName = isCancel == true ? profile.name : appClass.method.sanitizeFavoriteName(input.val());
+                    appClass.method.setMemory(appClass.method.getFavoriteStorageKey(kind, index, "name"), newName);
+                    input.remove();
+                    button.show();
+                    appClass.method.syncFavoriteProfileUI();
+                    appClass.method.exportFavoriteProfiles(true);
+                };
+
+                input.unbind("keydown").bind("keydown", function (e) {
+                    if (e.key == "Enter") finishEdit(false);
+                    if (e.key == "Escape") finishEdit(true);
+                    e.stopPropagation();
+                });
+                input.unbind("blur").bind("blur", function () {
+                    finishEdit(false);
                 });
             },
             bindFavoriteProfileUI: function () {
                 appClass.method.syncFavoriteProfileUI();
 
-                $("input[reqc='my_netflix_favorite_name']").unbind("input").bind("input", function () {
-                    var kind = $(this).attr("data-kind");
-                    var index = parseInt($(this).attr("data-index"), 10);
-                    var name = appClass.method.sanitizeFavoriteName($(this).val());
-                    $(this).val(name);
-                    appClass.method.setMemory(appClass.method.getFavoriteStorageKey(kind, index, "name"), name);
+                $("button[reqc='my_netflix_profile_tab']").unbind("click").bind("click", function (e) {
+                    appClass.method.switchFavoriteProfile($(this).attr("data-kind"), parseInt($(this).attr("data-index"), 10));
+                    e.stopPropagation();
                 });
 
-                $("button[reqc='my_netflix_favorite_save']").unbind("click").bind("click", function () {
-                    appClass.method.saveFavoriteProfile($(this).attr("data-kind"), parseInt($(this).attr("data-index"), 10));
-                });
-
-                $("button[reqc='my_netflix_favorite_apply']").unbind("click").bind("click", function () {
-                    appClass.method.applyFavoriteProfile($(this).attr("data-kind"), parseInt($(this).attr("data-index"), 10));
-                });
-
-                $("button[reqc='my_netflix_favorite_export']").unbind("click").bind("click", function () {
-                    appClass.method.exportFavoriteProfiles();
+                $("button[reqc='my_netflix_profile_tab']").unbind("dblclick").bind("dblclick", function (e) {
+                    appClass.method.startFavoriteProfileNameEdit(this);
+                    e.preventDefault();
+                    e.stopPropagation();
                 });
 
                 $("button[reqc='my_netflix_favorite_import']").unbind("click").bind("click", function () {
                     appClass.method.importFavoriteProfiles();
                 });
+
+                $("#thetabs a[href='#subFavorite_div']").unbind("click.myNetflixFavorite").bind("click.myNetflixFavorite", function () {
+                    appClass.method.exportFavoriteProfiles(true);
+                });
+
+                appClass.flag.isFavoriteProfileReady = true;
+                appClass.method.ensureActiveFavoriteProfile("main");
+                appClass.method.ensureActiveFavoriteProfile("secondary");
+                appClass.method.exportFavoriteProfiles(true);
             },
             getSubtitleStorageKey: function (movieID, subTitle) {
                 var core = window.myNetflixSubtitleCore;
@@ -1306,7 +1404,10 @@ function run_3wa_netflix() {
             lastSubTime: null, //影片最後抓到字幕的時間
             isCheckSub1: false, //是否已檢查目前進入控制項是主字幕
             isSkipIntro: false, //是否已跳過片頭，一片只會跳過一次
-            isSkipRecap: false //是否已跳過前情提要，一片只會跳過一次
+            isSkipRecap: false, //是否已跳過前情提要，一片只會跳過一次
+            isControllerUIClosed: false, //設定視窗是否由使用者手動關閉
+            isFavoriteProfileReady: false, //我的最愛 UI 綁定完成後才自動寫回 profile
+            isApplyingFavoriteProfile: false //套用 profile 時避免觸發自動保存
         },
         "doms": {
 
@@ -1537,7 +1638,9 @@ function run_3wa_netflix() {
     $("head").append(`
 <style reqc='s'>   
   .my_netflix_controller_class{ 
-    width: 580px; 
+    width: 700px;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
     padding:10px; 
     text-align:center; 
     position:fixed; 
@@ -1547,7 +1650,8 @@ function run_3wa_netflix() {
     background-color: rgba(255,255,255,0.8); 
     font-size:18px; 
     top:0px; 
-    left: 35%; 
+    left: 50%;
+    transform: translateX(-50%);
     border:2px solid #00f; 
     border-radius: 5px;
     opacity:0.01; 
@@ -1783,9 +1887,57 @@ function run_3wa_netflix() {
   }
   textarea[reqc='my_netflix_favorite_json']{
     width: 100%;
-    height: 110px;
+    height: 500px;
+    resize: vertical;
     box-sizing: border-box;
     font-size: 13px;
+  }
+  .my_netflix_profile_tabs_class{
+    text-align: left;
+    border-bottom: 3px solid #000;
+    margin: 0 0 12px 0;
+    padding: 0 0 0 2px;
+    white-space: nowrap;
+  }
+  button[reqc='my_netflix_profile_tab']{
+    border: 1px solid #444;
+    border-bottom: 0;
+    background-color: #eeeeee;
+    color: #000;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 110px;
+    max-width: 150px;
+    padding: 4px 8px;
+    margin: 0 2px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  button[reqc='my_netflix_profile_tab'].my_netflix_profile_tab_active{
+    background-color: #77ff77;
+  }
+  input[reqc='my_netflix_profile_name_input']{
+    width: 130px;
+    padding: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    box-sizing: border-box;
+  }
+  .my_netflix_favorite_json_panel_class{
+    text-align: left;
+    padding: 8px;
+  }
+  .my_netflix_favorite_hint_class{
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+  .my_netflix_favorite_json_panel_class button{
+    cursor: pointer;
+    margin-top: 6px;
+    padding: 6px 18px;
+    font-size: 18px;
   }
   /* 新版的右下按鈕 */
   button[reqc='my_control-audio-subtitle']:hover{        
@@ -1843,12 +1995,17 @@ function run_3wa_netflix() {
             <li><a href='#sub2_div'>次要字幕</a></li> \
             <li><a href='#subSetting_div'>自動功能</a></li> \
             <li><a href='#subFavorite_div'>我的最愛</a></li> \
-            <li><a href='#subFont_div'>字幕下載</a></li> \
+            <li><a href='#subFont_div'>字體下載</a></li> \
             <li><a href='#subMessage_div'>注意事項</a></li> \
         </ul> \
         <span id='subMain_div'> \
         </span> \
         <span id='sub1_div'> \
+              <div class='my_netflix_profile_tabs_class' reqc='my_netflix_profile_tabs' data-kind='main'> \
+                <button type='button' reqc='my_netflix_profile_tab' data-kind='main' data-index='1'>我的最愛1</button> \
+                <button type='button' reqc='my_netflix_profile_tab' data-kind='main' data-index='2'>我的最愛2</button> \
+                <button type='button' reqc='my_netflix_profile_tab' data-kind='main' data-index='3'>我的最愛3</button> \
+              </div> \
               <table style='width:100%;'> \
                 <tr> \
                   <td valign='top' style='width:220px;text-align:left;'> \
@@ -1892,6 +2049,11 @@ function run_3wa_netflix() {
               </table> \
             </span> \
             <span id='sub2_div'> \
+                <div class='my_netflix_profile_tabs_class' reqc='my_netflix_profile_tabs' data-kind='secondary'> \
+                    <button type='button' reqc='my_netflix_profile_tab' data-kind='secondary' data-index='1'>我的最愛1</button> \
+                    <button type='button' reqc='my_netflix_profile_tab' data-kind='secondary' data-index='2'>我的最愛2</button> \
+                    <button type='button' reqc='my_netflix_profile_tab' data-kind='secondary' data-index='3'>我的最愛3</button> \
+                </div> \
                 <table style='width:100%;'> \
                     <tr> \
                       <td valign='top' style='text-align:left;'> \
@@ -1981,55 +2143,11 @@ function run_3wa_netflix() {
                 </table> \
             </span> \
             <span id='subFavorite_div'> \
-                <table class='my_netflix_favorite_table_class'> \
-                    <thead><tr><th colspan='3'>主要字幕我的最愛</th></tr></thead> \
-                    <tbody> \
-                        <tr> \
-                            <td field='項次'>1</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='main' data-index='1' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='main' data-index='1'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='main' data-index='1'>套用</button></td> \
-                        </tr> \
-                        <tr> \
-                            <td field='項次'>2</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='main' data-index='2' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='main' data-index='2'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='main' data-index='2'>套用</button></td> \
-                        </tr> \
-                        <tr> \
-                            <td field='項次'>3</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='main' data-index='3' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='main' data-index='3'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='main' data-index='3'>套用</button></td> \
-                        </tr> \
-                    </tbody> \
-                </table> \
-                <br> \
-                <table class='my_netflix_favorite_table_class'> \
-                    <thead><tr><th colspan='3'>次要字幕我的最愛</th></tr></thead> \
-                    <tbody> \
-                        <tr> \
-                            <td field='項次'>1</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='secondary' data-index='1' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='secondary' data-index='1'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='secondary' data-index='1'>套用</button></td> \
-                        </tr> \
-                        <tr> \
-                            <td field='項次'>2</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='secondary' data-index='2' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='secondary' data-index='2'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='secondary' data-index='2'>套用</button></td> \
-                        </tr> \
-                        <tr> \
-                            <td field='項次'>3</td> \
-                            <td><input type='text' reqc='my_netflix_favorite_name' data-kind='secondary' data-index='3' maxlength='10' autocomplete='off'></td> \
-                            <td><button type='button' reqc='my_netflix_favorite_save' data-kind='secondary' data-index='3'>儲存目前</button><button type='button' reqc='my_netflix_favorite_apply' data-kind='secondary' data-index='3'>套用</button></td> \
-                        </tr> \
-                    </tbody> \
-                </table> \
-                <br> \
-                <table class='my_netflix_favorite_table_class'> \
-                    <thead><tr><th>設定檔匯出 / 匯入</th></tr></thead> \
-                    <tbody> \
-                        <tr><td><textarea reqc='my_netflix_favorite_json'></textarea></td></tr> \
-                        <tr><td style='text-align:center;'><button type='button' reqc='my_netflix_favorite_export'>匯出全部</button><button type='button' reqc='my_netflix_favorite_import'>匯入覆蓋全部</button></td></tr> \
-                    </tbody> \
-                </table> \
+                <div class='my_netflix_favorite_json_panel_class'> \
+                    <div class='my_netflix_favorite_hint_class'>可自行複製內容保存，並貼上匯入使用</div> \
+                    <textarea reqc='my_netflix_favorite_json'></textarea> \
+                    <div style='text-align:center;'><button type='button' reqc='my_netflix_favorite_import'>匯入</button></div> \
+                </div> \
             </span> \
             <span id='subFont_div'> \
                 <div class='my_netflix_Font_table_class_span_title'>注：字型下載後，如為 ZIP 請先解壓縮，再開啟 .ttf / .otf 字型檔安裝<br> \
@@ -2176,8 +2294,10 @@ function run_3wa_netflix() {
     $("input[reqc='my_netflix_auto_fix_cc']").prop("checked", (window['my_netflix_auto_fix_cc'] == "false") ? false : true);
 
     //按到 x_close 的效果
-    $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function () {
+    $("div[reqc='my_netflix_controller_div'] img[reqc='x_close']").unbind("click").click(function (e) {
         appClass.method.hideControllerUI();
+        e.preventDefault();
+        e.stopPropagation();
     });
     //緊緻一下畫面
     $("#thetabs > ul").css({
@@ -2455,6 +2575,16 @@ function run_3wa_netflix() {
                         }
                     }, 2000);
                 }
+            }
+
+            if (appClass.flag.isControllerUIClosed == true) {
+                $(".my_netflix_controller_class").css({
+                    'opacity': 0.01,
+                    'display': 'inline',
+                    'pointer-events': 'none',
+                    'z-index': -100
+                });
+                return;
             }
 
             $(".my_netflix_controller_class").css({
@@ -3175,7 +3305,7 @@ function run_3wa_netflix() {
             });
             //滑鼠去點字幕
             $("button[reqc='my_control-audio-subtitle']").unbind("click").click(function () {
-                $(".my_netflix_controller_class").trigger("mousemovemousemove");
+                appClass.method.showControllerUI();
             });
         }
         //然後定義到我的按鈕
