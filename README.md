@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.6 (2026-06-14)<br>
 	V3.6.5 (2026-05-16)<br>
 	V3.6.3 (2026-03-30)<br>
     V3.6.2 (2026-03-29)<br>
@@ -140,7 +141,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.6.1 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.1/3wa_netflix.zip <br>
+(V3.6.6 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.6/3wa_netflix.zip <br>
 (V3.6.0 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
@@ -184,6 +185,14 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2026-06-14) V3.6.6 版:
+	1、Issue 120、將 jQuery 從 background.js 抽出為 libs/jquery-3.7.1.min.js，Chrome / Firefox 打包皆共用外部檔。
+	2、Issue 121、Netflix 預抓下一集字幕 XML 時，無法確認 movieId / 字幕名稱者只隔離保存，不覆蓋正式字幕。
+	3、Issue 122、新增主要字幕 / 次要字幕各 3 組「我的最愛」設定檔，可命名、儲存目前設定並快速套用。
+	4、Issue 123、新增一個 JSON 匯出 / 匯入全部六組設定檔，匯入時覆蓋目前電腦的六組設定。
+	5、Issue 124、字幕設定視窗改由右上角 X 或熱鍵 O 關閉，避免調整顏色時因 blur / mouseleave 被關閉。
+	6、Issue 125、修正換片時次字幕誤讀主字幕記憶值的問題。
+
   (2026-05-16) V3.6.5 版:
 	1、Issue 119、修正雙字幕同步問題
 	
@@ -517,5 +526,11 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-04-25)117、3.6.4 修正 html, body 有時會出現捲捲抖動的問題</li>
   <li>(Done 2026-04-25)118、3.6.4 將 jquery 拆出，至 lib</li>
   <li>(Done 2026-05-16)118、3.6.5 修正雙字幕同步問題</li>
+  <li>(Done 2026-06-14)120、3.6.6 將 jQuery 自 background.js 抽出為共用引入檔</li>
+  <li>(Done 2026-06-14)121、3.6.6 Netflix 預抓下一集字幕 XML 時隔離保存，不覆蓋正式字幕</li>
+  <li>(Done 2026-06-14)122、3.6.6 新增主字幕 / 次字幕各三組我的最愛設定檔</li>
+  <li>(Done 2026-06-14)123、3.6.6 新增一個 JSON 匯出 / 匯入全部六組設定檔</li>
+  <li>(Done 2026-06-14)124、3.6.6 字幕設定視窗改用右上角 X 關閉，避免調整顏色時自動關閉</li>
+  <li>(Done 2026-06-14)125、3.6.6 修正換片時次字幕誤讀主字幕記憶值</li>
 </ul>
   

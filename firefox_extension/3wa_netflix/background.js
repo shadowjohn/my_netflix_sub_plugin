@@ -26,7 +26,17 @@ function inject3waNetflixToTab(tabId) {
     if (chrome.scripting && chrome.scripting.executeScript) {
         execute3waNetflixScript({
             target: { tabId: tabId },
-            files: ["subtitle-core.js"]
+            files: ["libs/jquery-3.7.1.min.js"]
+        }).then(function () {
+            return execute3waNetflixScript({
+                target: { tabId: tabId },
+                files: ["settings-core.js"]
+            });
+        }).then(function () {
+            return execute3waNetflixScript({
+                target: { tabId: tabId },
+                files: ["subtitle-core.js"]
+            });
         }).then(function () {
             return execute3waNetflixScript({
                 target: { tabId: tabId },

@@ -6,7 +6,7 @@ const root = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, '3wa_netflix', 'manifest.json'), 'utf8'));
 const background = fs.readFileSync(path.join(root, '3wa_netflix', 'background.js'), 'utf8');
 
-assert.equal(manifest.version, '3.6.5');
+assert.equal(manifest.version, '3.6.6');
 
 const expectedLinks = [
   'https://github.com/ButTaiwan/genyog-font/releases/download/v2.100/GenYoGothic2TW-otf.zip',

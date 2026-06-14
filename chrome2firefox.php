@@ -62,7 +62,7 @@ $manifest['permissions'] = array_filter($manifest['permissions'] ?? [], function
 // 補上 content_scripts（簡單預設 content.js）
 $manifest['content_scripts'] = [[
     'matches' => $manifest['host_permissions'] ?? ["<all_urls>"],
-    'js' => ['content.js'],
+    'js' => ['libs/jquery-3.7.1.min.js', 'settings-core.js', 'subtitle-core.js', 'content.js'],
     'run_at' => 'document_idle'
 ]];
 
