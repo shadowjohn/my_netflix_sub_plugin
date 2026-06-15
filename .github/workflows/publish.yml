@@ -33,6 +33,13 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
         shell: bash
 
+      - name: Prepare Release Assets
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          cp release/V${VERSION}/3wa_netflix.zip release/3wa_netflix_chrome_v${VERSION}.zip
+          cp release/firefox_extension/V${VERSION}/3wa_netflix.zip release/3wa_netflix_firefox_v${VERSION}.zip
+        shell: bash
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -41,8 +48,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
-            release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+            release/3wa_netflix_chrome_v${{ steps.get_version.outputs.version }}.zip
+            release/3wa_netflix_firefox_v${{ steps.get_version.outputs.version }}.zip
 
       - name: Publish to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v6.0.0
