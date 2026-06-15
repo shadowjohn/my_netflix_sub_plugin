@@ -55,7 +55,7 @@ jobs:
           publish: true
 
       - name: Publish to Firefox AMO
-        uses: browser-actions/release-firefox-addon@v3.0.0
+        uses: browser-actions/release-firefox-addon@latest
         with:
           addon-id: ${{ secrets.AMO_ADDON_ID }}
           addon-path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
