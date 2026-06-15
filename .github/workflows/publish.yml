@@ -103,3 +103,4 @@ jobs:
           addon-path: release/3wa_netflix.zip
           auth-api-issuer: ${{ secrets.AMO_API_KEY }}
           auth-api-secret: ${{ secrets.AMO_API_SECRET }}
+          release-note: "Release v${{ needs.build-and-release.outputs.version }}"
