@@ -7,12 +7,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  release-and-publish:
-    name: Build, Release & Publish
+  build-and-release:
+    name: Build & Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -51,20 +52,54 @@ jobs:
             release/3wa_netflix_chrome_v${{ steps.get_version.outputs.version }}.zip
             release/3wa_netflix_firefox_v${{ steps.get_version.outputs.version }}.zip
 
+      - name: Upload Chrome Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-zip
+          path: release/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+
+      - name: Upload Firefox Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-zip
+          path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+
+  publish-chrome:
+    name: Publish to Chrome Web Store
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Chrome Zip
+        uses: actions/download-artifact@v4
+        with:
+          name: chrome-zip
+          path: release
+
       - name: Publish to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v6.0.0
         with:
-          file-path: release/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+          file-path: release/3wa_netflix.zip
           extension-id: ${{ secrets.EXTENSION_ID }}
           client-id: ${{ secrets.CLIENT_ID }}
           client-secret: ${{ secrets.CLIENT_SECRET }}
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
           publish: true
 
+  publish-firefox:
+    name: Publish to Firefox AMO
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Firefox Zip
+        uses: actions/download-artifact@v4
+        with:
+          name: firefox-zip
+          path: release
+
       - name: Publish to Firefox AMO
         uses: browser-actions/release-firefox-addon@latest
         with:
           addon-id: ${{ secrets.AMO_ADDON_ID }}
-          addon-path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+          addon-path: release/3wa_netflix.zip
           auth-api-issuer: ${{ secrets.AMO_API_KEY }}
           auth-api-secret: ${{ secrets.AMO_API_SECRET }}
