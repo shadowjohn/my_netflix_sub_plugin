@@ -1,0 +1,63 @@
+name: Build & Publish Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release-and-publish:
+    name: Build, Release & Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: zip, json
+
+      - name: Run Build and Packaging Script
+        run: php run_zip.php
+
+      - name: Extract Version
+        id: get_version
+        run: |
+          VERSION=$(node -e "console.log(require('./3wa_netflix/manifest.json').version)")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            release/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+            release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+
+      - name: Publish to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v6.0.0
+        with:
+          file-path: release/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+          extension-id: ${{ secrets.EXTENSION_ID }}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+          publish: true
+
+      - name: Publish to Firefox AMO
+        uses: browser-actions/release-firefox-addon@v3.0.0
+        with:
+          addon-id: ${{ secrets.AMO_ADDON_ID }}
+          addon-path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+          auth-api-issuer: ${{ secrets.AMO_API_KEY }}
+          auth-api-secret: ${{ secrets.AMO_API_SECRET }}
