@@ -54,10 +54,10 @@ jobs:
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
           publish: true
 
-      - name: Publish to Firefox AMO
-        uses: browser-actions/release-firefox-addon@latest
-        with:
-          addon-id: ${{ secrets.AMO_ADDON_ID }}
-          addon-path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
-          auth-api-issuer: ${{ secrets.AMO_API_KEY }}
-          auth-api-secret: ${{ secrets.AMO_API_SECRET }}
+#      - name: Publish to Firefox AMO
+#        uses: browser-actions/release-firefox-addon@latest
+#        with:
+#          addon-id: ${{ secrets.AMO_ADDON_ID }}
+#          addon-path: release/firefox_extension/V${{ steps.get_version.outputs.version }}/3wa_netflix.zip
+#          auth-api-issuer: ${{ secrets.AMO_API_KEY }}
+#          auth-api-secret: ${{ secrets.AMO_API_SECRET }}
