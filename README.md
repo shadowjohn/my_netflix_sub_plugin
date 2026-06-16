@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.7 (2026-06-16)<br>
 	V3.6.6 (2026-06-14)<br>
 	V3.6.5 (2026-05-16)<br>
 	V3.6.3 (2026-03-30)<br>
@@ -141,7 +142,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.6.6 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.6/3wa_netflix.zip <br>
+(V3.6.7 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.7/3wa_netflix.zip <br>
 (V3.6.0 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
@@ -185,6 +186,9 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2026-06-16) V3.6.7 版:
+	1、Issue 126、修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準將 XML 字幕關聯到正確影片/影集 ID，背景預抓時不覆蓋當前字幕且正常歸戶。
+
   (2026-06-14) V3.6.6 版:
 	1、Issue 120、將 jQuery 從 background.js 抽出為 libs/jquery-3.7.1.min.js，Chrome / Firefox 打包皆共用外部檔。
 	2、Issue 121、Netflix 預抓下一集字幕 XML 時，無法確認 movieId / 字幕名稱者只隔離保存，不覆蓋正式字幕。
@@ -531,6 +535,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-06-14)122、3.6.6 新增主字幕 / 次字幕各三組我的最愛設定檔，頁籤點擊即套用，雙擊可改名</li>
   <li>(Done 2026-06-14)123、3.6.6 新增一個 JSON textarea 匯出 / 匯入全部六組設定檔</li>
   <li>(Done 2026-06-14)124、3.6.6 字幕設定視窗改用右上角 X 關閉，並以低透明度與 z-index 藏下去，避免調整顏色時自動關閉</li>
-  <li>(Done 2026-06-14)125、3.6.6 修正換片時次字幕誤讀主字幕記憶值</li>
+  <li>(Done 2026-06-16)126、3.6.7 修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準歸戶並正確隔離保存字幕。</li>
 </ul>
   

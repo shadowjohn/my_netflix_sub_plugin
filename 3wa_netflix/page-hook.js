@@ -69,17 +69,100 @@
         return false;
     }
 
+    window.__myNetflixManifestMap = window.__myNetflixManifestMap || {};
+
+    function parseManifestJson(obj) {
+        var movieId = null;
+        var trackIds = [];
+
+        function traverse(node) {
+            if (!node || typeof node !== 'object') return;
+
+            if (node.movieId && (typeof node.movieId === 'string' || typeof node.movieId === 'number')) {
+                movieId = String(node.movieId);
+            }
+            if (node.episodeId && (typeof node.episodeId === 'string' || typeof node.episodeId === 'number')) {
+                movieId = String(node.episodeId);
+            }
+
+            if (node.downloadable_id && typeof node.downloadable_id === 'string') {
+                trackIds.push(node.downloadable_id);
+            }
+            if (node.downloadableId && typeof node.downloadableId === 'string') {
+                trackIds.push(node.downloadableId);
+            }
+
+            if (Array.isArray(node.timedtexttracks)) {
+                node.timedtexttracks.forEach(function (track) {
+                    if (track && typeof track === 'object') {
+                        var downloadables = track.ttDownloadables || track.downloadables;
+                        if (downloadables && typeof downloadables === 'object') {
+                            Object.keys(downloadables).forEach(function (formatKey) {
+                                var dl = downloadables[formatKey];
+                                if (dl && typeof dl === 'object') {
+                                    var dlId = dl.downloadable_id || dl.id;
+                                    if (dlId && typeof dlId === 'string') {
+                                        trackIds.push(dlId);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            if (Array.isArray(node)) {
+                node.forEach(traverse);
+            } else {
+                Object.keys(node).forEach(function (key) {
+                    var val = node[key];
+                    if (val && typeof val === 'object') {
+                        traverse(val);
+                    }
+                });
+            }
+        }
+
+        traverse(obj);
+
+        if (movieId && trackIds.length > 0) {
+            trackIds.forEach(function (tid) {
+                window.__myNetflixManifestMap[tid] = movieId;
+            });
+        }
+    }
+
+    function checkManifestResponse(url, text) {
+        if (typeof text !== 'string' || text.length === 0 || text.length > 10 * 1024 * 1024) return;
+        var trimmed = text.trim();
+        var firstChar = trimmed.charAt(0);
+        if (firstChar !== '{' && firstChar !== '[') return;
+
+        try {
+            var obj = JSON.parse(trimmed);
+            parseManifestJson(obj);
+        }
+        catch (e) {
+            // 解析 JSON 失敗不影響網頁功能。
+        }
+    }
+
     function postSubtitle(source, url, text) {
         if (!isSubtitleXml(text)) return;
 
         var meta = readUrlMeta(url);
+        var mappedMovieId = null;
+        if (meta.trackId && window.__myNetflixManifestMap) {
+            mappedMovieId = window.__myNetflixManifestMap[meta.trackId] || null;
+        }
+
         window.postMessage({
             type: MESSAGE_TYPE,
             from: MESSAGE_FROM,
             payload: {
                 source: source,
                 url: url || '',
-                movieId: getMovieId(),
+                movieId: mappedMovieId || getMovieId(),
                 language: meta.language,
                 trackId: meta.trackId,
                 xml: text,
@@ -99,10 +182,12 @@
             try {
                 result.then(function (response) {
                     try {
-                        if (!shouldReadFetchResponse(response, requestUrl || response.url)) return;
+                        var finalUrl = requestUrl || response.url;
+                        if (!shouldReadFetchResponse(response, finalUrl)) return;
                         var clone = response.clone();
                         clone.text().then(function (text) {
-                            postSubtitle('fetch', requestUrl || response.url, text);
+                            checkManifestResponse(finalUrl, text);
+                            postSubtitle('fetch', finalUrl, text);
                         }).catch(function () {
                             // 非文字回應略過即可。
                         });
@@ -137,8 +222,11 @@
             try {
                 this.addEventListener('loadend', function () {
                     try {
+                        var url = this.__myNetflixSubtitleUrl || this.responseURL || '';
+                        var text = this.responseText;
+                        checkManifestResponse(url, text);
                         if (this.responseType && this.responseType !== 'text') return;
-                        postSubtitle('xhr', this.__myNetflixSubtitleUrl || this.responseURL || '', this.responseText);
+                        postSubtitle('xhr', url, text);
                     }
                     catch (e) {
                         // responseText 在部分 responseType 會丟錯，略過即可。

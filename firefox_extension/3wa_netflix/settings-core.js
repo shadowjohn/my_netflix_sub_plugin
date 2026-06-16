@@ -148,7 +148,7 @@
             return {
                 action: 'quarantine',
                 reason: 'movie_mismatch',
-                movieId: currentMovieId,
+                movieId: payloadMovieId,
                 subtitleName: subtitleName
             };
         }

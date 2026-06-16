@@ -32,7 +32,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.6",
+        appVersion: "3.6.7",
         movieID: null,
         icon: {
             /* 3wa_logo.png */

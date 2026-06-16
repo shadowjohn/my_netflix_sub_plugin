@@ -2,7 +2,7 @@
     "name": "3waNetflix",
     "manifest_version": 2,
     "author": "\u7fbd\u5c71\u79cb\u4eba (https://3wa.tw)",
-    "version": "3.6.6",
+    "version": "3.6.7",
     "description": "\u8b93 netflix \u7684\u5b57\u5e55\u7a0d\u5fae\u8abf\u5927\u4e00\u9ede",
     "icons": {
         "16": "icons/icon16.png",
