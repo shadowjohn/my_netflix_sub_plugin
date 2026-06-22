@@ -5,8 +5,12 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, '3wa_netflix', 'manifest.json'), 'utf8'));
 const background = fs.readFileSync(path.join(root, '3wa_netflix', 'background.js'), 'utf8');
+const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 
 assert.equal(manifest.version, '3.6.8');
+assert.ok(background.includes('appVersion: "3.6.8"'), 'background appVersion must match release version');
+assert.ok(readme.includes('(V3.6.8 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.8/3wa_netflix.zip'), 'README latest download must point to V3.6.8');
+assert.equal(readme.includes('(V3.6.7 雙字幕 最新版)'), false, 'README must not keep V3.6.7 marked as latest');
 
 const expectedLinks = [
   'https://github.com/ButTaiwan/genyog-font/releases/download/v2.100/GenYoGothic2TW-otf.zip',

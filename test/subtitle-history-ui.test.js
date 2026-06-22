@@ -1,0 +1,41 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.resolve(__dirname, '..');
+const background = fs.readFileSync(path.join(root, '3wa_netflix', 'background.js'), 'utf8');
+const historySearchStart = background.indexOf("input[reqc='my_netflix_history_search_input']");
+const historySearchEnd = background.indexOf('//設定使用者點到的值', historySearchStart);
+const historySearchSnippet = background.slice(historySearchStart, historySearchEnd);
+const smallCommentStart = background.indexOf('smallComment: function');
+const smallCommentEnd = background.indexOf('}, //浮動說明', smallCommentStart);
+const smallCommentSnippet = background.slice(smallCommentStart, smallCommentEnd);
+const smallCommentHtmlIndex = smallCommentSnippet.indexOf('$("#mysmallCommentContent").html(message);');
+
+assert.equal(background.includes('seekSubtitleHistoryRow'), false, 'history sidebar must not seek Netflix video directly');
+assert.equal(background.includes('video.currentTime = Math.max(0, row.startMs / 1000);'), false, 'history sidebar must not write video.currentTime');
+assert.ok(background.includes('if (video.paused === true) return;'), 'history sidebar must not collect while paused');
+assert.ok(historySearchStart >= 0, 'history search binding must exist');
+assert.ok(historySearchSnippet.includes('.unbind("keyup").bind("keyup"'), 'history search must filter on keyup');
+assert.ok(historySearchSnippet.includes('e.stopPropagation();'), 'history search must not bubble keys to Netflix shortcuts');
+assert.ok(background.includes("reqc='my_netflix_history_search_clear'"), 'history search must provide a clear button');
+assert.ok(background.includes('filterSubtitleHistoryRows'), 'history sidebar must hide non-matching rows without rebuilding');
+assert.ok(background.includes('.hide()'), 'history filter must hide non-matching rows');
+assert.ok(background.includes('.show()'), 'history filter must show matching rows');
+assert.ok(background.includes('speechSynthesis'), 'history sidebar must use native browser TTS');
+assert.ok(background.includes('SpeechSynthesisUtterance'), 'history sidebar must create native TTS utterances');
+assert.ok(background.includes("reqc='my_netflix_history_clear'"), 'history sidebar must provide a clear history button');
+assert.ok(historySearchSnippet.includes("title='清空歷史'>C</button><button reqc='my_netflix_history_autoscroll'"), 'clear history button must sit left of autoscroll');
+assert.ok(historySearchSnippet.includes('appClass.method.clearSubtitleHistory();'), 'clear history button must clear rows');
+assert.ok(historySearchSnippet.includes("smallComment('已清空...', 1500, false, { 'font-size': '22px' })"), 'clear history must show 22px feedback');
+assert.ok(background.includes("reqc='my_netflix_history_tts_main'"), 'history rows must provide main subtitle TTS buttons');
+assert.ok(background.includes("reqc='my_netflix_history_tts_sub'"), 'history rows must provide secondary subtitle TTS buttons');
+assert.ok(background.includes('getSubtitleHistorySpeechLang'), 'history TTS must resolve zh/en/ja language codes');
+assert.ok(background.includes('找不到指定語音，使用瀏覽器預設語音'), 'history TTS must warn when browser voice is missing');
+assert.ok(background.includes("smallComment('找不到指定語音，使用瀏覽器預設語音', 4000"), 'history TTS warning must stay readable');
+assert.ok(background.includes("smallComment('找不到指定語音，使用瀏覽器預設語音', 4000, false, { 'font-size': '22px' })"), 'history TTS missing voice warning must use 22px text');
+assert.ok(background.includes('smallComment: function (message, timeoutMs'), 'smallComment timeout parameter must be named timeoutMs');
+assert.equal(background.includes('smallComment: function (message, seconds'), false, 'smallComment timeout parameter must not be named seconds');
+assert.ok(smallCommentSnippet.indexOf('$("#mysmallCommentContent").css(cssOptions);', smallCommentHtmlIndex) > smallCommentHtmlIndex, 'smallComment must apply cssOptions on every call');
+
+console.log('subtitle history UI tests passed');

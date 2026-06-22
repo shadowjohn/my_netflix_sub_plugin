@@ -131,6 +131,7 @@
 
         var currentMovieId = trimText(options.currentMovieId);
         var payloadMovieId = trimText(payload.movieId);
+        var payloadMovieIdSource = trimText(payload.movieIdSource);
         var pendingSubtitleName = trimText(options.pendingSubtitleName);
         var fallbackName = trimText(payload.language) || trimText(payload.trackId) || 'unknown';
         var subtitleName = pendingSubtitleName || fallbackName;
@@ -153,6 +154,15 @@
             };
         }
 
+        if (payloadMovieIdSource === 'location') {
+            return {
+                action: 'quarantine',
+                reason: 'location_movie_id_untrusted',
+                movieId: payloadMovieId || currentMovieId,
+                subtitleName: subtitleName
+            };
+        }
+
         if (pendingSubtitleName === '') {
             return {
                 action: 'quarantine',
@@ -165,7 +175,7 @@
         return {
             action: 'formal',
             reason: 'pending_subtitle_match',
-            movieId: currentMovieId,
+            movieId: payloadMovieId || currentMovieId,
             subtitleName: pendingSubtitleName
         };
     }

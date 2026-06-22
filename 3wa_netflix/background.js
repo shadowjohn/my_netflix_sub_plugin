@@ -32,7 +32,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.7",
+        appVersion: "3.6.8",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -795,7 +795,7 @@ function run_3wa_netflix() {
                     appClass.method.handleSubtitleXmlMessage(event.data.payload);
                 });
             },
-            smallComment: function (message, seconds, is_need_motion, cssOptions) {
+            smallComment: function (message, timeoutMs, is_need_motion, cssOptions) {
                 //畫面的1/15	
                 if ($("#mysmallComment").length == 0) {
                     $("body").append("<div id='mysmallComment'><span class='' id='mysmallCommentContent'></span></div>");
@@ -818,16 +818,16 @@ function run_3wa_netflix() {
                         'border': '3px solid #fff',
                         'pointer-events': 'none'
                     });
-                    $("#mysmallCommentContent").css(cssOptions);
                 }
                 $("#mysmallCommentContent").html(message);
+                if (cssOptions != null) $("#mysmallCommentContent").css(cssOptions);
                 if (is_need_motion == true) {
                     //$("#mysmallComment").stop();
                     //$("#mysmallComment").fadeIn("slow");
                     //clearTimeout(window['smallComment_TIMEOUT']);
                     //window['smallComment_TIMEOUT'] = setTimeout(function () {
                     //$("#mysmallComment").fadeOut('fast');
-                    //}, seconds);
+                    //}, timeoutMs);
                 }
                 else {
                     //$("#mysmallComment").stop();
@@ -835,7 +835,7 @@ function run_3wa_netflix() {
                     clearTimeout(window['smallComment_TIMEOUT']);
                     window['smallComment_TIMEOUT'] = setTimeout(function () {
                         $("#mysmallComment")[0].style.display = "none";
-                    }.bind(this), seconds);
+                    }.bind(this), timeoutMs);
                 }
             }, //浮動說明
             mytabs: function (dom, obj) { //自製的分頁功能
@@ -1027,20 +1027,7 @@ function run_3wa_netflix() {
                                     //console.log('request completed!');
                                     //console.log(this.readyState); //will always be 4 (ajax is completed successfully)
                                     //console.log(this); //whatever the response was
-                                    if(this.responseType=='' && this.response.indexOf('tts:fontSize')!=-1)
-                                    {
-                                        //發現字幕了
-                                        //console.log(this.response);
-                                        //如果第二字幕按壓的時間在 2 秒內，就存下來
-                                        if(window.localStorage.getItem("my_netflix_sub2_Click_DT")!=null)
-                                        {
-                                            if(new Date().getTime()-parseInt(window.localStorage.getItem("my_netflix_sub2_Click_DT")) < 2000){
-                                                var movieID = window.localStorage.getItem("movieID");
-                                                var subTitle = window.localStorage.getItem("my_netflix_sub2");
-                                                window.localStorage.setItem("my_netflix___SUB["+movieID+"]["+subTitle+"]", this.response);
-                                            }
-                                        }
-                                    }         
+                                    // 字幕 XML 由 page-hook + resolveSubtitleXmlStorage 統一歸戶，避免下一集預抓字幕寫進目前集數。
                                     if(typeof(this.response.indexOf)=="function")
                                     {
                                         if(this.response.indexOf("nflxvideo")!=-1){
@@ -1381,7 +1368,6 @@ function run_3wa_netflix() {
                 appClass.data.subtitleHistoryActiveIndex = null;
                 appClass.data.subtitleHistorySearchText = '';
                 appClass.data.subtitleHistorySearchMatches = [];
-                appClass.data.subtitleHistorySearchCursor = -1;
             },
             collectSubtitleHistory: function () {
                 if (window['my_netflix_auto_history_sidebar'] == 'false') {
@@ -1393,8 +1379,11 @@ function run_3wa_netflix() {
                 if (core == null || state == null || typeof (core.recordSubtitleHistory) != "function") return;
                 if ($("video").length == 0) return;
 
+                var video = $("video")[0];
+                if (video.paused === true) return;
+
                 var movieID = appClass.method.getMovieID();
-                var currentMs = Math.floor($("video")[0].currentTime * 1000);
+                var currentMs = Math.floor(video.currentTime * 1000);
                 core.recordSubtitleHistory(state, {
                     movieId: movieID,
                     currentMs: currentMs,
@@ -1429,26 +1418,84 @@ function run_3wa_netflix() {
                 }
                 return html.join("");
             },
+            getSubtitleHistorySpeechLang: function (text, subtitleName) {
+                subtitleName = String(subtitleName || '').toLowerCase();
+                if (subtitleName.indexOf('日') != -1 || subtitleName.indexOf('jap') != -1) return 'ja-JP';
+                if (subtitleName.indexOf('英') != -1 || subtitleName.indexOf('eng') != -1) return 'en-US';
+                if (subtitleName.indexOf('繁') != -1 || subtitleName.indexOf('簡') != -1 || subtitleName.indexOf('中') != -1 || subtitleName.indexOf('chi') != -1) return 'zh-TW';
+
+                text = String(text || '');
+                if (/[ぁ-んァ-ン]/.test(text)) return 'ja-JP';
+                if (/[a-zA-Z]/.test(text) && !/[\u4e00-\u9fff]/.test(text)) return 'en-US';
+                return 'zh-TW';
+            },
+            speakSubtitleHistoryText: function (text, lang) {
+                text = appClass.method.trim(text || '');
+                if (text == '') return;
+                if (window.speechSynthesis == null || window.SpeechSynthesisUtterance == null) {
+                    appClass.method.smallComment('此瀏覽器不支援內建語音播放', 4000, false);
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang || 'zh-TW';
+                utterance.rate = 0.95;
+                var voices = typeof (window.speechSynthesis.getVoices) == "function" ? window.speechSynthesis.getVoices() : [];
+                for (var i = 0, max_i = voices.length; i < max_i; i++) {
+                    if (String(voices[i].lang || '').toLowerCase() == String(utterance.lang).toLowerCase()) {
+                        utterance.voice = voices[i];
+                        break;
+                    }
+                }
+                if (utterance.voice == null) {
+                    var langPrefix = String(utterance.lang).split('-')[0].toLowerCase();
+                    for (var j = 0, max_j = voices.length; j < max_j; j++) {
+                        if (String(voices[j].lang || '').toLowerCase().indexOf(langPrefix) == 0) {
+                            utterance.voice = voices[j];
+                            break;
+                        }
+                    }
+                }
+                if (utterance.voice == null) {
+                    appClass.method.smallComment('找不到指定語音，使用瀏覽器預設語音', 4000, false, { 'font-size': '22px' });
+                }
+                window.speechSynthesis.speak(utterance);
+            },
+            speakSubtitleHistoryRow: function (rowIndex, kind) {
+                var rows = appClass.data.subtitleHistoryRows || [];
+                var row = rows[rowIndex];
+                if (row == null) return;
+
+                var isSub = kind == 'sub';
+                var text = isSub ? row.subText : row.mainText;
+                var subtitleName = isSub ? (appClass.flag.sub2 || window['my_netflix_sub2']) : (appClass.flag.sub1 || window['my_netflix_sub1']);
+                appClass.method.speakSubtitleHistoryText(text, appClass.method.getSubtitleHistorySpeechLang(text, subtitleName));
+            },
             updateSubtitleHistorySearch: function () {
                 var core = appClass.method.getSubtitleHistoryCore();
                 if (core == null || typeof (core.searchSubtitleHistoryRows) != "function") return;
                 var query = $("input[reqc='my_netflix_history_search_input']").val() || '';
                 appClass.data.subtitleHistorySearchText = query;
                 appClass.data.subtitleHistorySearchMatches = core.searchSubtitleHistoryRows(appClass.data.subtitleHistoryRows, query);
-                appClass.data.subtitleHistorySearchCursor = -1;
-                appClass.data.subtitleHistoryHtml = null;
+                appClass.method.filterSubtitleHistoryRows(true);
             },
-            seekSubtitleHistoryRow: function (rowIndex) {
-                var rows = appClass.data.subtitleHistoryRows || [];
-                var row = rows[rowIndex];
-                if (row == null || $("video").length == 0) return;
-                var video = $("video")[0];
-                try {
-                    video.currentTime = Math.max(0, row.startMs / 1000);
+            filterSubtitleHistoryRows: function (scrollToTop) {
+                var body = $("div[reqc='my_netflix_history_sidebar_body']");
+                var rowDoms = body.find("div[reqc='my_netflix_history_row']");
+                if (rowDoms.length == 0) return;
+
+                rowDoms.show().removeClass("my_netflix_history_row_match");
+                if ($.trim(appClass.data.subtitleHistorySearchText || '') == '') {
+                    return;
                 }
-                catch (e) {
-                    // Netflix 有時對時間跳轉很敏感，失敗就只維持高亮，不硬點 timeline。
+
+                rowDoms.hide();
+                var matches = appClass.data.subtitleHistorySearchMatches || [];
+                for (var i = 0, max_i = matches.length; i < max_i; i++) {
+                    rowDoms.filter("div[data-row-index='" + matches[i] + "']").show().addClass("my_netflix_history_row_match");
                 }
+                if (scrollToTop === true) body.scrollTop(0);
             },
             showSubtitleHistorySidebar: function () {
                 if (window['my_netflix_auto_history_sidebar'] == 'false') return;
@@ -1484,13 +1531,23 @@ function run_3wa_netflix() {
                     var rowDoms = body.find("div[reqc='my_netflix_history_row']");
                     for (var i = 0, max_i = rowDoms.length; i < max_i; i++) {
                         var row = rows[i];
-                        if (row.mainText != null && row.mainText != "") rowDoms.eq(i).find("div[reqc='my_netflix_history_text_main']").text(row.mainText);
-                        if (row.subText != null && row.subText != "") rowDoms.eq(i).find("div[reqc='my_netflix_history_text_sub']").text(row.subText);
+                        if (row.mainText != null && row.mainText != "") {
+                            rowDoms.eq(i).find("div[reqc='my_netflix_history_text_main']").text(row.mainText).prepend("<button reqc='my_netflix_history_tts_main' type='button' title='播放主字幕' data-history-kind='main'>▶</button>");
+                        }
+                        if (row.subText != null && row.subText != "") {
+                            rowDoms.eq(i).find("div[reqc='my_netflix_history_text_sub']").text(row.subText).prepend("<button reqc='my_netflix_history_tts_sub' type='button' title='播放次字幕' data-history-kind='sub'>▶</button>");
+                        }
                     }
-                    rowDoms.unbind("click").bind("click", function () {
-                        appClass.method.seekSubtitleHistoryRow(parseInt($(this).attr("data-row-index"), 10));
+                    body.find("button[reqc='my_netflix_history_tts_main'],button[reqc='my_netflix_history_tts_sub']").unbind("click").bind("click", function (e) {
+                        var rowIndex = parseInt($(this).closest("div[reqc='my_netflix_history_row']").attr("data-row-index"), 10);
+                        appClass.method.speakSubtitleHistoryRow(rowIndex, $(this).attr("data-history-kind"));
+                        e.preventDefault();
+                        e.stopPropagation();
                     });
+                    appClass.method.filterSubtitleHistoryRows(false);
                 }
+
+                if ($.trim(appClass.data.subtitleHistorySearchText || '') != '' || $("video")[0].paused === true) return;
 
                 var currentMs = Math.floor($("video")[0].currentTime * 1000);
                 var activeIndex = appClass.method.findSubtitleHistoryActiveIndex(rows, currentMs);
@@ -1567,8 +1624,7 @@ function run_3wa_netflix() {
             subtitleHistoryUserScrollUntil: 0,
             subtitleHistoryAutoScroll: true,
             subtitleHistorySearchText: '',
-            subtitleHistorySearchMatches: [],
-            subtitleHistorySearchCursor: -1
+            subtitleHistorySearchMatches: []
         }
     };
 
@@ -1772,7 +1828,7 @@ function run_3wa_netflix() {
         'my_netflix_auto_next_movie': { 'default': 'false' }, //自動切換下一集，預設不啟動
         'my_netflix_auto_fix_english_first_letter_case': { 'default': 'false' }, //自動修正英文 CC 字幕，首字大寫，後面都改小寫
         'my_netflix_auto_fix_cc': { 'default': 'false' }, //(可選擇) 自動移除 CC 字幕 [內容]，句首、句尾「-」號
-        'my_netflix_auto_history_sidebar': { 'default': 'true' } //歷史字幕 Sidebar
+        'my_netflix_auto_history_sidebar': { 'default': 'false' } //歷史字幕 Sidebar
     };
 
     for (var k in _myNetFlixSettings) {
@@ -2144,17 +2200,19 @@ function run_3wa_netflix() {
     div[reqc='my_netflix_history_sidebar_header']{padding:12px 12px 8px 14px;font-size:14px;font-weight:bold;color:#8fe7ff;border-bottom:1px solid rgba(100,211,255,0.18);background:rgba(74,175,255,0.12);display:flex;align-items:center;justify-content:space-between;gap:8px;}
     div[reqc='my_netflix_history_sidebar_title']{flex:1;min-width:0;}
     div[reqc='my_netflix_history_sidebar_actions']{display:flex;align-items:center;gap:6px;}
-    button[reqc='my_netflix_history_autoscroll'],button[reqc='my_netflix_history_close']{width:28px;height:28px;border-radius:999px;border:1px solid rgba(117,223,255,0.42);background:rgba(12,34,72,0.72);color:#95e9ff;cursor:pointer;font-size:13px;line-height:1;}
+    button[reqc='my_netflix_history_clear'],button[reqc='my_netflix_history_autoscroll'],button[reqc='my_netflix_history_close']{width:28px;height:28px;border-radius:999px;border:1px solid rgba(117,223,255,0.42);background:rgba(12,34,72,0.72);color:#95e9ff;cursor:pointer;font-size:13px;line-height:1;}
     button[reqc='my_netflix_history_autoscroll'][data-enabled='YES']{background:linear-gradient(180deg,rgba(36,125,255,0.72),rgba(45,203,255,0.42));color:#fff;border-color:rgba(149,240,255,0.88);}
-    div[reqc='my_netflix_history_search']{padding:10px 12px;border-bottom:1px solid rgba(100,211,255,0.12);}
-    input[reqc='my_netflix_history_search_input']{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(117,223,255,0.35);background:rgba(0,0,0,0.22);color:#fff;padding:7px 9px;font-size:13px;outline:none;}
+    div[reqc='my_netflix_history_search']{padding:10px 12px;border-bottom:1px solid rgba(100,211,255,0.12);position:relative;}
+    input[reqc='my_netflix_history_search_input']{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(117,223,255,0.35);background:rgba(0,0,0,0.22);color:#fff;padding:7px 34px 7px 9px;font-size:13px;outline:none;}
+    img[reqc='my_netflix_history_search_clear']{position:absolute;right:18px;top:50%;width:18px;height:18px;margin-top:-9px;cursor:pointer;opacity:0.72;}
     div[reqc='my_netflix_history_sidebar_body']{height:calc(100% - 96px);overflow-y:auto;padding:14px 12px 42vh 12px;box-sizing:border-box;scroll-behavior:smooth;user-select:text;-webkit-user-select:text;scrollbar-width:thin;scrollbar-color:rgba(101,225,255,0.82) rgba(7,22,52,0.55);}
-    div[reqc='my_netflix_history_row']{padding:10px 12px;margin-bottom:10px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(113,196,255,0.08);white-space:pre-wrap;word-break:break-word;cursor:pointer;}
+    div[reqc='my_netflix_history_row']{padding:10px 12px;margin-bottom:10px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(113,196,255,0.08);white-space:pre-wrap;word-break:break-word;cursor:text;}
     div[reqc='my_netflix_history_row'].my_netflix_history_row_active{border-color:rgba(149,240,255,0.88);background:rgba(62,154,255,0.18);}
     div[reqc='my_netflix_history_row'].my_netflix_history_row_match{box-shadow:0 0 0 1px rgba(255,230,115,0.55) inset;}
     div[reqc='my_netflix_history_time']{color:rgba(151,227,255,0.72);font-size:11px;margin-bottom:6px;font-family:Consolas,Monaco,monospace;}
     div[reqc='my_netflix_history_text_main']{font-size:16px;line-height:1.5;color:#ffffff;}
     div[reqc='my_netflix_history_text_sub']{font-size:14px;line-height:1.5;color:rgba(198,232,255,0.9);margin-top:7px;}
+    button[reqc='my_netflix_history_tts_main'],button[reqc='my_netflix_history_tts_sub']{width:22px;height:22px;margin:0 7px 2px 0;border-radius:999px;border:1px solid rgba(117,223,255,0.42);background:rgba(12,34,72,0.72);color:#95e9ff;cursor:pointer;font-size:11px;line-height:1;vertical-align:middle;user-select:none;-webkit-user-select:none;}
     div[reqc='my_netflix_history_empty']{padding:18px 14px;color:rgba(169,224,255,0.78);font-size:13px;line-height:1.5;text-align:center;}
 </style>`);
 
@@ -2469,7 +2527,7 @@ function run_3wa_netflix() {
     ");
 
     $("div[reqc='my_netflix_history_sidebar']").remove();
-    $("body").append("<div reqc='my_netflix_history_sidebar'><div reqc='my_netflix_history_sidebar_header'><div reqc='my_netflix_history_sidebar_title'>歷史字幕 / Subtitle History</div><div reqc='my_netflix_history_sidebar_actions'><button reqc='my_netflix_history_autoscroll' type='button' data-enabled='YES' title='Auto scroll'>A</button><button reqc='my_netflix_history_close' type='button' title='Hide sidebar'>×</button></div></div><div reqc='my_netflix_history_search'><input reqc='my_netflix_history_search_input' type='text' placeholder='搜尋目前 50 句'></div><div reqc='my_netflix_history_sidebar_body'></div></div>");
+    $("body").append("<div reqc='my_netflix_history_sidebar'><div reqc='my_netflix_history_sidebar_header'><div reqc='my_netflix_history_sidebar_title'>歷史字幕 / Subtitle History</div><div reqc='my_netflix_history_sidebar_actions'><button reqc='my_netflix_history_clear' type='button' title='清空歷史'>C</button><button reqc='my_netflix_history_autoscroll' type='button' data-enabled='YES' title='Auto scroll'>A</button><button reqc='my_netflix_history_close' type='button' title='Hide sidebar'>×</button></div></div><div reqc='my_netflix_history_search'><input reqc='my_netflix_history_search_input' type='text' placeholder='搜尋目前 50 句'><img reqc='my_netflix_history_search_clear' src='" + appClass.icon['x_close'] + "' alt='清除搜尋' title='清除搜尋'></div><div reqc='my_netflix_history_sidebar_body'></div></div>");
     $("div[reqc='my_netflix_history_sidebar_body']").unbind("scroll").bind("scroll", function () {
         appClass.data.subtitleHistoryUserScrollUntil = Date.now() + 3000;
     });
@@ -2484,19 +2542,36 @@ function run_3wa_netflix() {
         e.preventDefault();
         e.stopPropagation();
     });
+    $("button[reqc='my_netflix_history_clear']").unbind("click").bind("click", function (e) {
+        appClass.method.clearSubtitleHistory();
+        $("input[reqc='my_netflix_history_search_input']").val("");
+        appClass.method.updateSubtitleHistorySidebar();
+        appClass.method.smallComment('已清空...', 1500, false, { 'font-size': '22px' });
+        e.preventDefault();
+        e.stopPropagation();
+    });
     $("button[reqc='my_netflix_history_close']").unbind("click").bind("click", function (e) {
         appClass.method.hideSubtitleHistorySidebar();
         e.preventDefault();
         e.stopPropagation();
     });
-    $("input[reqc='my_netflix_history_search_input']").unbind("input").bind("input", function () {
+    $("input[reqc='my_netflix_history_search_input']").unbind("keyup").bind("keyup", function (e) {
         appClass.method.updateSubtitleHistorySearch();
+        e.preventDefault();
+        e.stopPropagation();
     }).unbind("keydown").bind("keydown", function (e) {
-        if (e.key != "Enter") return;
-        var matches = appClass.data.subtitleHistorySearchMatches || [];
-        if (matches.length == 0) return;
-        appClass.data.subtitleHistorySearchCursor = (appClass.data.subtitleHistorySearchCursor + 1) % matches.length;
-        appClass.method.seekSubtitleHistoryRow(matches[appClass.data.subtitleHistorySearchCursor]);
+        e.stopPropagation();
+    });
+    $("img[reqc='my_netflix_history_search_clear']").unbind("click").bind("click", function (e) {
+        $("input[reqc='my_netflix_history_search_input']").val("");
+        appClass.method.updateSubtitleHistorySearch();
+        var body = $("div[reqc='my_netflix_history_sidebar_body']");
+        var activeDom = body.find("div[reqc='my_netflix_history_row_active']");
+        if (activeDom.length != 0) {
+            body.scrollTop(Math.max(0, body.scrollTop() + activeDom.position().top - (body.height() * 0.48) + (activeDom.outerHeight() / 2)));
+        }
+        e.preventDefault();
+        e.stopPropagation();
     });
 
     //設定使用者點到的值

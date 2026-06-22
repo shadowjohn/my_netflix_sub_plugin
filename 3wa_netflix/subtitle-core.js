@@ -193,9 +193,21 @@
         return canFillMain || canFillSub;
     }
 
+    function canMergeOverlappingHistoryRow(row, mainText, subText, currentMs) {
+        if (!isNearHistoryTime(row, currentMs, HISTORY_DUPLICATE_WINDOW_MS)) return false;
+
+        var rowMain = normalizeSubtitleHistoryText(row.mainText);
+        var rowSub = normalizeSubtitleHistoryText(row.subText);
+        var hasMainShift = mainText !== '' && rowMain !== '' && rowMain !== mainText;
+        var hasSubShift = subText !== '' && rowSub !== '' && rowSub !== subText;
+
+        return (mainText !== '' && rowMain === mainText && hasSubShift) ||
+            (subText !== '' && rowSub === subText && hasMainShift);
+    }
+
     function updateHistoryRow(row, mainText, subText, currentMs) {
-        if (mainText !== '' && normalizeSubtitleHistoryText(row.mainText) === '') row.mainText = mainText;
-        if (subText !== '' && normalizeSubtitleHistoryText(row.subText) === '') row.subText = subText;
+        if (mainText !== '') row.mainText = mainText;
+        if (subText !== '') row.subText = subText;
         row.startMs = Math.min(row.startMs, currentMs);
         row.endMs = Math.max(row.endMs, currentMs + HISTORY_ENTRY_DURATION_MS);
         return row;
@@ -246,6 +258,10 @@
             }
 
             if (canPairHistoryRow(row, mainText, subText, currentMs)) {
+                return updateHistoryRow(row, mainText, subText, currentMs);
+            }
+
+            if (canMergeOverlappingHistoryRow(row, mainText, subText, currentMs)) {
                 return updateHistoryRow(row, mainText, subText, currentMs);
             }
         }

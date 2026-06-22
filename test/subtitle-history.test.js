@@ -67,11 +67,48 @@ rows = core.getSubtitleHistoryRows(state);
 assert.equal(rows.length, 3);
 assert.deepEqual(rows.map(row => row.mainText), ['插入較早時間', '第二句', '第三句']);
 assert.equal(rows.some(row => row.mainText === '第一句'), false);
+const searchRows = rows;
 
-const matches = core.searchSubtitleHistoryRows(rows, 'third');
+const overlapState = core.createSubtitleHistoryState(10);
+core.recordSubtitleHistory(overlapState, {
+  movieId: 'movie-b',
+  currentMs: 1254155,
+  nowMs: 1000,
+  mainText: '主人那麼認真 不要說什麼好好享受，右邊的',
+  subText: "You shouldn't say that when our master is serious about this, Right."
+});
+core.recordSubtitleHistory(overlapState, {
+  movieId: 'movie-b',
+  currentMs: 1254251,
+  nowMs: 1100,
+  mainText: '主人那麼認真 不要說什麼好好享受，右邊的',
+  subText: 'Well, how do you feel about it, Left?'
+});
+core.recordSubtitleHistory(overlapState, {
+  movieId: 'movie-b',
+  currentMs: 1255967,
+  nowMs: 1200,
+  mainText: '那你又是怎麼想的啊，左邊的?',
+  subText: 'Well, how do you feel about it, Left?'
+});
+core.recordSubtitleHistory(overlapState, {
+  movieId: 'movie-b',
+  currentMs: 1257171,
+  nowMs: 1300,
+  mainText: '那你又是怎麼想的啊，左邊的?',
+  subText: 'Well, how do you feel about it, Left?'
+});
+
+rows = core.getSubtitleHistoryRows(overlapState);
+assert.equal(rows.length, 1);
+assert.equal(rows[0].mainText, '那你又是怎麼想的啊，左邊的?');
+assert.equal(rows[0].subText, 'Well, how do you feel about it, Left?');
+assert.ok(rows[0].endMs >= 1258971);
+
+const matches = core.searchSubtitleHistoryRows(searchRows, 'third');
 assert.deepEqual(matches, [2]);
-assert.deepEqual(core.searchSubtitleHistoryRows(rows, '第二'), [1]);
-assert.deepEqual(core.searchSubtitleHistoryRows(rows, ''), []);
+assert.deepEqual(core.searchSubtitleHistoryRows(searchRows, '第二'), [1]);
+assert.deepEqual(core.searchSubtitleHistoryRows(searchRows, ''), []);
 
 assert.equal(core.formatSubtitleHistoryTime(3723400), '01:02:03,400');
 

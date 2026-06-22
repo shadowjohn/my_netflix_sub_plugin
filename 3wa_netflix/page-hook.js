@@ -163,6 +163,7 @@
                 source: source,
                 url: url || '',
                 movieId: mappedMovieId || getMovieId(),
+                movieIdSource: mappedMovieId ? 'manifest' : 'location',
                 language: meta.language,
                 trackId: meta.trackId,
                 xml: text,

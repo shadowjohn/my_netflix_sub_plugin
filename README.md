@@ -107,6 +107,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	其中 <code>chrome2firefox.php</code> 並不是單純複製檔案，而是把 Chrome Manifest V3 與 Firefox 相容格式的差異整理成固定規則，自動完成 manifest 轉換、background / content script 輸出與目錄同步。<br>
 	這套腳本是建立在實際比對 Chrome / Firefox extension 差異後整理出來的流程，因此可以在維持開發速度的同時，降低手動轉版與打包時出錯的機率。<br>
 	若要進行 release 打包，可直接使用 <code>run_zip.php</code> 讀取目前版本號，自動建立 release 資料夾、輸出 Firefox 版本，並分別產出 Chrome / Firefox zip。<br>
+	推送 <code>v*</code> tag 時，GitHub Actions 會自動執行 <code>.github/workflows/publish.yml</code>，重新打包、建立 GitHub Release，並送出 Chrome Web Store / Firefox AMO 發布流程。<br>
 
 <br><br>
 <img src="screenshot/V1.9_0.png">
@@ -143,7 +144,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 或
 
 (原始檔下載安裝方法)：<br>
-(V3.6.7 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.7/3wa_netflix.zip <br>
+(V3.6.8 雙字幕 最新版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.8/3wa_netflix.zip <br>
 (V3.6.0 雙字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V3.6.0/3wa_netflix.zip <br>
 (V1.8 單字幕 穩定版) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/V1.8/3wa_netflix.zip <br>
 (歷代版本) https://github.com/shadowjohn/my_netflix_sub_plugin/raw/main/release/ <br>
@@ -188,7 +189,7 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <h2>版本說明：</h2>
 <pre>
   (2026-06-22) V3.6.8 版:
-	1、Issue 127、重新加入右側「歷史字幕 / Subtitle History」浮動視窗，只收 live 顯示過的字幕句子，最多保留 50 筆，雙字幕盡可能合併同一時間列，並提供搜尋、自動捲動與保守版點擊跳轉。
+	1、Issue 127、重新加入右側「歷史字幕 / Subtitle History」浮動視窗，只收 live 顯示過的字幕句子，最多保留 50 筆，雙字幕盡可能合併同一時間列，並提供搜尋、自動捲動、清空歷史與中英日內建語音播放。
 
   (2026-06-16) V3.6.7 版:
 	1、Issue 126、修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準將 XML 字幕關聯到正確影片/影集 ID，背景預抓時不覆蓋當前字幕且正常歸戶。
@@ -540,6 +541,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-06-14)123、3.6.6 新增一個 JSON textarea 匯出 / 匯入全部六組設定檔</li>
   <li>(Done 2026-06-14)124、3.6.6 字幕設定視窗改用右上角 X 關閉，並以低透明度與 z-index 藏下去，避免調整顏色時自動關閉</li>
   <li>(Done 2026-06-16)126、3.6.7 修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準歸戶並正確隔離保存字幕。</li>
-  <li>(Done 2026-06-22)127、3.6.8 重新加入右側歷史字幕浮動視窗，只收 live 顯示過的最多 50 筆字幕，支援搜尋、自動捲動與保守版跳轉。</li>
+  <li>(Done 2026-06-22)127、3.6.8 重新加入右側歷史字幕浮動視窗，只收 live 顯示過的最多 50 筆字幕，支援搜尋、自動捲動、清空歷史與中英日內建語音播放。</li>
 </ul>
   
