@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.8 (2026-06-22)<br>
 	V3.6.7 (2026-06-16)<br>
 	V3.6.6 (2026-06-14)<br>
 	V3.6.5 (2026-05-16)<br>
@@ -186,6 +187,9 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2026-06-22) V3.6.8 版:
+	1、Issue 127、重新加入右側「歷史字幕 / Subtitle History」浮動視窗，只收 live 顯示過的字幕句子，最多保留 50 筆，雙字幕盡可能合併同一時間列，並提供搜尋、自動捲動與保守版點擊跳轉。
+
   (2026-06-16) V3.6.7 版:
 	1、Issue 126、修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準將 XML 字幕關聯到正確影片/影集 ID，背景預抓時不覆蓋當前字幕且正常歸戶。
 
@@ -536,5 +540,6 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
   <li>(Done 2026-06-14)123、3.6.6 新增一個 JSON textarea 匯出 / 匯入全部六組設定檔</li>
   <li>(Done 2026-06-14)124、3.6.6 字幕設定視窗改用右上角 X 關閉，並以低透明度與 z-index 藏下去，避免調整顏色時自動關閉</li>
   <li>(Done 2026-06-16)126、3.6.7 修復 Netflix 字幕 XML 來源不匹配與預抓下一集字幕異常問題。藉由攔截 Manifest JSON 建立 downloadable_id -> movieId 對照表，精準歸戶並正確隔離保存字幕。</li>
+  <li>(Done 2026-06-22)127、3.6.8 重新加入右側歷史字幕浮動視窗，只收 live 顯示過的最多 50 筆字幕，支援搜尋、自動捲動與保守版跳轉。</li>
 </ul>
   
