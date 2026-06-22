@@ -145,13 +145,194 @@
         return 'my_netflix___SUB[' + String(movieId).trim() + '][' + String(subtitleName).trim() + ']';
     }
 
+    var HISTORY_DEFAULT_LIMIT = 50;
+    var HISTORY_ENTRY_DURATION_MS = 1800;
+    var HISTORY_PAIR_WINDOW_MS = 1200;
+    var HISTORY_DUPLICATE_WINDOW_MS = 4000;
+    var HISTORY_RECENT_SCAN_COUNT = 6;
+
+    function normalizeSubtitleHistoryText(value) {
+        if (value == null) return '';
+        return String(value)
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function normalizeHistoryLimit(limit) {
+        limit = parseInt(limit, 10);
+        if (!isFinite(limit) || limit <= 0) return HISTORY_DEFAULT_LIMIT;
+        return limit;
+    }
+
+    function createSubtitleHistoryState(limit) {
+        return {
+            limit: normalizeHistoryLimit(limit),
+            rows: []
+        };
+    }
+
+    function isSameHistoryText(row, mainText, subText) {
+        return normalizeSubtitleHistoryText(row.mainText) === mainText &&
+            normalizeSubtitleHistoryText(row.subText) === subText;
+    }
+
+    function isNearHistoryTime(row, currentMs, windowMs) {
+        return Math.abs(currentMs - row.startMs) <= windowMs ||
+            Math.abs(currentMs - row.endMs) <= windowMs ||
+            (currentMs >= row.startMs - windowMs && currentMs <= row.endMs + windowMs);
+    }
+
+    function canPairHistoryRow(row, mainText, subText, currentMs) {
+        if (!isNearHistoryTime(row, currentMs, HISTORY_PAIR_WINDOW_MS)) return false;
+
+        var rowMain = normalizeSubtitleHistoryText(row.mainText);
+        var rowSub = normalizeSubtitleHistoryText(row.subText);
+        var canFillMain = mainText !== '' && rowMain === '' && (subText === '' || rowSub === '' || rowSub === subText);
+        var canFillSub = subText !== '' && rowSub === '' && (mainText === '' || rowMain === '' || rowMain === mainText);
+
+        return canFillMain || canFillSub;
+    }
+
+    function updateHistoryRow(row, mainText, subText, currentMs) {
+        if (mainText !== '' && normalizeSubtitleHistoryText(row.mainText) === '') row.mainText = mainText;
+        if (subText !== '' && normalizeSubtitleHistoryText(row.subText) === '') row.subText = subText;
+        row.startMs = Math.min(row.startMs, currentMs);
+        row.endMs = Math.max(row.endMs, currentMs + HISTORY_ENTRY_DURATION_MS);
+        return row;
+    }
+
+    function trimSubtitleHistoryRows(state) {
+        while (state.rows.length > state.limit) {
+            var oldestIndex = 0;
+            for (var i = 1, max = state.rows.length; i < max; i++) {
+                if (state.rows[i].insertedAt < state.rows[oldestIndex].insertedAt) {
+                    oldestIndex = i;
+                }
+            }
+            state.rows.splice(oldestIndex, 1);
+        }
+    }
+
+    function createHistoryId(movieId, currentMs, mainText, subText) {
+        return [
+            String(movieId || ''),
+            String(Math.max(0, parseInt(currentMs, 10) || 0)),
+            String(mainText || '').length,
+            String(subText || '').length
+        ].join(':');
+    }
+
+    function recordSubtitleHistory(state, input) {
+        if (state == null) state = createSubtitleHistoryState();
+        if (!Array.isArray(state.rows)) state.rows = [];
+        state.limit = normalizeHistoryLimit(state.limit);
+
+        input = input || {};
+        var movieId = normalizeSubtitleHistoryText(input.movieId);
+        var currentMs = Math.max(0, parseInt(input.currentMs, 10) || 0);
+        var nowMs = input.nowMs == null ? Date.now() : parseInt(input.nowMs, 10);
+        if (!isFinite(nowMs)) nowMs = Date.now();
+
+        var mainText = normalizeSubtitleHistoryText(input.mainText);
+        var subText = normalizeSubtitleHistoryText(input.subText);
+        if (mainText === '' && subText === '') return null;
+
+        for (var i = state.rows.length - 1; i >= 0; i--) {
+            var row = state.rows[i];
+            if (movieId !== '' && row.movieId !== movieId) continue;
+
+            if (isSameHistoryText(row, mainText, subText) && isNearHistoryTime(row, currentMs, HISTORY_DUPLICATE_WINDOW_MS)) {
+                return updateHistoryRow(row, mainText, subText, currentMs);
+            }
+
+            if (canPairHistoryRow(row, mainText, subText, currentMs)) {
+                return updateHistoryRow(row, mainText, subText, currentMs);
+            }
+        }
+
+        var minRecentIndex = Math.max(0, state.rows.length - HISTORY_RECENT_SCAN_COUNT);
+        for (var recentIndex = state.rows.length - 1; recentIndex >= minRecentIndex; recentIndex--) {
+            var recentRow = state.rows[recentIndex];
+            if (movieId !== '' && recentRow.movieId !== movieId) continue;
+            if (isSameHistoryText(recentRow, mainText, subText) && isNearHistoryTime(recentRow, currentMs, HISTORY_DUPLICATE_WINDOW_MS)) {
+                return updateHistoryRow(recentRow, mainText, subText, currentMs);
+            }
+        }
+
+        var newRow = {
+            id: createHistoryId(movieId, currentMs, mainText, subText),
+            movieId: movieId,
+            startMs: currentMs,
+            endMs: currentMs + HISTORY_ENTRY_DURATION_MS,
+            insertedAt: nowMs,
+            mainText: mainText,
+            subText: subText
+        };
+        state.rows.push(newRow);
+        trimSubtitleHistoryRows(state);
+        return newRow;
+    }
+
+    function cloneHistoryRow(row) {
+        return {
+            id: row.id,
+            movieId: row.movieId,
+            startMs: row.startMs,
+            endMs: row.endMs,
+            insertedAt: row.insertedAt,
+            mainText: row.mainText,
+            subText: row.subText
+        };
+    }
+
+    function getSubtitleHistoryRows(state) {
+        if (state == null || !Array.isArray(state.rows)) return [];
+        return state.rows
+            .map(cloneHistoryRow)
+            .sort(function (a, b) {
+                return a.startMs - b.startMs || a.endMs - b.endMs || a.insertedAt - b.insertedAt;
+            });
+    }
+
+    function searchSubtitleHistoryRows(rows, query) {
+        var normalizedQuery = normalizeSubtitleHistoryText(query).toLowerCase();
+        if (normalizedQuery === '' || !Array.isArray(rows)) return [];
+        var result = [];
+        for (var i = 0, max = rows.length; i < max; i++) {
+            var haystack = normalizeSubtitleHistoryText((rows[i].mainText || '') + ' ' + (rows[i].subText || '')).toLowerCase();
+            if (haystack.indexOf(normalizedQuery) !== -1) result.push(i);
+        }
+        return result;
+    }
+
+    function formatSubtitleHistoryTime(ms) {
+        if (ms == null || !isFinite(ms)) return '00:00:00,000';
+        var totalMs = Math.max(0, parseInt(ms, 10) || 0);
+        var hour = Math.floor(totalMs / 3600000);
+        totalMs -= hour * 3600000;
+        var minute = Math.floor(totalMs / 60000);
+        totalMs -= minute * 60000;
+        var second = Math.floor(totalMs / 1000);
+        totalMs -= second * 1000;
+        return String(hour).padStart(2, '0') + ':' +
+            String(minute).padStart(2, '0') + ':' +
+            String(second).padStart(2, '0') + ',' +
+            String(totalMs).padStart(3, '0');
+    }
+
     return {
+        createSubtitleHistoryState: createSubtitleHistoryState,
         createStorageKey: createStorageKey,
         decodeHtml: decodeHtml,
         findCueText: findCueText,
+        formatSubtitleHistoryTime: formatSubtitleHistoryTime,
+        getSubtitleHistoryRows: getSubtitleHistoryRows,
         htmlToSubtitleText: htmlToSubtitleText,
         isSubtitleXml: isSubtitleXml,
+        normalizeSubtitleHistoryText: normalizeSubtitleHistoryText,
         parseSubtitleXml: parseSubtitleXml,
-        parseTimeToSeconds: parseTimeToSeconds
+        parseTimeToSeconds: parseTimeToSeconds,
+        recordSubtitleHistory: recordSubtitleHistory,
+        searchSubtitleHistoryRows: searchSubtitleHistoryRows
     };
 });
