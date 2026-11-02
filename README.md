@@ -60,6 +60,7 @@ Netflix 雙字幕的心得分享：https://3wa.tw/blog/blog.php?id=1986 <br>
 	(2022-01-28) https://chrome.google.com/webstore/detail/3wanetflix/hpmbbonnlchnbbakdegcbbflbjgganaf/related
 <br>
 <h2>版本：</h2>
+	V3.6.9 (2026-11-02，測試中)<br>
 	V3.6.8 (2026-06-22)<br>
 	V3.6.7 (2026-06-16)<br>
 	V3.6.6 (2026-06-14)<br>
@@ -188,6 +189,9 @@ https://github.com/shadowjohn/my_netflix_sub_plugin/blob/main/screenshot/V1.9_4.
 <br>
 <h2>版本說明：</h2>
 <pre>
+  (2026-11-02) V3.6.9 版（測試中）:
+	1、修正全螢幕時長字幕溢位造成捲軸反覆出現、消失，讓影片寬度來回變動的問題；待真人 Netflix 播放驗收。
+
   (2026-06-22) V3.6.8 版:
 	1、Issue 127、重新加入右側「歷史字幕 / Subtitle History」浮動視窗，只收 live 顯示過的字幕句子，最多保留 50 筆，雙字幕盡可能合併同一時間列，並提供搜尋、自動捲動、清空歷史與中英日內建語音播放。
 

@@ -32,7 +32,7 @@ function run_3wa_netflix() {
     }
     var appClass = {
         //debug_mode: true, //怪怪的，先不要
-        appVersion: "3.6.8",
+        appVersion: "3.6.9",
         movieID: null,
         icon: {
             /* 3wa_logo.png */
@@ -1852,6 +1852,10 @@ function run_3wa_netflix() {
     $("head style[reqc='s']").remove();
     $("head").append(`
 <style reqc='s'>   
+  /* 全螢幕時避免字幕溢位撐出捲軸、造成影片寬度跳動。 */
+  body.my3wa_netflix_fullscreen:fullscreen{
+    overflow: hidden !important;
+  }
   .my_netflix_controller_class{ 
     width: 700px;
     max-width: calc(100vw - 40px);
@@ -2726,6 +2730,7 @@ function run_3wa_netflix() {
                     else {
                         //console.log('FullScreen mode is not activated');
                         var element = document.querySelector("body");
+                        element.classList.add("my3wa_netflix_fullscreen");
                         // make the element go to full-screen mode
                         element.requestFullscreen().then(function () {
                             // element has entered fullscreen mode successfully                            
