@@ -38,3 +38,7 @@
 - 3.6.9 正式發版整理：移除 README 測試中標記、更新最新版下載為 V3.6.9，同步調整下載連結檢查；沿用 run_zip.php 重新生成 Firefox 並產出 Chrome / Firefox release zip，未增加功能修改。
 - 發版流程沿用 v* tag 觸發的 Build & Publish Extension：建立 GitHub Release 並送出 Chrome Web Store / Firefox AMO。商店送出結果與公開上架狀態須分開確認。
 - 正式發版前驗證：6 支 Node 測試、Chrome / Firefox 腳本語法檢查、兩支 PHP lint 與 git diff --check 通過；兩個 ZIP 根目錄 manifest 均為 3.6.9，Chrome 9 檔 / Firefox 10 檔與來源內容一致（文字比較正規化 CRLF / LF），無遺漏檔案。
+- 3.6.9 發版完成：release commit 1b20919 已 fast-forward 合併到 main，main / v3.6.9 分支與 v3.6.9 tag 一併推送；GitHub Release：https://github.com/shadowjohn/my_netflix_sub_plugin/releases/tag/v3.6.9 。
+- Actions run 41458347367：Build & Release 成功；Firefox AMO 日誌確認 Version 3.6.9 has been published。兩個公開 Release ZIP 已下載回來核對 SHA-256 與全部來源檔案（文字正規化 CRLF / LF）均一致。
+- Chrome Web Store 發布失敗：mnao305/chrome-extension-upload@v6.0.0 回覆 HTTP 400 Bad Request，未輸出更細錯誤，並提示至 Developer Dashboard 手動上傳。嘗試以瀏覽器工具開啟後台回覆 Not allowed，未進行手動上傳。未將此失敗歸因於程式或憑證；Chrome 商店上架仍待處理，GitHub ZIP 可直接下載使用。
+- 本次發版工作流程：https://github.com/shadowjohn/my_netflix_sub_plugin/actions/runs/41458347367 。後續若處理 Chrome 發布，保留既有 v3.6.9 tag / Release，不重送已成功的 Firefox 發布。
