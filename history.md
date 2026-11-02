@@ -34,3 +34,7 @@
 - 依使用者要求建立 v3.6.9 測試分支，Chrome / Firefox manifest 與介面 appVersion 同步提升為 3.6.9；README 新增 2026-11-02 測試中版本與全螢幕修正說明，待使用者回家驗收。
 - 3.6.9 簽入前驗證：6 支既有 Node 測試、兩版腳本 node --check、manifest / appVersion 版本一致性、UTF-8 無 BOM / CRLF 與 git diff --check 均通過。Firefox manifest / content.js 由轉版工具重新產出。
 - 此次保留為測試分支 checkpoint，尚未建立 release zip 或發版 tag；README 正式最新版下載仍指向既有 V3.6.8，避免指向尚未產出的 V3.6.9 套件。Netflix 真人播放及 Firefox runtime 驗收仍待完成。
+- 使用者已完成 3.6.9 實測並回報效果良好，授權合併回主線及正式發版；此驗收為使用者回報，未另外聲稱 Firefox runtime 已完成實測。
+- 3.6.9 正式發版整理：移除 README 測試中標記、更新最新版下載為 V3.6.9，同步調整下載連結檢查；沿用 run_zip.php 重新生成 Firefox 並產出 Chrome / Firefox release zip，未增加功能修改。
+- 發版流程沿用 v* tag 觸發的 Build & Publish Extension：建立 GitHub Release 並送出 Chrome Web Store / Firefox AMO。商店送出結果與公開上架狀態須分開確認。
+- 正式發版前驗證：6 支 Node 測試、Chrome / Firefox 腳本語法檢查、兩支 PHP lint 與 git diff --check 通過；兩個 ZIP 根目錄 manifest 均為 3.6.9，Chrome 9 檔 / Firefox 10 檔與來源內容一致（文字比較正規化 CRLF / LF），無遺漏檔案。
